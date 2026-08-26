@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>冰箱裡有什麼 · 20分鐘晚餐</title>
+<meta name="description" content="勾選冰箱裡現有的食材，找出20分鐘內能上桌的家常菜。">
+<meta name="theme-color" content="#191512">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🍳</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#191512; --ink2:#221D19; --ink3:#2F2822; --ink4:#3D342C;
+  --paper:#F1E9DC; --dim:#A29585; --dimmer:#6E6357;
+  --yolk:#F0B429; --scallion:#8FB05E; --chili:#C8412C;
+  --serif:'Noto Serif TC','PingFang TC','Microsoft JhengHei',serif;
+  --sans:'Noto Sans TC','PingFang TC','Microsoft JhengHei',sans-serif;
+  --num:'Oswald','Noto Sans TC',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);font-size:15px;line-height:1.65;padding:0 0 64px}
+.wrap{max-width:940px;margin:0 auto;padding:0 18px}
+:focus-visible{outline:2px solid var(--yolk);outline-offset:3px;border-radius:2px}
+
+header{padding:30px 0 4px}
+.eyebrow{font-family:var(--num);font-size:12px;letter-spacing:.22em;color:var(--dimmer);text-transform:uppercase;margin-bottom:12px}
+.eyebrow b{color:var(--dim);font-weight:400}
+.htitle{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--serif);font-weight:900;font-size:29px;line-height:1.25;letter-spacing:.02em}
+.tog{background:none;border:1px solid var(--ink3);color:var(--dim);border-radius:3px;padding:5px 13px;
+  font-size:13px;cursor:pointer;font-family:var(--sans);transition:.14s}
+.tog:hover{border-color:var(--ink4);color:var(--paper)}
+
+.tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px}
+#q{background:var(--ink2);border:1px solid var(--ink3);color:var(--paper);border-radius:3px;
+  padding:8px 13px;font-family:var(--sans);font-size:14px;width:190px}
+#q::placeholder{color:var(--dimmer)}
+.have-n{font-size:13px;color:var(--dim)}
+.have-n b{font-family:var(--num);color:var(--yolk);font-size:15px}
+.clear{background:none;border:0;color:var(--dimmer);font-size:13px;cursor:pointer;font-family:var(--sans);margin-left:auto}
+.clear:hover{color:var(--chili)}
+
+.gname{font-family:var(--num);font-size:11px;letter-spacing:.24em;color:var(--dimmer);margin:16px 0 8px}
+.items{display:flex;gap:5px;flex-wrap:wrap}
+.it{background:none;border:1px solid var(--ink3);color:var(--dim);border-radius:999px;
+  padding:5px 12px;font-size:13px;font-family:var(--sans);cursor:pointer;transition:.14s}
+.it:hover{border-color:var(--dimmer);color:var(--paper)}
+.it[aria-pressed=true]{background:var(--paper);border-color:var(--paper);color:var(--ink);font-weight:500}
+.it.sauce[aria-pressed=true]{background:var(--ink4);border-color:var(--ink4);color:var(--paper);font-weight:400}
+.it.sauce[aria-pressed=false]{border-style:dashed;color:var(--dimmer);text-decoration:line-through}
+details{margin-top:18px;border-top:1px solid var(--ink3);padding-top:13px}
+summary{font-family:var(--num);font-size:11px;letter-spacing:.24em;color:var(--dimmer);cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ "}
+details[open] summary::before{content:"▾ "}
+summary:hover{color:var(--dim)}
+.shelf-note{font-size:12.5px;color:var(--dimmer);margin:9px 0 11px;line-height:1.7}
+.folded{font-size:13.5px;color:var(--dim);line-height:1.9;margin-top:14px}
+.folded span{display:inline-block;background:var(--ink2);border:1px solid var(--ink3);border-radius:999px;padding:2px 10px;margin:0 4px 4px 0;font-size:12.5px}
+.folded em{color:var(--dimmer);font-style:normal}
+
+.bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:18px;padding-top:14px;border-top:1px solid var(--ink3)}
+.bar+.bar{margin-top:9px;padding-top:0;border-top:0}
+.lab{font-family:var(--num);font-size:11px;letter-spacing:.16em;color:var(--dimmer);margin-right:1px}
+.mini{background:none;border:1px solid var(--ink3);color:var(--dim);border-radius:3px;padding:5px 10px;
+  font-family:var(--num);font-size:13px;cursor:pointer;transition:.14s}
+.mini:hover{border-color:var(--ink4);color:var(--paper)}
+.mini[aria-pressed=true]{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.pill{background:none;border:1px solid var(--ink3);color:var(--dim);border-radius:999px;padding:5px 12px;
+  font-size:13px;cursor:pointer;font-family:var(--sans);transition:.14s}
+.pill:hover{border-color:var(--dimmer);color:var(--paper)}
+.pill[aria-pressed=true]{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.pill.kid[aria-pressed=true]{background:var(--scallion);border-color:var(--scallion);color:#16200A}
+.pill.fav[aria-pressed=true]{background:var(--yolk);border-color:var(--yolk);color:#1B1408}
+.sep{width:1px;height:20px;background:var(--ink3);margin:0 3px}
+.roll{background:none;border:1px solid var(--yolk);color:var(--yolk);cursor:pointer;padding:6px 16px;
+  border-radius:3px;font-family:var(--num);font-size:13px;letter-spacing:.16em;transition:.14s;margin-left:auto}
+.roll:hover{background:var(--yolk);color:#1B1408}
+
+.hint{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:rgba(240,180,41,.07);
+  border:1px solid rgba(240,180,41,.22);border-radius:4px;padding:11px 15px;margin-top:16px;font-size:14px}
+.hint .k{font-family:var(--num);font-size:11px;letter-spacing:.2em;color:var(--yolk)}
+.hint button{background:var(--yolk);border:0;color:#1B1408;border-radius:3px;padding:5px 13px;
+  font-size:13px;font-family:var(--sans);font-weight:500;cursor:pointer;margin-left:auto}
+.hint button:hover{filter:brightness(1.1)}
+
+.band{display:flex;align-items:baseline;gap:10px;margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--ink3)}
+.band h2{font-family:var(--serif);font-weight:700;font-size:19px}
+.band .n{font-family:var(--num);font-size:13px;color:var(--dimmer);letter-spacing:.12em}
+.band.go h2{color:var(--yolk)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:10px}
+.card{position:relative;background:var(--ink2);border:1px solid var(--ink3);border-radius:4px;
+  padding:15px 14px 13px;cursor:pointer;text-align:left;transition:border-color .16s,transform .16s,background .16s}
+.card:hover{border-color:var(--ink4);background:#26201B;transform:translateY(-2px)}
+.card.dim{opacity:.7}
+@media (prefers-reduced-motion:reduce){.card,.card:hover{transition:none;transform:none}}
+.arc{--p:50;width:33px;height:33px;border-radius:50%;
+  background:conic-gradient(var(--yolk) 0 calc(var(--p)*1%),var(--ink3) 0);
+  display:grid;place-items:center;margin-bottom:10px}
+.arc span{width:25px;height:25px;border-radius:50%;background:var(--ink2);display:grid;place-items:center;
+  font-family:var(--num);font-size:13px;color:var(--paper)}
+.card:hover .arc span{background:#26201B}
+.card h3{font-family:var(--serif);font-weight:700;font-size:18px;line-height:1.35}
+.card .meta{font-size:12px;color:var(--dimmer);margin-top:4px;letter-spacing:.04em}
+.card .lack{font-size:12.5px;color:#E4705C;margin-top:8px;line-height:1.5}
+.card .tags{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.tag{font-size:11px;padding:2px 7px;border-radius:2px;letter-spacing:.05em}
+.tag.k{background:rgba(143,176,94,.16);color:var(--scallion)}
+.tag.s{background:rgba(200,65,44,.16);color:#E4705C}
+.star{position:absolute;top:10px;right:8px;background:none;border:0;cursor:pointer;color:var(--ink4);
+  font-size:17px;line-height:1;padding:4px;transition:color .14s}
+.star:hover{color:var(--dim)}
+.star[aria-pressed=true]{color:var(--yolk)}
+.empty{color:var(--dim);padding:30px 0;font-size:14px}
+.empty b{color:var(--paper);display:block;font-family:var(--serif);font-size:18px;margin-bottom:6px}
+
+.sheet{position:fixed;inset:0;background:rgba(10,8,6,.72);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.panel{background:var(--ink2);width:100%;max-width:660px;max-height:92vh;overflow-y:auto;
+  border-radius:10px 10px 0 0;border:1px solid var(--ink3);border-bottom:0;padding:24px 22px 48px}
+@media(min-width:720px){.sheet{align-items:center;padding:24px}
+  .panel{border-radius:6px;border-bottom:1px solid var(--ink3);padding:30px 32px 36px}}
+.phead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.panel h2{font-family:var(--serif);font-weight:900;font-size:26px;line-height:1.3}
+.psub{font-size:13px;color:var(--dim);margin-top:6px}
+.close{background:none;border:1px solid var(--ink3);color:var(--dim);border-radius:3px;width:34px;height:34px;
+  flex:none;cursor:pointer;font-size:17px;line-height:1}
+.close:hover{color:var(--paper);border-color:var(--ink4)}
+.sec{font-family:var(--num);font-size:11px;letter-spacing:.24em;color:var(--dimmer);
+  margin:24px 0 11px;padding-bottom:7px;border-bottom:1px solid var(--ink3)}
+.ing{display:flex;justify-content:space-between;gap:16px;padding:5px 0;font-size:14.5px;border-bottom:1px dotted var(--ink3)}
+.ing:last-child{border-bottom:0}
+.ing.miss{color:#E4705C}
+.ing.miss span:first-child::after{content:" 缺";font-size:12px;opacity:.85}
+.ing .q{font-family:var(--num);color:var(--yolk);white-space:nowrap;font-size:15px}
+.ing.miss .q{color:#E4705C;opacity:.7}
+.sauce-box{background:var(--ink);border-left:2px solid var(--yolk);padding:11px 14px;border-radius:0 3px 3px 0}
+.sauce-box .ing{border-bottom:0;padding:3px 0}
+.step{display:flex;gap:16px;padding:10px 0;border-bottom:1px solid var(--ink3)}
+.step:last-child{border-bottom:0}
+.step .t{font-family:var(--num);font-size:16px;color:var(--yolk);width:42px;flex:none;padding-top:1px}
+.step .t small{font-size:10px;color:var(--dimmer);display:block;letter-spacing:.1em;margin-top:-3px}
+.step p{font-size:14.5px;line-height:1.7}
+.tip{background:rgba(240,180,41,.07);border:1px solid rgba(240,180,41,.2);border-radius:3px;
+  padding:13px 16px;margin-top:22px;font-size:14px;line-height:1.7}
+.tip b{font-family:var(--num);font-size:11px;letter-spacing:.2em;color:var(--yolk);display:block;margin-bottom:6px;font-weight:400}
+.more{background:none;border:1px dashed var(--ink4);color:var(--dim);border-radius:3px;padding:9px 0;
+  width:100%;margin-top:10px;cursor:pointer;font-family:var(--sans);font-size:13.5px;transition:.14s}
+.more:hover{border-color:var(--dim);color:var(--paper)}
+#nq{background:var(--ink2);border:1px solid var(--ink3);color:var(--paper);border-radius:3px;
+  padding:5px 11px;font-family:var(--sans);font-size:13px;width:120px}
+#nq::placeholder{color:var(--dimmer)}
+.mine{position:absolute;top:11px;left:11px;font-family:var(--num);font-size:10px;letter-spacing:.14em;color:var(--scallion)}
+.card.own{border-color:rgba(143,176,94,.35)}
+.form label{display:block;font-family:var(--num);font-size:11px;letter-spacing:.2em;color:var(--dimmer);margin:16px 0 6px}
+.form input[type=text],.form input[type=number],.form textarea,.form select{
+  width:100%;background:var(--ink);border:1px solid var(--ink3);color:var(--paper);border-radius:3px;
+  padding:9px 12px;font-family:var(--sans);font-size:14px;line-height:1.7}
+.form textarea{resize:vertical;min-height:80px}
+.form .two{display:flex;gap:10px}.form .two>div{flex:1}
+.hintline{font-size:12px;color:var(--dimmer);margin-top:5px;line-height:1.6}
+.actions{display:flex;gap:8px;margin-top:26px;flex-wrap:wrap}
+.btn{background:var(--yolk);border:0;color:#1B1408;border-radius:3px;padding:9px 20px;font-size:14px;
+  font-family:var(--sans);font-weight:500;cursor:pointer}
+.btn.ghost{background:none;border:1px solid var(--ink3);color:var(--dim)}
+.btn.ghost:hover{border-color:var(--ink4);color:var(--paper)}
+.btn.danger{background:none;border:1px solid rgba(200,65,44,.5);color:#E4705C}
+.warn{color:#E4705C;font-size:13px;margin-top:10px}
+footer{color:var(--dimmer);font-size:12.5px;line-height:1.8;margin-top:44px;padding-top:20px;border-top:1px solid var(--ink3)}
+</style>
+
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">今晚 · <b>兩大一小</b></div>
+  <div class="htitle"><h1>冰箱裡有什麼?</h1><div style="display:flex;gap:8px"><button class="tog" id="mine">我的食譜</button><button class="tog" id="tog"></button></div></div>
+  <div id="fridge"></div>
+  <div class="bar" id="bar1"></div>
+  <div class="bar" id="bar2"></div>
+  <div id="hint"></div>
+</header>
+<main id="out"></main>
+<footer>
+  蒜、薑、蔥、醬油、米酒、糖、鹽、太白粉、香油、白胡椒、黑胡椒當作你一定有，所以沒列在清單裡。<br>
+  勾選會存在這台裝置上，買完菜回來更新一次就好。時間從你站到爐子前開始算，白飯假設電鍋已經在煮了。
+</footer>
+</div>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="ptitle">
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+/* ---------- 冰箱清單 ---------- */
+const GROUPS=[
+ {g:"肉 · 海鮮",items:["火鍋豬肉片","五花肉片","里肌肉片","豬絞肉","火鍋牛肉片","牛絞肉","去骨雞腿排","雞胸肉","雞翅","培根","香腸","蝦仁","鮭魚","鯖魚","鯛魚片","透抽","蛤蜊","吻仔魚","排骨","帶殼蝦"]},
+ {g:"葉菜",items:["高麗菜","大白菜","青江菜","地瓜葉","空心菜","菠菜","韭菜","生菜"]},
+ {g:"蔬菜",items:["洋蔥","牛番茄","小番茄","櫛瓜","小黃瓜","甜椒","青花菜","四季豆","秋葵","茄子","絲瓜","玉米筍","玉米","芹菜","豆芽菜","冬瓜"]},
+ {g:"菇 · 根莖",items:["香菇","金針菇","鴻喜菇","杏鮑菇","木耳","馬鈴薯","白蘿蔔","紅蘿蔔"]},
+ {g:"蛋 · 豆製品",items:["雞蛋","皮蛋","嫩豆腐","板豆腐","豆干","油豆腐"]},
+ {g:"主食",items:["白飯","義大利麵","冬粉","米粉","烏龍麵","麵條","河粉","泡麵","吐司","冷凍水餃","蔥抓餅"]},
+ {g:"辛香 · 其他",items:["九層塔","檸檬","泡菜","花生","紅蔥頭","香茅"]}
+];
+const SAUCES=["味醂","魚露","蠔油","味噌","韓式大醬","韓式辣醬","豆瓣醬","沙茶醬","咖哩塊","泰式甜辣醬","醬油膏","烏醋","白醋","番茄醬","橄欖油","奶油","起司","鮮奶","柴魚片","芝麻醬","青醬","綠咖哩醬","椰奶","麵粉"];
+
+/* 常見替代寫法：[[a,b,c]] = 有其中一樣就算有 */
+const LEAF=["青江菜","地瓜葉","空心菜","菠菜"];
+
+const R=[
+/* ===== 台式 ===== */
+{id:"tomatoegg",n:"番茄炒蛋",c:"台",e:"炒鍋",t:8,kid:1,
+ need:["雞蛋","牛番茄"],sneed:["番茄醬"],
+ ing:[["雞蛋",4,"顆"],["牛番茄",2,"顆"],["蔥",1,"根"]],
+ sauce:[["番茄醬",1,"大匙"],["糖",1,"小匙"],["鹽",0.5,"小匙"]],
+ st:[[0,"蛋打散加一小撮鹽，番茄切滾刀塊。"],[2,"熱鍋多放點油，蛋液下鍋，邊緣凝固再翻，半熟先盛起來。"],[4,"同一鍋下番茄，炒到出汁變軟。"],[6,"加番茄醬和糖炒勻，蛋倒回去輕輕拌兩下就關火。"]],
+ tip:"蛋一定要先炒起來再回鍋。從頭炒到尾會變成濕答答的蛋。番茄醬不是偷吃步，是補酸甜的。"},
+
+{id:"greens",n:"蒜香燙青菜",c:"台",e:"湯鍋",t:5,kid:1,
+ need:[LEAF],sneed:["醬油膏"],
+ ing:[["青江菜或地瓜葉",300,"g"],["蒜末",2,"瓣"]],
+ sauce:[["醬油膏",1,"大匙"],["香油",1,"小匙"]],
+ st:[[0,"水煮滾，加一小匙鹽和幾滴油。"],[2,"梗先下、葉後下，燙40到60秒撈起。"],[3,"瀝乾裝盤，蒜末、醬油膏、香油淋上去拌一下。"]],
+ tip:"這道是配菜，跟主菜同時進行。水滾了就放著，主菜快好時再燙。"},
+
+{id:"beefscallion",n:"蔥爆牛肉",c:"台",e:"炒鍋",t:10,kid:1,
+ need:["火鍋牛肉片"],sneed:["烏醋"],
+ ing:[["火鍋牛肉片",300,"g"],["青蒜或蔥",4,"根"],["蒜末",2,"瓣"],["薑絲",null,"少許"]],
+ sauce:[["醬油",1,"大匙"],["烏醋",1,"小匙"],["糖",1,"小匙"]],
+ st:[[0,"牛肉片用醬油、米酒各1大匙加太白粉抓一下。蔥切段，蔥白蔥綠分開。"],[3,"大火熱鍋，蒜末、薑絲、蔥白爆香。"],[4,"牛肉片攤開下鍋，八分熟就好。"],[6,"蔥綠下鍋，沿鍋邊嗆醬油、烏醋、糖，快速炒勻。"],[8,"起鍋。"]],
+ tip:"火要夠大，鍋不要塞太滿。份量多的話分兩次炒，比一次炒完好吃太多。"},
+
+{id:"satayBeef",n:"沙茶牛肉炒空心菜",c:"台",e:"炒鍋",t:10,kid:1,
+ need:["火鍋牛肉片",["空心菜","地瓜葉"]],sneed:["沙茶醬"],
+ ing:[["火鍋牛肉片",250,"g"],["空心菜",1,"把"],["蒜末",3,"瓣"]],
+ sauce:[["沙茶醬",1.5,"大匙"],["醬油",1,"大匙"],["糖",0.5,"小匙"]],
+ st:[[0,"空心菜梗葉分開切段，牛肉片用一點醬油抓過。"],[2,"大火熱鍋，蒜末爆香，牛肉片下鍋炒到變色先撈起。"],[5,"同鍋下梗炒30秒，再下葉。"],[7,"牛肉回鍋，沙茶醬和醬油下去，快速炒勻。"],[9,"起鍋，不要炒到出水。"]],
+ tip:"沙茶醬先跟一點醬油調開再下鍋，不然會結塊黏鍋底。"},
+
+{id:"eggplant",n:"塔香茄子",c:"台",e:"炒鍋",t:12,
+ need:["茄子","九層塔","豬絞肉"],sneed:[],
+ ing:[["茄子",2,"條"],["豬絞肉",150,"g"],["九層塔",1,"大把"],["蒜末",4,"瓣"],["辣椒",1,"根"]],
+ sauce:[["醬油",1.5,"大匙"],["糖",1,"小匙"],["米酒",1,"大匙"],["水",3,"大匙"]],
+ st:[[0,"茄子切段泡鹽水防變黑，切好馬上下鍋最好。"],[2,"多一點油，茄子皮朝下煎到軟，約4分鐘。"],[7,"撥到旁邊，絞肉和蒜末下鍋炒散。"],[9,"倒醬汁，蓋鍋燜1分鐘。"],[11,"關火拌九層塔。"]],
+ tip:"茄子怕氧化：切完馬上下油鍋，比泡水更有效，顏色會漂亮很多。"},
+
+{id:"mapo",n:"麻婆豆腐",c:"台",e:"炒鍋",t:15,spicy:1,
+ need:[["板豆腐","嫩豆腐"],"豬絞肉"],sneed:["豆瓣醬"],
+ ing:[["板豆腐",1,"盒"],["豬絞肉",200,"g"],["蒜末",3,"瓣"],["蔥花",2,"根"],["太白粉水",null,"適量"]],
+ sauce:[["豆瓣醬",1.5,"大匙"],["醬油",1,"大匙"],["糖",1,"小匙"],["水",200,"ml"]],
+ st:[[0,"豆腐切丁，用加鹽的滾水泡3分鐘不容易散。"],[3,"熱鍋炒絞肉到出油。"],[6,"蒜末和豆瓣醬下鍋，小火炒出紅油。"],[8,"加水和醬油煮滾，豆腐輕輕滑進去。"],[11,"小火煮3分鐘，太白粉水分兩次勾芡。"],[14,"撒蔥花起鍋。"]],
+ tip:"辣度全在豆瓣醬。要給小孩吃就減到半匙，另外用辣油自己加。豆腐用推的不要用炒的。"},
+
+{id:"antstree",n:"螞蟻上樹",c:"台",e:"炒鍋",t:15,spicy:1,
+ need:["冬粉","豬絞肉"],sneed:["豆瓣醬"],
+ ing:[["冬粉",3,"把"],["豬絞肉",200,"g"],["蒜末",3,"瓣"],["蔥花",2,"根"]],
+ sauce:[["豆瓣醬",1,"大匙"],["醬油",1.5,"大匙"],["糖",1,"小匙"],["水",300,"ml"]],
+ st:[[0,"冬粉用冷水泡軟，不要泡到爛。"],[3,"熱鍋炒絞肉到出油變色。"],[6,"蒜末和豆瓣醬小火炒香。"],[8,"加水和醬油煮滾。"],[10,"冬粉瀝乾下鍋，中火拌到湯汁被吸乾。"],[14,"撒蔥花。"]],
+ tip:"冬粉泡冷水不要泡熱水。湯汁收到剩一點點最好吃，太乾會黏成一坨。"},
+
+{id:"clamloofah",n:"蛤蜊絲瓜",c:"台",e:"炒鍋",t:10,kid:1,
+ need:["絲瓜","蛤蜊"],sneed:[],
+ ing:[["絲瓜",1,"條"],["蛤蜊",300,"g"],["薑絲",null,"少許"],["蒜末",2,"瓣"]],
+ sauce:[["米酒",1,"大匙"],["鹽",0.5,"小匙"]],
+ st:[[0,"絲瓜削皮切片，蛤蜊先吐過沙。"],[2,"熱鍋爆香薑絲蒜末。"],[3,"絲瓜下鍋炒到出水變透明。"],[6,"蛤蜊和米酒下鍋，蓋鍋燜。"],[9,"蛤蜊全開就關火，不用加水，絲瓜的水就夠了。"]],
+ tip:"完全不要加水。絲瓜出的水又甜又清，加水就毀了。蛤蜊開了立刻關火，多煮30秒就縮。"},
+
+{id:"whitebait",n:"吻仔魚炒蛋",c:"台",e:"炒鍋",t:8,kid:1,
+ need:["吻仔魚","雞蛋"],sneed:[],
+ ing:[["吻仔魚",100,"g"],["雞蛋",4,"顆"],["蔥花",1,"根"]],
+ sauce:[["米酒",1,"小匙"],["鹽",null,"少許"]],
+ st:[[0,"吻仔魚沖一下瀝乾，蛋打散。"],[2,"熱鍋下油，吻仔魚先炒香30秒。"],[4,"蛋液倒進去，等邊緣凝固再大動作翻。"],[6,"撒蔥花，半熟起鍋。"]],
+ tip:"鈣質高又軟，四歲的很好入口。吻仔魚本身有鹹度，鹽先少放。"},
+
+{id:"misua",n:"台式炒米粉",c:"台",e:"炒鍋",t:18,kid:1,
+ need:["米粉","高麗菜","紅蘿蔔",["里肌肉片","五花肉片","火鍋豬肉片"]],sneed:[],
+ ing:[["米粉",250,"g"],["高麗菜",0.25,"顆"],["紅蘿蔔",0.5,"根"],["里肌肉片",150,"g"],["乾香菇",4,"朵"],["紅蔥頭",3,"顆"]],
+ sauce:[["醬油",2,"大匙"],["白胡椒",null,"適量"],["水",250,"ml"]],
+ st:[[0,"米粉用冷水泡軟，蔬菜切絲，肉切絲。"],[4,"熱鍋爆香紅蔥頭和香菇。"],[7,"肉絲下鍋炒到變色。"],[9,"紅蘿蔔和高麗菜下鍋炒軟。"],[12,"加水和醬油煮滾。"],[14,"米粉下鍋，用夾子翻拌到湯汁收乾。"]],
+ tip:"米粉泡冷水就好。湯汁分次加，一次倒完會爛成糊。"},
+
+{id:"garlicpork",n:"蒜泥白肉",c:"台",e:"湯鍋",t:12,
+ need:["五花肉片","小黃瓜"],sneed:["醬油膏"],
+ ing:[["五花肉片",300,"g"],["小黃瓜",1,"根"],["蒜末",5,"瓣"]],
+ sauce:[["醬油膏",2,"大匙"],["糖",1,"小匙"],["香油",1,"小匙"],["辣油",null,"隨意"]],
+ st:[[0,"水煮滾，丟幾片薑和一點米酒。"],[3,"肉片一片片下鍋，變色就撈起泡冷水。"],[6,"小黃瓜切絲鋪盤底。"],[8,"肉片瀝乾鋪上去。"],[10,"蒜末和醬料調勻淋上去。"]],
+ tip:"燙完泡一下冷水，肉片會Q不會柴。醬料是這道的全部，蒜要現磨的才夠嗆。"},
+
+{id:"steamfish",n:"蔥薑蒸鯛魚",c:"台",e:"電鍋",t:12,kid:1,
+ need:["鯛魚片"],sneed:[],
+ ing:[["鯛魚片",2,"片"],["蔥",2,"根"],["薑絲",null,"適量"]],
+ sauce:[["醬油",2,"大匙"],["米酒",1,"大匙"],["糖",0.5,"小匙"],["熱油",1,"大匙"]],
+ st:[[0,"魚片擦乾抹一點鹽和米酒，鋪蔥段薑絲。"],[2,"電鍋外鍋一杯水，按下去。"],[10,"跳起來，倒掉盤底腥水。"],[11,"鋪新的蔥絲，淋醬油和糖，最後淋一匙燒熱的油。"]],
+ tip:"蒸完的水一定要倒掉再調味，這是腥味的來源。最後那匙熱油是香氣關鍵，別省。"},
+
+{id:"coldtofu",n:"涼拌嫩豆腐",c:"台",e:"免開火",t:3,kid:1,
+ need:["嫩豆腐"],sneed:["醬油膏","柴魚片"],
+ ing:[["嫩豆腐",1,"盒"],["蔥花",1,"根"],["柴魚片",1,"小把"]],
+ sauce:[["醬油膏",1,"大匙"],["香油",1,"小匙"]],
+ st:[[0,"豆腐倒扣在盤子上，瀝掉水。"],[1,"淋醬油膏和香油。"],[2,"撒蔥花和柴魚片。"]],
+ tip:"完全不用開火。主菜還在鍋裡的時候，這道兩分鐘就能補一盤上桌。"},
+
+{id:"sanbei",n:"快手三杯雞",c:"台",e:"炒鍋",t:18,
+ need:["去骨雞腿排","九層塔"],sneed:[],
+ ing:[["去骨雞腿排",2,"片"],["老薑",8,"片"],["蒜",8,"瓣"],["九層塔",1,"大把"],["辣椒",1,"根"]],
+ sauce:[["麻油",2,"大匙"],["醬油",2,"大匙"],["米酒",3,"大匙"],["糖",1,"大匙"]],
+ st:[[0,"雞腿切塊，薑切厚片。"],[2,"麻油小火煸薑片到邊緣捲起。"],[5,"蒜瓣下鍋煸香。"],[7,"雞肉皮朝下煎到金黃。"],[11,"醬油、米酒、糖下鍋，中火收汁。"],[17,"醬汁變亮變稠，關火拌九層塔。"]],
+ tip:"用去骨雞腿排切塊，比帶骨的快一半。麻油一定要小火，大火會苦。"},
+
+/* ===== 日式 ===== */
+{id:"butadon",n:"豚丼",c:"日",e:"炒鍋",t:8,kid:1,
+ need:["火鍋豬肉片","洋蔥","白飯"],sneed:["味醂"],
+ ing:[["火鍋豬肉片",300,"g"],["洋蔥",1,"顆"],["白飯",3,"碗"],["蔥花",null,"適量"]],
+ sauce:[["醬油",2,"大匙"],["味醂",2,"大匙"],["米酒或清酒",2,"大匙"],["糖",1,"大匙"]],
+ st:[[0,"洋蔥切絲，醬汁全部調在同一個碗裡。"],[2,"中火熱鍋，洋蔥炒到邊緣透明。"],[4,"倒入醬汁煮滾，肉片一片片攤開下鍋。"],[6,"肉片一變色就關火，大約90秒，別炒過頭。"],[7,"連醬汁淋在飯上，撒蔥花。"]],
+ tip:"肉片不要買整塊回來自己切。火鍋肉片是這道能8分鐘上桌的唯一原因。"},
+
+{id:"oyakodon",n:"親子丼",c:"日",e:"炒鍋",t:12,kid:1,
+ need:["去骨雞腿排","洋蔥","雞蛋","白飯"],sneed:["味醂"],
+ ing:[["去骨雞腿排",2,"片"],["洋蔥",1,"顆"],["雞蛋",4,"顆"],["白飯",3,"碗"],["蔥花",null,"適量"]],
+ sauce:[["醬油",3,"大匙"],["味醂",3,"大匙"],["糖",1,"大匙"],["水",150,"ml"]],
+ st:[[0,"雞腿切一口大小，洋蔥切絲，蛋打散但別打太勻。"],[3,"醬汁和洋蔥下鍋煮滾。"],[5,"雞肉下鍋，中小火煮6分鐘。"],[11,"蛋液繞圈淋上去，蓋鍋燜30到40秒，半熟關火。"],[12,"連湯汁一起滑到飯上。"]],
+ tip:"蛋液分兩次淋：第一次定型、第二次留滑嫩。蓋鍋別超過1分鐘。"},
+
+{id:"shogayaki",n:"薑燒豬肉",c:"日",e:"炒鍋",t:10,kid:1,
+ need:[["里肌肉片","五花肉片","火鍋豬肉片"],"洋蔥"],sneed:["味醂"],
+ ing:[["里肌肉片",300,"g"],["洋蔥",1,"顆"],["薑泥",1,"大匙"],["高麗菜絲",null,"配菜"]],
+ sauce:[["醬油",2,"大匙"],["味醂",2,"大匙"],["米酒",1,"大匙"],["糖",1,"小匙"]],
+ st:[[0,"薑磨成泥跟醬汁調在一起，洋蔥切絲。"],[2,"熱鍋，洋蔥先炒軟。"],[5,"肉片攤開下鍋，兩面煎到變色。"],[7,"醬汁倒進去，中大火收到裹住肉片。"],[9,"起鍋，旁邊堆一把高麗菜絲。"]],
+ tip:"薑泥要現磨，管裝的味道差很多。醬汁收到會牽絲就對了。"},
+
+{id:"curry",n:"日式咖哩",c:"日",e:"湯鍋",t:20,kid:1,
+ need:["去骨雞腿排","馬鈴薯","紅蘿蔔","洋蔥","白飯"],sneed:["咖哩塊"],
+ ing:[["去骨雞腿排",2,"片"],["馬鈴薯",2,"顆"],["紅蘿蔔",1,"根"],["洋蔥",1,"顆"],["咖哩塊",4,"塊"],["白飯",3,"碗"],["水",700,"ml"]],
+ st:[[0,"全部切小塊，越小越快熟。馬鈴薯切2公分丁。"],[4,"熱鍋炒洋蔥到軟，雞肉下鍋炒到變色。"],[8,"加水、馬鈴薯、紅蘿蔔，煮滾後轉中火。"],[16,"關火，咖哩塊放進去化開。"],[19,"開小火煮2分鐘到濃稠。"]],
+ tip:"咖哩塊一定要關火再放，滾著放會結塊。切小塊是這道能壓進20分鐘的唯一辦法。"},
+
+{id:"tonjiru",n:"豚汁豬肉味噌湯",c:"日",e:"湯鍋",t:15,kid:1,
+ need:["火鍋豬肉片","白蘿蔔","紅蘿蔔",["板豆腐","嫩豆腐"]],sneed:["味噌"],
+ ing:[["火鍋豬肉片",200,"g"],["白蘿蔔",0.5,"根"],["紅蘿蔔",0.5,"根"],["板豆腐",1,"盒"],["味噌",2,"大匙"],["蔥",1,"根"],["水",900,"ml"],["麻油",1,"小匙"]],
+ st:[[0,"蘿蔔切薄片，越薄越快熟。"],[3,"鍋內麻油炒豬肉片到變色。"],[5,"加水和蘿蔔，煮滾後轉中火8分鐘。"],[13,"轉小火，味噌用濾網或湯匙化開，加豆腐。"],[15,"不要再煮滾，撒蔥花起鍋。"]],
+ tip:"味噌下去之後不能滾，香氣會全部跑掉。蘿蔔切得夠薄，8分鐘就夠軟。"},
+
+{id:"airsalmon",n:"氣炸鮭魚配玉米筍",c:"日",e:"氣炸鍋",t:12,kid:1,
+ need:["鮭魚","玉米筍","檸檬"],sneed:["橄欖油"],
+ ing:[["鮭魚",2,"片"],["玉米筍",8,"根"],["橄欖油",1,"大匙"],["檸檬",0.5,"顆"],["鹽",null,"適量"]],
+ st:[[0,"鮭魚兩面抹鹽靜置，這時候去洗菜。"],[2,"擦乾水分，皮面朝上放進氣炸鍋。"],[3,"180度炸8分鐘。"],[8,"玉米筍拌油和鹽，最後4分鐘丟進去一起。"],[12,"起鍋擠檸檬。"]],
+ tip:"抹鹽靜置再擦乾，魚肉會緊實不散。給小孩吃記得先挑刺。"},
+
+{id:"airmackerel",n:"氣炸鹽烤鯖魚",c:"日",e:"氣炸鍋",t:12,kid:1,
+ need:["鯖魚"],sneed:[],
+ ing:[["鯖魚",2,"片"],["檸檬",0.5,"顆"],["鹽",null,"適量"]],
+ st:[[0,"鯖魚不用解凍太徹底，表面擦乾抹薄鹽。"],[2,"皮朝上放進氣炸鍋，180度8分鐘。"],[10,"轉200度再2分鐘把皮逼脆。"],[12,"擠檸檬。"]],
+ tip:"市售鹽漬鯖魚本身就有鹹度，不要再加鹽。表面越乾皮越脆。"},
+
+/* ===== 韓式 ===== */
+{id:"doenjang",n:"大醬湯",c:"韓",e:"湯鍋",t:15,kid:1,
+ need:["馬鈴薯","櫛瓜","洋蔥","嫩豆腐","蛤蜊"],sneed:["韓式大醬"],
+ ing:[["韓式大醬",1.5,"大匙"],["馬鈴薯",1,"顆"],["櫛瓜",0.5,"條"],["洋蔥",0.5,"顆"],["嫩豆腐",1,"盒"],["蛤蜊",200,"g"],["蔥",1,"根"],["水",800,"ml"]],
+ st:[[0,"馬鈴薯、櫛瓜、洋蔥切小塊。"],[3,"水煮滾，大醬用湯匙在鍋邊化開。"],[5,"馬鈴薯和洋蔥先下，煮5分鐘。"],[10,"櫛瓜和蛤蜊下鍋。"],[13,"蛤蜊開口後，豆腐用湯匙挖大塊放進去，滾一下關火，撒蔥花。"]],
+ tip:"一鍋到底、完全不辣，四歲的可以直接吃。大醬鹹度差很多，先放一半、試過味道再補。"},
+
+{id:"sundubu",n:"韓式豆腐鍋",c:"韓",e:"湯鍋",t:15,spicy:1,
+ need:["嫩豆腐","蛤蜊","雞蛋","洋蔥"],sneed:["韓式辣醬"],
+ ing:[["嫩豆腐",1,"盒"],["蛤蜊",250,"g"],["雞蛋",2,"顆"],["洋蔥",0.5,"顆"],["蔥",1,"根"],["水",600,"ml"]],
+ sauce:[["韓式辣醬",1.5,"大匙"],["醬油",1,"大匙"],["麻油",1,"大匙"],["蒜末",3,"瓣"]],
+ st:[[0,"洋蔥切絲，蛤蜊沖乾淨。"],[2,"鍋內麻油小火炒辣醬和蒜末，炒出紅油。"],[5,"加水和洋蔥煮滾。"],[8,"蛤蜊下鍋，開口後轉小火。"],[11,"豆腐整塊用湯匙挖進去，滾2分鐘。"],[14,"打蛋進去，撒蔥花，關火燜30秒。"]],
+ tip:"要給小孩吃就分鍋：先舀一碗不加辣醬的清湯版，剩下的再回鍋加辣。"},
+
+{id:"koreanbeef",n:"韓式牛肉燥拌飯",c:"韓",e:"炒鍋",t:12,kid:1,
+ need:["牛絞肉","白飯","雞蛋","小黃瓜"],sneed:[],
+ ing:[["牛絞肉",300,"g"],["蒜末",3,"瓣"],["白飯",3,"碗"],["雞蛋",3,"顆"],["小黃瓜",1,"根"],["白芝麻",null,"適量"]],
+ sauce:[["醬油",2,"大匙"],["糖",1,"大匙"],["麻油",1,"大匙"],["米酒",1,"大匙"]],
+ st:[[0,"醬汁調好，小黃瓜切絲。"],[2,"熱鍋下麻油，蒜末爆香。"],[3,"牛絞肉下鍋炒散到變色。"],[6,"倒醬汁，中火收到微收乾。"],[10,"另一鍋煎荷包蛋。"],[12,"飯上鋪肉燥、小黃瓜絲、荷包蛋，撒芝麻。"]],
+ tip:"完全不辣，小孩可以整碗拌開吃。大人自己那碗再加一點韓式辣醬。"},
+
+{id:"pajeon",n:"韓式海鮮蔥煎餅",c:"韓",e:"炒鍋",t:15,kid:1,
+ need:["韭菜","透抽","雞蛋"],sneed:["麵粉","白醋"],
+ ing:[["韭菜",1,"把"],["透抽",150,"g"],["雞蛋",2,"顆"],["麵粉",150,"g"],["冰水",180,"ml"]],
+ sauce:[["醬油",2,"大匙"],["白醋",1,"大匙"],["糖",0.5,"小匙"],["白芝麻",null,"適量"]],
+ st:[[0,"韭菜切段，透抽切小圈。"],[3,"麵粉加冰水和一顆蛋調成麵糊，不要攪過頭。"],[6,"韭菜和透抽拌進麵糊。"],[8,"多油中火下鍋攤平，煎4分鐘。"],[12,"翻面，另一顆蛋打散淋上去再煎3分鐘。"]],
+ tip:"用冰水調麵糊、油放多一點，這兩件事決定酥不酥。翻面前先確定底部真的定型了。"},
+
+{id:"japchae",n:"韓式雜菜冬粉",c:"韓",e:"炒鍋",t:18,kid:1,
+ need:["冬粉","菠菜","紅蘿蔔","洋蔥",["火鍋牛肉片","里肌肉片"]],sneed:[],
+ ing:[["冬粉",3,"把"],["菠菜",1,"把"],["紅蘿蔔",0.5,"根"],["洋蔥",0.5,"顆"],["火鍋牛肉片",200,"g"],["白芝麻",null,"適量"]],
+ sauce:[["醬油",3,"大匙"],["糖",1.5,"大匙"],["麻油",2,"大匙"]],
+ st:[[0,"水煮滾，冬粉照包裝煮軟後撈起拌一點麻油。"],[5,"同鍋燙菠菜30秒，撈起擠乾切段。"],[7,"熱鍋炒洋蔥和紅蘿蔔絲。"],[10,"牛肉片下鍋炒到變色。"],[13,"冬粉和菠菜全部下鍋，倒醬汁拌勻。"],[16,"撒芝麻，關火。"]],
+ tip:"冬粉煮好一定要拌油，不然十秒就黏成一球。這道冷掉也好吃，可以當隔天便當。"},
+
+/* ===== 西式 ===== */
+{id:"airchicken",n:"氣炸雞腿排配時蔬",c:"西式",e:"氣炸鍋",t:18,kid:1,
+ need:["去骨雞腿排","玉米筍","櫛瓜"],sneed:["橄欖油"],
+ ing:[["去骨雞腿排",2,"片"],["玉米筍",8,"根"],["櫛瓜",1,"條"],["橄欖油",1,"大匙"],["鹽與黑胡椒",null,"適量"]],
+ st:[[0,"雞腿排兩面抹鹽和黑胡椒，皮面朝下放進氣炸鍋。"],[1,"200度，先炸5分鐘。"],[6,"翻面再10分鐘。這段時間完全不用顧。"],[12,"蔬菜切段拌油和鹽，鋪在旁邊一起炸最後那幾分鐘。"],[18,"雞腿靜置2分鐘再切。"]],
+ tip:"這道是留給「今天真的沒力氣」的那一晚。東西丟進去之後你有15分鐘可以做別的事。"},
+
+{id:"airwings",n:"氣炸雞翅",c:"西式",e:"氣炸鍋",t:18,kid:1,
+ need:["雞翅"],sneed:[],
+ ing:[["雞翅",10,"支"],["蒜粉",null,"適量"],["鹽與黑胡椒",null,"適量"],["檸檬",0.5,"顆"]],
+ st:[[0,"雞翅擦到很乾，抹鹽、黑胡椒、蒜粉。"],[2,"180度炸10分鐘。"],[12,"翻面，轉200度再6分鐘。"],[18,"擠檸檬。"]],
+ tip:"擦乾是脆皮的唯一秘訣。不要鋪太滿，翅膀之間要有縫隙讓熱風跑。"},
+
+{id:"shrimpzuc",n:"蒜炒蝦仁櫛瓜",c:"西式",e:"炒鍋",t:10,kid:1,
+ need:["蝦仁","櫛瓜","檸檬"],sneed:["橄欖油"],
+ ing:[["蝦仁",300,"g"],["櫛瓜",1,"條"],["蒜末",4,"瓣"],["橄欖油",2,"大匙"],["檸檬",0.5,"顆"],["鹽與黑胡椒",null,"適量"]],
+ st:[[0,"蝦仁擦乾撒鹽。櫛瓜切半月片。"],[3,"橄欖油小火煸蒜末到微金黃，別焦。"],[5,"轉大火，蝦仁下鍋，一面煎1分鐘再翻。"],[7,"櫛瓜下鍋炒2分鐘，保持脆度。"],[9,"黑胡椒、擠檸檬汁，關火。"]],
+ tip:"蝦仁一定要擦乾。濕的下鍋只會變成水煮蝦。"},
+
+{id:"aglio",n:"蒜辣蝦仁義大利麵",c:"西式",e:"湯鍋",t:15,spicy:1,
+ need:["義大利麵","蝦仁"],sneed:["橄欖油"],
+ ing:[["義大利麵",250,"g"],["蒜",6,"瓣"],["蝦仁",200,"g"],["乾辣椒",1,"根"],["橄欖油",4,"大匙"],["蔥花或巴西里",null,"適量"]],
+ st:[[0,"大鍋水煮滾，鹽下重一點，一公升水配10克鹽。"],[2,"麵下鍋，按包裝時間減1分鐘。"],[4,"平底鍋冷油下蒜片，小火慢慢煸到淡金色。"],[8,"蝦仁下鍋煎熟，先撈起備用。"],[11,"舀兩大杓煮麵水進平底鍋，搖晃乳化成醬。"],[13,"麵撈進去大火拌30秒，蝦仁回鍋。"]],
+ tip:"煮麵水就是醬汁，千萬別全倒掉。蒜片一定要冷油小火煸，大火一定苦。"},
+
+{id:"carbonara",n:"培根蛋黃義大利麵",c:"西式",e:"湯鍋",t:15,kid:1,
+ need:["義大利麵","培根","雞蛋"],sneed:["起司"],
+ ing:[["義大利麵",250,"g"],["培根",4,"片"],["雞蛋",3,"顆"],["起司粉",4,"大匙"],["黑胡椒",null,"適量"]],
+ st:[[0,"水煮滾下鹽，麵下鍋。"],[3,"蛋黃加起司粉和大量黑胡椒打勻，先放旁邊。"],[6,"培根切條，冷鍋小火慢慢煸到出油變脆。"],[11,"麵撈進培根鍋，關火。"],[12,"舀一點煮麵水拌進蛋液調稀，再倒進鍋裡快速拌。"],[14,"用餘溫拌成滑順醬汁。"]],
+ tip:"倒蛋液的時候一定要關火，鍋子還熱就夠了。開著火會直接變成炒蛋。不加鮮奶油才是正統。"},
+
+{id:"creampasta",n:"白醬鴻喜菇雞胸麵",c:"西式",e:"湯鍋",t:18,kid:1,
+ need:["義大利麵","雞胸肉","鴻喜菇"],sneed:["鮮奶","起司","奶油"],
+ ing:[["義大利麵",250,"g"],["雞胸肉",1,"片"],["鴻喜菇",1,"包"],["鮮奶",250,"ml"],["奶油",20,"g"],["起司粉",3,"大匙"]],
+ st:[[0,"水煮滾下鹽，麵下鍋。雞胸切薄片抹鹽。"],[3,"平底鍋奶油融化，雞胸兩面煎熟先撈起。"],[8,"鴻喜菇下鍋炒到出水收乾。"],[11,"倒鮮奶小火煮，加起司粉攪到微稠。"],[14,"麵和雞胸回鍋，加一點煮麵水調濃度。"],[17,"黑胡椒起鍋。"]],
+ tip:"雞胸切薄一點、煎完先拿出來，才不會老。醬太稠就加煮麵水，不要加水。"},
+
+{id:"frittata",n:"蔬菜烘蛋",c:"西式",e:"炒鍋",t:15,kid:1,
+ need:["雞蛋","甜椒","洋蔥"],sneed:["起司"],
+ ing:[["雞蛋",6,"顆"],["甜椒",1,"顆"],["洋蔥",0.5,"顆"],["起司絲",50,"g"],["鹽與黑胡椒",null,"適量"]],
+ st:[[0,"蔬菜切小丁，蛋打散加鹽和起司。"],[3,"平底鍋炒洋蔥和甜椒到軟。"],[7,"蛋液倒進去，小火不要動。"],[10,"邊緣凝固後蓋鍋燜4分鐘。"],[14,"表面不流動就好，切片。"]],
+ tip:"冰箱剩什麼菜都可以丟進去。小火加蓋是關鍵，大火底部會焦、上面還是生的。"},
+
+/* ===== 泰越 ===== */
+{id:"kaprao",n:"打拋豬",c:"泰越",e:"炒鍋",t:10,spicy:1,
+ need:["豬絞肉","小番茄","九層塔","雞蛋","白飯"],sneed:["魚露","蠔油"],
+ ing:[["豬絞肉",300,"g"],["蒜末",4,"瓣"],["小番茄",8,"顆"],["九層塔",1,"大把"],["雞蛋",3,"顆"],["辣椒",1,"根"]],
+ sauce:[["醬油",1,"大匙"],["魚露",1,"大匙"],["蠔油",1,"小匙"],["糖",1,"小匙"]],
+ st:[[0,"蒜切末、小番茄對半切、醬汁調好。"],[2,"大火熱鍋下油，蒜末爆香10秒。"],[3,"絞肉下鍋用鏟子壓散，炒到出油變色。"],[6,"小番茄下鍋壓一下，倒醬汁炒勻。"],[8,"關火，九層塔丟進去用餘溫拌軟。"],[9,"另一鍋煎荷包蛋蓋在飯上。"]],
+ tip:"辣椒等盛好小孩那份之後再回鍋加自己的。九層塔一定要關火才下，不然會發黑帶苦。"},
+
+{id:"lemongrass",n:"越式香茅雞",c:"泰越",e:"炒鍋",t:15,
+ need:["去骨雞腿排","香茅","紅蔥頭","洋蔥"],sneed:["魚露"],
+ ing:[["去骨雞腿排",2,"片"],["香茅",2,"根"],["蒜末",3,"瓣"],["紅蔥頭",2,"顆"],["洋蔥",0.5,"顆"]],
+ sauce:[["魚露",1.5,"大匙"],["糖",1,"大匙"],["醬油",1,"小匙"],["水",2,"大匙"]],
+ st:[[0,"雞腿切塊，香茅取下段拍扁切末。"],[3,"熱鍋，雞皮朝下煎到金黃，不要一直翻。"],[7,"翻面，加蒜末、紅蔥頭、香茅炒香。"],[10,"洋蔥下鍋，倒醬汁中火收。"],[14,"醬汁變濃稠掛在雞肉上就好。"]],
+ tip:"沒有香茅就用檸檬皮屑加幾滴檸檬汁，方向對了就行。"},
+
+{id:"yumwoonsen",n:"泰式涼拌冬粉",c:"泰越",e:"湯鍋",t:15,spicy:1,
+ need:["冬粉","蝦仁","小番茄","芹菜","檸檬"],sneed:["魚露"],
+ ing:[["冬粉",3,"把"],["蝦仁",200,"g"],["小番茄",8,"顆"],["芹菜",2,"根"],["紅蔥頭",2,"顆"],["香菜",null,"隨意"]],
+ sauce:[["魚露",2,"大匙"],["檸檬汁",3,"大匙"],["糖",1.5,"大匙"],["辣椒末",null,"隨意"]],
+ st:[[0,"水煮滾，冬粉燙軟撈起沖冷水瀝乾。"],[4,"同鍋燙蝦仁1分鐘，撈起沖冷水。"],[6,"小番茄對半、芹菜切段、紅蔥頭切片。"],[9,"醬汁調好，糖要完全化開。"],[11,"全部拌在一起，冰鎮5分鐘更好吃。"]],
+ tip:"魚露、檸檬、糖是1比1.5比0.75，記住這個比例就能自己調。要給小孩吃先夾一份不加辣的出來。"},
+
+{id:"thaichicken",n:"泰式椒麻雞",c:"泰越",e:"氣炸鍋",t:18,spicy:1,
+ need:["去骨雞腿排","高麗菜","檸檬"],sneed:["魚露","泰式甜辣醬"],
+ ing:[["去骨雞腿排",2,"片"],["高麗菜",0.25,"顆"],["蒜末",3,"瓣"],["香菜",null,"隨意"]],
+ sauce:[["魚露",1,"大匙"],["檸檬汁",2,"大匙"],["糖",1,"大匙"],["泰式甜辣醬",1,"大匙"],["辣椒末",null,"隨意"]],
+ st:[[0,"雞腿排抹鹽和白胡椒，皮朝下放進氣炸鍋。"],[1,"200度炸8分鐘。"],[9,"翻面再6分鐘到皮脆。"],[10,"這段時間高麗菜切絲泡冰水，醬汁調好。"],[16,"雞腿靜置2分鐘，切條鋪在高麗菜絲上，淋醬。"]],
+ tip:"高麗菜絲泡冰水5分鐘會變得很脆，這道的口感一半靠它。醬汁要現調，酸香才夠衝。"}
+,
+/* ===== 補齊清單覆蓋率 ===== */
+{id:"broccolibacon",n:"蒜炒青花菜培根",c:"西式",e:"炒鍋",t:10,kid:1,
+ need:["青花菜","培根"],sneed:[],
+ ing:[["青花菜",1,"顆"],["培根",3,"片"],["蒜片",4,"瓣"],["鹽與黑胡椒",null,"適量"]],
+ st:[[0,"青花菜切小朵，滾水加鹽燙90秒撈起。"],[3,"培根切條，冷鍋小火煸到出油變脆。"],[7,"蒜片下鍋用培根油炒香。"],[8,"青花菜下鍋大火拌30秒，黑胡椒起鍋。"]],
+ tip:"先燙過再炒，顏色才會翠綠又熟透。培根的油就是這道的全部調味，不用另外加油。"},
+
+{id:"yakiudon",n:"牛肉燒烏龍麵",c:"日",e:"炒鍋",t:12,kid:1,
+ need:["烏龍麵","火鍋牛肉片","高麗菜","洋蔥"],sneed:["蠔油","味醂"],
+ ing:[["烏龍麵",3,"份"],["火鍋牛肉片",250,"g"],["高麗菜",0.25,"顆"],["洋蔥",0.5,"顆"],["蔥花",null,"適量"]],
+ sauce:[["醬油",2,"大匙"],["蠔油",1,"大匙"],["味醂",1,"大匙"],["糖",1,"小匙"]],
+ st:[[0,"高麗菜切片，洋蔥切絲，醬汁調好。"],[2,"熱鍋炒洋蔥到軟，牛肉片下鍋炒到變色。"],[5,"高麗菜下鍋炒軟。"],[8,"烏龍麵直接下鍋，加2大匙水幫忙化開。"],[10,"倒醬汁大火拌勻，撒蔥花。"]],
+ tip:"冷藏烏龍麵不用先燙，下鍋加點水推開就好。整鍋到底，只洗一個鍋。"},
+
+{id:"napacabbage",n:"快手白菜滷",c:"台",e:"湯鍋",t:18,kid:1,
+ need:["大白菜","香菇","紅蘿蔔"],sneed:[],
+ ing:[["大白菜",0.5,"顆"],["乾香菇",5,"朵"],["紅蘿蔔",0.5,"根"],["蝦米",1,"大匙"],["紅蔥頭",3,"顆"]],
+ sauce:[["醬油",1.5,"大匙"],["白胡椒",null,"適量"],["水",200,"ml"]],
+ st:[[0,"香菇泡水切絲，白菜切大片，紅蘿蔔切絲。"],[4,"熱鍋爆香紅蔥頭、蝦米、香菇。"],[7,"白菜下鍋炒到開始塌軟。"],[10,"加香菇水、醬油，蓋鍋中小火燜7分鐘。"],[17,"白胡椒起鍋。"]],
+ tip:"泡香菇的水別倒掉，那是這鍋的高湯。白菜自己會出很多水，加的水要少。"},
+
+{id:"greenbean",n:"四季豆炒肉末",c:"台",e:"炒鍋",t:12,kid:1,
+ need:["四季豆","豬絞肉"],sneed:[],
+ ing:[["四季豆",300,"g"],["豬絞肉",150,"g"],["蒜末",4,"瓣"]],
+ sauce:[["醬油",1.5,"大匙"],["糖",0.5,"小匙"],["水",3,"大匙"]],
+ st:[[0,"四季豆撕掉老筋，切小段。"],[3,"多一點油，四季豆下鍋中火煸到表皮起皺，約5分鐘。"],[8,"撥到旁邊，絞肉和蒜末下鍋炒散。"],[10,"倒醬汁炒勻收乾。"]],
+ tip:"四季豆一定要煸到起皺才夠香也才熟透。半生的四季豆會不舒服，寧可多煸一分鐘。"},
+
+{id:"pidan",n:"皮蛋豆腐",c:"台",e:"免開火",t:3,
+ need:["皮蛋","嫩豆腐"],sneed:["醬油膏","柴魚片"],
+ ing:[["皮蛋",2,"顆"],["嫩豆腐",1,"盒"],["蔥花",1,"根"],["柴魚片",1,"小把"]],
+ sauce:[["醬油膏",1,"大匙"],["香油",1,"小匙"]],
+ st:[[0,"豆腐倒扣瀝水，切塊。"],[1,"皮蛋切小丁鋪上去。"],[2,"淋醬油膏香油，撒蔥花柴魚。"]],
+ tip:"皮蛋用線或塑膠刀切比較不會黏。這道兩分鐘，主菜還在鍋裡就能先上一盤。"},
+
+{id:"sausagerice",n:"香腸蛋炒飯",c:"台",e:"炒鍋",t:12,kid:1,
+ need:["香腸","白飯","雞蛋"],sneed:[],
+ ing:[["香腸",2,"條"],["白飯",3,"碗"],["雞蛋",3,"顆"],["蔥花",2,"根"]],
+ sauce:[["醬油",1,"大匙"],["鹽與白胡椒",null,"適量"]],
+ st:[[0,"香腸切丁，蛋打散。隔夜飯最好，現煮的飯先攤開吹涼。"],[3,"冷鍋下香腸小火煸到出油變焦香，撈起。"],[7,"用香腸油炒蛋，半熟就下飯，用鏟子壓散。"],[10,"香腸回鍋，沿鍋邊嗆醬油，撒蔥花。"]],
+ tip:"香腸的油比任何油都香，一定要冷鍋慢慢煸出來。飯要粒粒分明就別急著翻，讓它貼著鍋底。"},
+
+{id:"gyoza",n:"香煎冷凍水餃",c:"台",e:"炒鍋",t:12,kid:1,
+ need:["冷凍水餃"],sneed:[],
+ ing:[["冷凍水餃",18,"顆"],["水",100,"ml"],["麵粉",1,"小匙"],["油",1,"大匙"]],
+ st:[[0,"平底鍋下油，水餃不解凍直接排進去。"],[1,"中火煎2分鐘到底部微金。"],[3,"麵粉調進水裡，倒進鍋中立刻蓋鍋。"],[4,"中小火燜7分鐘。"],[11,"開蓋轉大火收乾水分，底部結成脆殼再倒扣。"]],
+ tip:"水裡加一小匙麵粉就會結出冰花脆底。中途千萬不要開蓋，蒸氣跑掉就熟不透。"},
+
+{id:"sesamenoodle",n:"麻醬涼麵",c:"台",e:"湯鍋",t:12,kid:1,
+ need:["麵條","小黃瓜","紅蘿蔔"],sneed:["芝麻醬","烏醋"],
+ ing:[["麵條",300,"g"],["小黃瓜",1,"根"],["紅蘿蔔",0.5,"根"]],
+ sauce:[["芝麻醬",3,"大匙"],["醬油",2,"大匙"],["烏醋",1,"大匙"],["糖",1,"小匙"],["冷開水",4,"大匙"]],
+ st:[[0,"水煮滾，麵下鍋。"],[2,"小黃瓜和紅蘿蔔切絲。"],[5,"芝麻醬先用冷開水一點一點調開，會先變稠再變滑。"],[8,"麵煮好撈起沖冷水，瀝乾拌一點香油。"],[10,"鋪上絲，淋醬。"]],
+ tip:"芝麻醬要分次加水調，一次全倒會結塊分離。麵一定要沖冷水才不會糊成一坨。"},
+
+{id:"dougan",n:"豆干炒芹菜肉絲",c:"台",e:"炒鍋",t:15,
+ need:["豆干","芹菜",["五花肉片","里肌肉片"]],sneed:[],
+ ing:[["豆干",5,"塊"],["芹菜",3,"根"],["里肌肉片",150,"g"],["蒜末",3,"瓣"],["辣椒",1,"根"]],
+ sauce:[["醬油",1.5,"大匙"],["糖",0.5,"小匙"],["米酒",1,"大匙"]],
+ st:[[0,"豆干切薄片，芹菜切段，肉切絲。"],[4,"熱鍋煸豆干到兩面微焦，先撈起。"],[8,"爆香蒜末，肉絲下鍋炒到變色。"],[10,"芹菜下鍋炒1分鐘。"],[12,"豆干回鍋，倒醬汁炒勻。"]],
+ tip:"豆干先單獨煸過會香很多，這一步不能省。芹菜下鍋只要一分鐘，久了就軟爛沒口感。"},
+
+{id:"woodear",n:"木耳炒蛋",c:"台",e:"炒鍋",t:10,kid:1,
+ need:["木耳","雞蛋"],sneed:[],
+ ing:[["木耳",150,"g"],["雞蛋",4,"顆"],["蔥",1,"根"],["蒜末",2,"瓣"]],
+ sauce:[["醬油",1,"小匙"],["鹽",null,"適量"]],
+ st:[[0,"木耳切片，蛋打散加鹽。"],[2,"熱鍋炒蛋，半熟先盛起。"],[4,"同鍋爆香蒜末，木耳下鍋炒2分鐘。"],[7,"蛋回鍋，蔥段和醬油下去拌勻。"]],
+ tip:"木耳下鍋前一定要瀝乾，帶水會爆油。炒到微微捲起就是好了。"},
+
+{id:"cornsoup",n:"玉米濃湯",c:"西式",e:"湯鍋",t:15,kid:1,
+ need:["玉米","雞蛋"],sneed:["鮮奶","奶油"],
+ ing:[["玉米粒",1,"罐"],["新鮮玉米",1,"根"],["雞蛋",2,"顆"],["鮮奶",300,"ml"],["奶油",20,"g"],["麵粉",2,"大匙"],["水",300,"ml"]],
+ st:[[0,"新鮮玉米削粒，跟罐頭玉米一半打成漿、一半留整粒。"],[4,"鍋內奶油融化，麵粉下鍋小火炒1分鐘。"],[7,"分次倒入鮮奶和水，邊倒邊攪到滑順。"],[10,"玉米漿和玉米粒下鍋，小火煮3分鐘。"],[13,"蛋液繞圈淋下去，攪一下就關火。"]],
+ tip:"麵粉一定要用奶油先炒過再加液體，不然會有生粉味。倒鮮奶要分次，一次倒完必結塊。"},
+
+{id:"frenchtoast",n:"法式吐司",c:"西式",e:"炒鍋",t:12,kid:1,
+ need:["吐司","雞蛋"],sneed:["鮮奶","奶油"],
+ ing:[["厚片吐司",3,"片"],["雞蛋",3,"顆"],["鮮奶",150,"ml"],["奶油",20,"g"],["糖",1,"大匙"]],
+ st:[[0,"蛋、鮮奶、糖打勻成蛋奶液。"],[2,"吐司兩面泡進去，每面壓20秒讓它吸飽。"],[5,"平底鍋小火融奶油。"],[6,"吐司下鍋，一面煎3分鐘到金黃再翻。"],[12,"對切裝盤。"]],
+ tip:"一定要小火慢煎，大火外面焦了裡面還是濕的。這道是「今天不想煮」的救命牌，小孩通常照單全收。"},
+
+{id:"kongnamul",n:"韓式豆芽湯",c:"韓",e:"湯鍋",t:10,kid:1,
+ need:["豆芽菜"],sneed:[],
+ ing:[["豆芽菜",300,"g"],["蔥",1,"根"],["蒜末",2,"瓣"],["水",800,"ml"],["白芝麻",null,"適量"]],
+ sauce:[["鹽",1,"小匙"],["麻油",1,"小匙"]],
+ st:[[0,"豆芽洗淨挑掉爛的。"],[2,"水加蒜末煮滾。"],[4,"豆芽下鍋，蓋鍋煮5分鐘中途不要開蓋。"],[9,"加鹽和麻油，撒蔥花芝麻。"]],
+ tip:"煮豆芽的規矩：要嘛全程蓋鍋、要嘛全程不蓋，中途開蓋會產生豆腥味。"},
+
+{id:"okra",n:"柴魚秋葵",c:"台",e:"湯鍋",t:6,kid:1,
+ need:["秋葵"],sneed:["柴魚片","醬油膏"],
+ ing:[["秋葵",300,"g"],["柴魚片",1,"小把"]],
+ sauce:[["醬油膏",1,"大匙"],["香油",1,"小匙"]],
+ st:[[0,"秋葵蒂頭削掉一圈，不要切開。"],[2,"滾水加鹽，燙2分鐘撈起沖冷水。"],[5,"對半切排盤，淋醬撒柴魚。"]],
+ tip:"蒂頭削一圈不要切斷，黏液才不會全跑進水裡。沖冷水是保持翠綠的關鍵。"},
+
+{id:"misosoup",n:"味噌金針菇豆腐湯",c:"日",e:"湯鍋",t:10,kid:1,
+ need:["金針菇","嫩豆腐"],sneed:["味噌","柴魚片"],
+ ing:[["金針菇",1,"包"],["嫩豆腐",1,"盒"],["味噌",2,"大匙"],["柴魚片",1,"小把"],["蔥花",1,"根"],["水",800,"ml"]],
+ st:[[0,"金針菇切掉根部撕開，豆腐切丁。"],[2,"水煮滾，柴魚片下去煮1分鐘後撈掉。"],[5,"金針菇下鍋煮2分鐘。"],[7,"轉小火，味噌化開，豆腐下鍋。"],[9,"不要煮滾，撒蔥花起鍋。"]],
+ tip:"味噌下去絕對不能再滾。柴魚只煮一分鐘就撈，久了會出苦味。"},
+
+{id:"oden",n:"關東煮風蘿蔔油豆腐",c:"日",e:"湯鍋",t:18,kid:1,
+ need:["油豆腐","白蘿蔔"],sneed:["柴魚片","味醂"],
+ ing:[["白蘿蔔",0.5,"根"],["油豆腐",6,"塊"],["柴魚片",1,"大把"],["水",900,"ml"],["蔥花",null,"適量"]],
+ sauce:[["醬油",2,"大匙"],["味醂",2,"大匙"],["鹽",0.5,"小匙"]],
+ st:[[0,"白蘿蔔切2公分厚片，邊角稍微削圓比較不會碎。"],[3,"水煮滾，柴魚片煮1分鐘撈掉，成高湯。"],[6,"蘿蔔下鍋，中火煮8分鐘。"],[14,"油豆腐和調味料下鍋，再煮3分鐘。"],[17,"關火燜著，越燜越入味。"]],
+ tip:"蘿蔔切厚一點比較甜。煮好關火放著，吃之前再回溫，味道會比剛煮好更透。"}
+,
+/* ===== 擴充 · 台式 ===== */
+{id:"flyhead",n:"蒼蠅頭",c:"台",e:"炒鍋",t:12,spicy:1,need:["韭菜","豬絞肉","豆干"],sneed:["豆瓣醬"],
+ ing:[["韭菜",1,"把"],["豬絞肉",200,"g"],["豆干",3,"塊"],["蒜末",3,"瓣"],["辣椒",1,"根"]],
+ sauce:[["豆瓣醬",1,"大匙"],["醬油",1,"大匙"],["糖",1,"小匙"],["米酒",1,"大匙"]],
+ st:[[0,"韭菜切細丁，豆干切小丁。"],[3,"熱鍋炒絞肉到出油。"],[6,"豆干和蒜末下鍋炒香。"],[8,"豆瓣醬小火炒出紅油，倒其餘醬汁。"],[10,"韭菜下鍋大火炒40秒就起鍋。"]],
+ tip:"韭菜要切得跟絞肉一樣細，口感才對。下鍋只能炒不到一分鐘，久了就出水變黃。"},
+
+{id:"hakka",n:"客家小炒",c:"台",e:"炒鍋",t:15,need:["五花肉片","芹菜","豆干","透抽"],sneed:[],
+ ing:[["五花肉片",200,"g"],["芹菜",3,"根"],["豆干",4,"塊"],["透抽",100,"g"],["蒜末",3,"瓣"],["辣椒",1,"根"]],
+ sauce:[["醬油",2,"大匙"],["米酒",2,"大匙"],["糖",1,"小匙"]],
+ st:[[0,"全部切條，寬度盡量一致。"],[4,"五花肉片乾鍋煸到出油變焦香，撈起。"],[8,"用那些油煸豆干到微焦。"],[10,"透抽和蒜末下鍋快炒。"],[12,"肉回鍋，芹菜下去，嗆米酒和醬油，30秒起鍋。"]],
+ tip:"這道的靈魂是五花肉自己逼出來的油，全程不要另外加油。所有材料切一樣寬，看起來才專業。"},
+
+{id:"kungpao",n:"宮保雞丁",c:"台",e:"炒鍋",t:15,spicy:1,need:["去骨雞腿排","花生"],sneed:[],
+ ing:[["去骨雞腿排",2,"片"],["花生",50,"g"],["乾辣椒",8,"根"],["蒜末",3,"瓣"],["蔥",2,"根"]],
+ sauce:[["醬油",2,"大匙"],["烏醋",1,"大匙"],["糖",1,"大匙"],["米酒",1,"大匙"],["太白粉",1,"小匙"]],
+ st:[[0,"雞腿切丁，用醬油和太白粉抓醃。醬汁調好。"],[4,"大火熱鍋，雞丁下鍋煎到兩面金黃。"],[8,"撥到旁邊，小火炒乾辣椒和蒜末，別燒焦。"],[11,"倒醬汁快速拌到裹住。"],[13,"關火拌花生和蔥段。"]],
+ tip:"花生最後才下，早放會軟掉。乾辣椒要小火慢炒出香氣，變黑就苦了。"},
+
+{id:"sweetsour",n:"糖醋里肌",c:"台",e:"炒鍋",t:15,kid:1,need:["里肌肉片","甜椒"],sneed:["番茄醬","白醋"],
+ ing:[["里肌肉片",300,"g"],["甜椒",1,"顆"],["洋蔥",0.5,"顆"],["太白粉",4,"大匙"]],
+ sauce:[["番茄醬",3,"大匙"],["白醋",2,"大匙"],["糖",2,"大匙"],["水",3,"大匙"]],
+ st:[[0,"肉片用醬油米酒抓過，裹一層太白粉。"],[4,"半煎炸到兩面金黃，撈起瀝油。"],[9,"同鍋炒洋蔥和甜椒。"],[11,"倒醬汁煮到冒泡變稠。"],[13,"肉回鍋快速拌勻，馬上起鍋。"]],
+ tip:"肉回鍋只能拌十秒，久了外皮就軟了。醬汁比例記番茄醬3醋2糖2，酸甜剛好小孩會吃。"},
+
+{id:"basilclam",n:"塔香蛤蜊",c:"台",e:"炒鍋",t:10,need:["蛤蜊","九層塔"],sneed:[],
+ ing:[["蛤蜊",600,"g"],["九層塔",1,"大把"],["蒜末",5,"瓣"],["薑絲",null,"少許"],["辣椒",1,"根"]],
+ sauce:[["醬油",1,"大匙"],["米酒",2,"大匙"],["糖",0.5,"小匙"]],
+ st:[[0,"蛤蜊先吐沙沖乾淨。"],[2,"大火熱鍋爆香蒜末薑絲。"],[3,"蛤蜊下鍋，嗆米酒立刻蓋鍋。"],[6,"開口一半就加醬油和糖。"],[8,"全開後關火，拌九層塔。"]],
+ tip:"不要等全開才關火，餘溫會把最後幾顆逼開。多煮30秒肉就縮成一小球。"},
+
+{id:"sesamechicken",n:"快手麻油雞湯",c:"台",e:"湯鍋",t:18,need:["去骨雞腿排"],sneed:[],
+ ing:[["去骨雞腿排",2,"片"],["老薑",10,"片"],["麻油",3,"大匙"],["米酒",300,"ml"],["水",500,"ml"]],
+ st:[[0,"雞腿切塊，薑切厚片。"],[2,"麻油小火煸薑片到邊緣捲曲，約4分鐘。"],[7,"雞肉下鍋煎到表面變色。"],[10,"倒米酒煮滾讓酒精揮發2分鐘。"],[13,"加水，中火煮5分鐘，起鍋前加鹽。"]],
+ tip:"麻油全程小火，大火會苦，這是整道菜唯一會失敗的地方。要給小孩喝就多加水少放米酒。"},
+
+{id:"mushroomsoup",n:"香菇雞湯",c:"台",e:"湯鍋",t:18,kid:1,need:["去骨雞腿排","香菇"],sneed:[],
+ ing:[["去骨雞腿排",2,"片"],["乾香菇",6,"朵"],["薑",4,"片"],["蔥",1,"根"],["水",900,"ml"],["米酒",2,"大匙"]],
+ st:[[0,"香菇泡水，雞腿切塊。"],[3,"雞塊用滾水汆燙30秒沖乾淨，湯才會清。"],[7,"雞肉、薑片、香菇和泡菇水一起下鍋。"],[9,"煮滾後轉小火8分鐘。"],[17,"加鹽和米酒，撒蔥花。"]],
+ tip:"汆燙那一步不能省，血水去掉湯才不濁。泡香菇的水是鮮味來源，記得倒進去。"},
+
+{id:"ribsoup",n:"蘿蔔排骨湯",c:"台",e:"湯鍋",t:20,kid:1,need:["排骨","白蘿蔔"],sneed:[],
+ ing:[["排骨",400,"g"],["白蘿蔔",1,"根"],["薑",4,"片"],["蔥",1,"根"],["水",1000,"ml"]],
+ st:[[0,"排骨冷水下鍋汆燙，浮沫撈掉後沖乾淨。"],[5,"蘿蔔切滾刀塊。"],[7,"排骨、薑片、水一起煮滾。"],[10,"蘿蔔下鍋，中火煮10分鐘。"],[19,"加鹽，撒蔥花。"]],
+ tip:"排骨要冷水下鍋汆燙，熱水下去表面馬上緊縮，血水反而出不來。20分鐘的版本蘿蔔要切小塊。"},
+
+{id:"wintermelon",n:"冬瓜蛤蜊湯",c:"台",e:"湯鍋",t:15,kid:1,need:["冬瓜","蛤蜊"],sneed:[],
+ ing:[["冬瓜",500,"g"],["蛤蜊",300,"g"],["薑絲",null,"適量"],["蔥",1,"根"],["水",800,"ml"]],
+ st:[[0,"冬瓜削皮去籽切塊。"],[3,"水加薑絲煮滾，冬瓜下鍋。"],[6,"中火煮8分鐘到透明。"],[13,"蛤蜊下鍋，開口就關火。"],[15,"加鹽，撒蔥花。"]],
+ tip:"冬瓜煮到透明就是好了。蛤蜊本身有鹹度，鹽最後試味道再加。夏天最消暑的一鍋。"},
+
+{id:"squidcelery",n:"芹菜炒透抽",c:"台",e:"炒鍋",t:10,need:["透抽","芹菜"],sneed:[],
+ ing:[["透抽",300,"g"],["芹菜",4,"根"],["蒜末",3,"瓣"],["薑絲",null,"少許"],["辣椒",1,"根"]],
+ sauce:[["醬油",1,"大匙"],["米酒",1,"大匙"],["鹽",null,"少許"]],
+ st:[[0,"透抽切圈，芹菜切段。"],[2,"滾水燙透抽20秒撈起，這樣炒的時候不會出水。"],[5,"大火爆香蒜薑，芹菜下鍋炒1分鐘。"],[7,"透抽回鍋，嗆米酒和醬油。"],[9,"30秒起鍋。"]],
+ tip:"透抽先燙過再炒，是它不變橡皮筋的關鍵。全程加起來下鍋時間不能超過一分鐘。"},
+
+{id:"teriyakileg",n:"醬燒雞腿排",c:"台",e:"炒鍋",t:15,kid:1,need:["去骨雞腿排"],sneed:[],
+ ing:[["去骨雞腿排",2,"片"],["蒜",4,"瓣"],["蔥",1,"根"]],
+ sauce:[["醬油",2,"大匙"],["米酒",2,"大匙"],["糖",1.5,"大匙"],["水",3,"大匙"]],
+ st:[[0,"雞腿排用叉子在皮上戳幾個洞，兩面抹鹽。"],[2,"冷鍋皮朝下，中小火慢煎6分鐘不要動它。"],[9,"翻面煎3分鐘，多餘的油倒掉。"],[12,"倒醬汁，中火收到濃稠並不斷淋在雞肉上。"],[14,"起鍋切條，淋剩下的醬汁。"]],
+ tip:"冷鍋下皮、全程不翻，是脆皮的唯一方法。倒掉多餘的油醬汁才收得起來。"},
+
+{id:"beansprout",n:"豆芽炒韭菜",c:"台",e:"炒鍋",t:6,kid:1,need:["豆芽菜","韭菜"],sneed:[],
+ ing:[["豆芽菜",300,"g"],["韭菜",0.5,"把"],["蒜末",2,"瓣"]],
+ sauce:[["醬油",1,"小匙"],["鹽",null,"適量"]],
+ st:[[0,"韭菜切段，豆芽沖水瀝乾。"],[2,"大火熱鍋爆香蒜末。"],[3,"豆芽下鍋炒40秒。"],[4,"韭菜下鍋，調味，再30秒起鍋。"]],
+ tip:"全程大火快炒不到兩分鐘。這道只要炒超過三分鐘就會出一盤水，失敗得很明顯。"},
+
+{id:"handcabbage",n:"手撕高麗菜",c:"台",e:"炒鍋",t:8,kid:1,need:["高麗菜"],sneed:[],
+ ing:[["高麗菜",0.5,"顆"],["蒜片",4,"瓣"],["辣椒",1,"根"],["乾蝦米",1,"大匙"]],
+ sauce:[["醬油",1,"大匙"],["烏醋",1,"小匙"]],
+ st:[[0,"高麗菜用手撕成大片，不要用刀切。"],[2,"大火熱鍋，蒜片和蝦米爆香。"],[4,"高麗菜下鍋，只翻不壓。"],[6,"沿鍋邊嗆醬油和烏醋，炒到邊緣微焦。"]],
+ tip:"手撕的斷面不規則，比刀切更能吃到醬汁。鍋要夠熱、菜要夠乾，才會有鑊氣不出水。"},
+
+{id:"garlicbreast",n:"蒜香雞胸",c:"台",e:"炒鍋",t:12,kid:1,need:["雞胸肉"],sneed:[],
+ ing:[["雞胸肉",2,"片"],["蒜",6,"瓣"],["蔥",1,"根"]],
+ sauce:[["醬油",1.5,"大匙"],["米酒",1,"大匙"],["糖",1,"小匙"]],
+ st:[[0,"雞胸橫剖成兩片薄的，抹鹽和一點太白粉。"],[3,"中火下鍋，一面煎3分鐘不要翻。"],[7,"翻面再2分鐘，蒜片下鍋。"],[10,"倒醬汁裹勻，關火燜1分鐘。"]],
+ tip:"雞胸剖薄是不柴的關鍵，厚片一定會過老。抹一層薄太白粉可以鎖住水分。"},
+
+{id:"coldcucumber",n:"涼拌小黃瓜",c:"台",e:"免開火",t:5,kid:1,need:["小黃瓜"],sneed:["烏醋"],
+ ing:[["小黃瓜",3,"根"],["蒜末",3,"瓣"],["辣椒",1,"根"]],
+ sauce:[["醬油",1,"大匙"],["烏醋",1,"大匙"],["糖",1,"大匙"],["香油",1,"小匙"]],
+ st:[[0,"小黃瓜拍裂再切段，裂面才會吸醬。"],[1,"撒一小匙鹽抓一下，靜置3分鐘。"],[4,"倒掉出來的水，加醬料拌勻。"]],
+ tip:"一定要先用鹽殺青出水再倒掉，不然醬會被稀釋。拍裂比切片好吃十倍。"},
+
+{id:"coldwoodear",n:"涼拌木耳",c:"台",e:"湯鍋",t:8,kid:1,need:["木耳"],sneed:["烏醋"],
+ ing:[["木耳",250,"g"],["小黃瓜",1,"根"],["蒜末",3,"瓣"],["香菜",null,"隨意"]],
+ sauce:[["醬油",1.5,"大匙"],["烏醋",1.5,"大匙"],["糖",1,"小匙"],["香油",1,"小匙"]],
+ st:[[0,"木耳切片，滾水燙2分鐘。"],[3,"撈起沖冷水瀝乾。"],[5,"小黃瓜切絲，全部拌醬料。"],[7,"冰過更脆。"]],
+ tip:"燙完一定要沖冷水，脆度差很多。這道可以一次做兩倍，冰起來隔天更入味。"},
+
+{id:"tomatotofusoup",n:"番茄豆腐湯",c:"台",e:"湯鍋",t:12,kid:1,need:["牛番茄","嫩豆腐","雞蛋"],sneed:[],
+ ing:[["牛番茄",2,"顆"],["嫩豆腐",1,"盒"],["雞蛋",2,"顆"],["蔥",1,"根"],["水",800,"ml"]],
+ st:[[0,"番茄切塊，豆腐切丁。"],[2,"少許油先炒番茄到出汁，這步決定湯的濃度。"],[5,"加水煮滾。"],[8,"豆腐下鍋煮2分鐘。"],[10,"蛋液繞圈淋下去，關火撒蔥花。"]],
+ tip:"番茄一定要先炒過再加水，直接煮的話湯是淡的。蛋液要在關火前繞圈淋，才會成漂亮的蛋花。"},
+
+{id:"cornribsoup",n:"玉米排骨湯",c:"台",e:"湯鍋",t:20,kid:1,need:["排骨","玉米"],sneed:[],
+ ing:[["排骨",400,"g"],["玉米",2,"根"],["紅蘿蔔",0.5,"根"],["薑",3,"片"],["水",1000,"ml"]],
+ st:[[0,"排骨冷水汆燙，撈起沖乾淨。"],[5,"玉米切段，紅蘿蔔切塊。"],[7,"全部下鍋加水煮滾。"],[10,"轉中小火煮10分鐘。"],[19,"加鹽調味。"]],
+ tip:"玉米的甜是這鍋的主角，切段的斷面越多越甜。小孩通常會先把玉米啃完。"},
+
+{id:"panfriedfish",n:"乾煎鯛魚",c:"台",e:"炒鍋",t:10,kid:1,need:["鯛魚片"],sneed:[],
+ ing:[["鯛魚片",2,"片"],["薑",3,"片"],["檸檬",0.5,"顆"],["鹽",null,"適量"]],
+ st:[[0,"魚片兩面抹鹽靜置3分鐘。"],[3,"擦到很乾，非常重要。"],[4,"熱鍋下油，薑片先煸香再撥開。"],[5,"魚片下鍋，中火煎3分鐘不要翻。"],[8,"翻面2分鐘，擠檸檬。"]],
+ tip:"擦乾和不要早翻，這兩件事決定會不會黏鍋散開。看到邊緣變白一圈才可以翻。"},
+
+{id:"braisedtofu",n:"蔥燒豆腐",c:"台",e:"炒鍋",t:12,kid:1,need:["板豆腐"],sneed:[],
+ ing:[["板豆腐",1,"盒"],["蔥",3,"根"],["蒜末",3,"瓣"]],
+ sauce:[["醬油",1.5,"大匙"],["糖",1,"小匙"],["水",100,"ml"],["太白粉水",null,"適量"]],
+ st:[[0,"豆腐切厚片，用廚房紙壓乾。"],[2,"熱鍋下油，豆腐煎到兩面金黃，約6分鐘。"],[9,"蒜末和蔥白下鍋炒香。"],[10,"倒醬汁煮滾，勾薄芡。"],[11,"撒蔥綠起鍋。"]],
+ tip:"豆腐一定要壓乾再煎，帶水就會爆油又黏鍋。煎到定型前不要去翻它。"},
+
+{id:"minceporkrice",n:"快手滷肉燥",c:"台",e:"炒鍋",t:20,kid:1,need:["豬絞肉","白飯"],sneed:[],
+ ing:[["豬絞肉",400,"g"],["紅蔥頭",5,"顆"],["白飯",3,"碗"],["水煮蛋",3,"顆"]],
+ sauce:[["醬油",4,"大匙"],["米酒",3,"大匙"],["糖",1,"大匙"],["五香粉",null,"少許"],["水",300,"ml"]],
+ st:[[0,"紅蔥頭切片，冷油小火煸到金黃酥脆，撈起。"],[5,"同鍋炒絞肉到出油變色。"],[9,"倒醬汁和水，煮滾。"],[12,"紅蔥酥回鍋，中小火收8分鐘。"],[19,"淋在飯上，配水煮蛋。"]],
+ tip:"油蔥酥是靈魂，用市售的也行但自己煸的香十倍。收到湯汁還會流動就停，全乾了拌不開飯。"},
+
+{id:"shrimpegg",n:"蝦仁滑蛋",c:"台",e:"炒鍋",t:10,kid:1,need:["蝦仁","雞蛋"],sneed:[],
+ ing:[["蝦仁",200,"g"],["雞蛋",5,"顆"],["蔥花",1,"根"]],
+ sauce:[["米酒",1,"小匙"],["鹽",null,"適量"]],
+ st:[[0,"蝦仁擦乾抓一點鹽和太白粉，蛋打散加鹽。"],[3,"熱鍋下油，蝦仁炒到剛變色就撈起。"],[6,"轉小火，蛋液下鍋，用鏟子慢慢推。"],[8,"半凝固時蝦仁回鍋，再推兩下就關火。"]],
+ tip:"蛋要小火用推的不是炒的，離開火時還會繼續熟。看起來有點太濕的時候就是剛好。"},
+
+{id:"threecupmushroom",n:"三杯杏鮑菇",c:"台",e:"炒鍋",t:15,need:["杏鮑菇","九層塔"],sneed:[],
+ ing:[["杏鮑菇",3,"根"],["老薑",6,"片"],["蒜",6,"瓣"],["九層塔",1,"大把"],["辣椒",1,"根"]],
+ sauce:[["麻油",2,"大匙"],["醬油",2,"大匙"],["米酒",2,"大匙"],["糖",1,"大匙"]],
+ st:[[0,"杏鮑菇用手撕成條，比刀切更能吸醬。"],[3,"乾鍋煸杏鮑菇到出水收乾、邊緣微焦。"],[8,"加麻油，小火煸薑片和蒜瓣。"],[11,"倒醬汁中火收到裹住。"],[14,"關火拌九層塔。"]],
+ tip:"杏鮑菇要先乾鍋煸掉水分，直接下醬汁會變成一鍋湯。吃起來很像肉，素食版三杯雞。"},
+
+{id:"shrimpfriedrice",n:"蝦仁蛋炒飯",c:"台",e:"炒鍋",t:12,kid:1,need:["蝦仁","白飯","雞蛋"],sneed:[],
+ ing:[["蝦仁",200,"g"],["白飯",3,"碗"],["雞蛋",3,"顆"],["蔥花",2,"根"],["紅蘿蔔丁",null,"隨意"]],
+ sauce:[["醬油",1,"大匙"],["鹽與白胡椒",null,"適量"]],
+ st:[[0,"蝦仁擦乾抓鹽，蛋打散。飯先攤開弄散。"],[3,"熱鍋炒蝦仁到變色撈起。"],[6,"下蛋液，半熟就把飯倒進去壓散。"],[9,"大火翻炒到粒粒分明，蝦仁回鍋。"],[11,"嗆醬油，撒蔥花。"]],
+ tip:"隔夜飯最好。用現煮的就先攤在盤子上吹五分鐘，濕飯炒不散。"},
+
+{id:"garlicshrimp",n:"蒜蓉蒸蝦",c:"台",e:"電鍋",t:15,kid:1,need:["帶殼蝦"],sneed:[],
+ ing:[["帶殼蝦",500,"g"],["蒜末",8,"瓣"],["蔥花",1,"根"],["冬粉",1,"把"]],
+ sauce:[["醬油",1.5,"大匙"],["米酒",1,"大匙"],["糖",0.5,"小匙"]],
+ st:[[0,"蝦背剪開挑腸泥，冬粉泡軟鋪盤底。"],[5,"蒜末一半用油炒香、一半生的，混合成蒜蓉。"],[8,"蒜蓉鋪在蝦上，淋醬汁。"],[10,"電鍋外鍋半杯水，蒸5分鐘。"],[15,"撒蔥花。"]],
+ tip:"生蒜加熟蒜混著用，香氣才有層次。底下鋪冬粉把蝦汁全吸走，那才是最好吃的部分。"}
+,
+/* ===== 擴充 · 日式 ===== */
+{id:"gyudon",n:"牛丼",c:"日",e:"炒鍋",t:10,kid:1,need:["火鍋牛肉片","洋蔥","白飯"],sneed:["味醂"],
+ ing:[["火鍋牛肉片",300,"g"],["洋蔥",1,"顆"],["白飯",3,"碗"],["紅薑",null,"隨意"]],
+ sauce:[["醬油",3,"大匙"],["味醂",3,"大匙"],["糖",1,"大匙"],["水",150,"ml"]],
+ st:[[0,"洋蔥切絲，醬汁調好。"],[2,"醬汁和洋蔥下鍋煮滾，中火煮4分鐘到洋蔥透明。"],[7,"牛肉片一片片攤開下鍋。"],[9,"變色就關火，連汁淋在飯上。"]],
+ tip:"洋蔥要先煮透出甜味，這是牛丼跟豚丼最大的差別。牛肉下鍋後絕對不要久煮。"},
+
+{id:"karaage",n:"氣炸日式唐揚雞",c:"日",e:"氣炸鍋",t:18,kid:1,need:["去骨雞腿排"],sneed:[],
+ ing:[["去骨雞腿排",2,"片"],["太白粉",5,"大匙"],["檸檬",0.5,"顆"]],
+ sauce:[["醬油",2,"大匙"],["米酒",1,"大匙"],["薑泥",1,"大匙"],["蒜泥",1,"小匙"]],
+ st:[[0,"雞腿切大塊，用醬汁抓醃靜置5分鐘。"],[5,"每塊裹厚厚一層太白粉，壓緊。"],[8,"表面噴一層油，200度氣炸10分鐘。"],[18,"翻面再3分鐘到金黃，擠檸檬。"]],
+ tip:"太白粉要裹厚並且壓緊，噴油那一步不能省，否則會出現白白的粉沒熟。"},
+
+{id:"nikujaga",n:"日式馬鈴薯燉肉",c:"日",e:"湯鍋",t:20,kid:1,need:["五花肉片","馬鈴薯","紅蘿蔔","洋蔥"],sneed:["味醂"],
+ ing:[["五花肉片",250,"g"],["馬鈴薯",3,"顆"],["紅蘿蔔",1,"根"],["洋蔥",1,"顆"],["水",400,"ml"]],
+ sauce:[["醬油",3,"大匙"],["味醂",3,"大匙"],["糖",1,"大匙"]],
+ st:[[0,"馬鈴薯切小塊、紅蘿蔔滾刀、洋蔥切絲。切小才煮得完。"],[4,"熱鍋炒肉片到變色。"],[7,"蔬菜下鍋炒兩分鐘。"],[9,"加水和醬汁煮滾，蓋鍋中火10分鐘。"],[19,"竹籤能穿過馬鈴薯就好。"]],
+ tip:"馬鈴薯切2公分是能壓進20分鐘的關鍵。煮好關火燜十分鐘會更入味，有時間的話。"},
+
+{id:"salmonrice",n:"鮭魚炊飯",c:"日",e:"電鍋",t:20,kid:1,need:["鮭魚","白飯"],sneed:["味醂"],
+ ing:[["鮭魚",2,"片"],["米",2,"杯"],["鴻喜菇",1,"包"],["蔥花",null,"適量"],["水",2,"杯"]],
+ sauce:[["醬油",2,"大匙"],["味醂",1,"大匙"],["米酒",1,"大匙"]],
+ st:[[0,"米洗好，水量比平常少一點點因為醬汁有水分。"],[3,"鮭魚抹鹽，直接整片放在米上。"],[5,"鴻喜菇撕開鋪上，倒醬汁。"],[7,"電鍋外鍋一杯水，按下去。"],[20,"跳起來燜5分鐘，用飯匙把魚壓碎拌開挑刺。"]],
+ tip:"魚不用先煎，直接放米上蒸出來的油會全進飯裡。拌的時候仔細挑刺再給小孩。"},
+
+{id:"tamagoyaki",n:"玉子燒",c:"日",e:"炒鍋",t:10,kid:1,need:["雞蛋"],sneed:["味醂"],
+ ing:[["雞蛋",4,"顆"],["味醂",1,"大匙"],["醬油",1,"小匙"],["糖",1,"小匙"],["水",2,"大匙"]],
+ st:[[0,"全部材料打勻，過篩一次會更細緻。"],[3,"平底鍋小火抹薄油，倒三分之一蛋液鋪平。"],[5,"半熟時從一端捲起，推到鍋邊。"],[7,"再倒蛋液，掀起捲好的蛋讓液體流到底下，再捲一次。"],[9,"重複到蛋液用完，用鍋鏟壓形。"]],
+ tip:"全程小火，上色就代表火太大。加水是為了讓口感嫩，不加會乾。"},
+
+{id:"chawanmushi",n:"茶碗蒸",c:"日",e:"電鍋",t:18,kid:1,need:["雞蛋","蝦仁"],sneed:["味醂","柴魚片"],
+ ing:[["雞蛋",3,"顆"],["蝦仁",6,"隻"],["鴻喜菇",null,"隨意"],["高湯或水",450,"ml"]],
+ sauce:[["醬油",1,"小匙"],["味醂",1,"小匙"],["鹽",0.5,"小匙"]],
+ st:[[0,"蛋打散，蛋液和高湯比例1比3。"],[3,"調味後過篩兩次，這是不會有氣孔的關鍵。"],[6,"倒入碗中，放蝦仁，蓋保鮮膜或鋁箔。"],[8,"電鍋外鍋一杯水，鍋蓋留一條縫。"],[18,"表面不晃動就好了。"]],
+ tip:"鍋蓋留縫讓溫度不要太高，不然表面會蜂窩。過篩兩次比什麼技巧都有效。"},
+
+{id:"unadon",n:"蒲燒鯛魚丼",c:"日",e:"炒鍋",t:12,kid:1,need:["鯛魚片","白飯"],sneed:["味醂"],
+ ing:[["鯛魚片",2,"片"],["白飯",3,"碗"],["白芝麻",null,"適量"],["蔥花",null,"適量"]],
+ sauce:[["醬油",2,"大匙"],["味醂",2,"大匙"],["糖",1.5,"大匙"],["米酒",1,"大匙"]],
+ st:[[0,"魚片擦乾抹薄太白粉。"],[2,"中火下鍋煎3分鐘不要翻。"],[6,"翻面煎2分鐘。"],[9,"倒醬汁，一邊收一邊用湯匙淋在魚上。"],[11,"醬汁變亮就鋪到飯上。"]],
+ tip:"抹一層薄太白粉，醬汁才掛得住。用鯛魚做出鰻魚丼的味道，成本差十倍。"},
+
+{id:"currudon",n:"日式咖哩烏龍麵",c:"日",e:"湯鍋",t:15,kid:1,need:["烏龍麵",["火鍋豬肉片","火鍋牛肉片"],"洋蔥"],sneed:["咖哩塊","味醂"],
+ ing:[["烏龍麵",3,"份"],["火鍋豬肉片",200,"g"],["洋蔥",1,"顆"],["咖哩塊",2,"塊"],["水",800,"ml"],["蔥花",null,"適量"]],
+ sauce:[["醬油",1,"大匙"],["味醂",1,"大匙"]],
+ st:[[0,"洋蔥切絲。"],[2,"鍋內炒洋蔥和肉片到變色。"],[5,"加水煮滾。"],[8,"關火放咖哩塊化開，加醬油味醂。"],[11,"烏龍麵下鍋煮3分鐘。"],[14,"撒蔥花。"]],
+ tip:"咖哩塊要關火放。這道比咖哩飯快，因為不用等馬鈴薯煮軟。"},
+
+{id:"misomackerel",n:"味噌燒鯖魚",c:"日",e:"炒鍋",t:15,kid:1,need:["鯖魚"],sneed:["味噌","味醂"],
+ ing:[["鯖魚",2,"片"],["薑",4,"片"],["蔥",1,"根"],["水",150,"ml"]],
+ sauce:[["味噌",2,"大匙"],["味醂",2,"大匙"],["糖",1,"大匙"],["米酒",2,"大匙"]],
+ st:[[0,"鯖魚劃兩刀，用滾水快速淋一下去腥。"],[3,"醬汁和水在鍋裡煮滾，薑片下去。"],[6,"魚皮朝上放進去，蓋鍋中小火煮6分鐘。"],[13,"不斷把醬汁淋在魚上直到濃稠。"],[15,"撒蔥絲。"]],
+ tip:"淋熱水去腥那一步比什麼都有效。魚不要翻面，用湯匙淋醬汁就好，翻了會散。"},
+
+{id:"ochazuke",n:"鮭魚茶泡飯",c:"日",e:"湯鍋",t:8,kid:1,need:["鮭魚","白飯"],sneed:["柴魚片"],
+ ing:[["鮭魚",1,"片"],["白飯",3,"碗"],["柴魚片",1,"大把"],["海苔絲",null,"適量"],["水",700,"ml"],["芥末",null,"隨意"]],
+ sauce:[["醬油",1,"大匙"],["鹽",0.5,"小匙"]],
+ st:[[0,"鮭魚抹鹽，平底鍋煎熟後撥成大塊。"],[5,"水煮滾放柴魚片，1分鐘後濾掉。"],[7,"高湯加醬油和鹽調味。"],[8,"飯上鋪鮭魚和海苔，沖入熱高湯。"]],
+ tip:"消夜或胃口不好的晚上最好用。柴魚只煮一分鐘就撈，久了會苦。"},
+
+/* ===== 擴充 · 韓式 ===== */
+{id:"dakgalbi",n:"韓式辣炒雞",c:"韓",e:"炒鍋",t:18,spicy:1,need:["去骨雞腿排","高麗菜","洋蔥"],sneed:["韓式辣醬"],
+ ing:[["去骨雞腿排",2,"片"],["高麗菜",0.25,"顆"],["洋蔥",1,"顆"],["年糕或馬鈴薯",null,"隨意"]],
+ sauce:[["韓式辣醬",3,"大匙"],["醬油",1,"大匙"],["糖",1,"大匙"],["蒜末",4,"瓣"],["麻油",1,"大匙"]],
+ st:[[0,"雞腿切塊，用醬料抓醃靜置。"],[4,"大火熱鍋，雞肉下鍋炒到表面變色。"],[8,"洋蔥和高麗菜下鍋。"],[11,"蓋鍋燜5分鐘，蔬菜會出水變成醬汁。"],[17,"開蓋大火收汁。"]],
+ tip:"完全不用加水，高麗菜出的水就夠了。要給小孩吃就分一份出來，剩下再拌辣醬。"},
+
+{id:"kimchifried",n:"泡菜炒飯",c:"韓",e:"炒鍋",t:12,spicy:1,need:["泡菜","白飯","雞蛋"],sneed:[],
+ ing:[["泡菜",200,"g"],["白飯",3,"碗"],["雞蛋",3,"顆"],["五花肉片",150,"g"],["海苔絲",null,"隨意"]],
+ sauce:[["麻油",1,"大匙"],["醬油",1,"小匙"],["糖",1,"小匙"]],
+ st:[[0,"泡菜切碎，肉片切段。"],[2,"熱鍋炒肉片到出油。"],[5,"泡菜下鍋炒2分鐘，炒過的泡菜才會香。"],[8,"飯下鍋壓散，加泡菜汁和調味。"],[10,"另一鍋煎荷包蛋蓋上。"]],
+ tip:"泡菜一定要炒過，生的直接拌飯是酸的不是香的。泡菜汁不要倒掉，那是味道來源。"},
+
+{id:"kimchijjigae",n:"泡菜豆腐鍋",c:"韓",e:"湯鍋",t:18,spicy:1,need:["泡菜","板豆腐","五花肉片"],sneed:["韓式辣醬"],
+ ing:[["泡菜",250,"g"],["板豆腐",1,"盒"],["五花肉片",200,"g"],["洋蔥",0.5,"顆"],["蔥",1,"根"],["水",700,"ml"]],
+ sauce:[["韓式辣醬",1,"大匙"],["蒜末",3,"瓣"],["麻油",1,"大匙"]],
+ st:[[0,"泡菜切段，豆腐切厚片。"],[3,"鍋內麻油炒五花肉到出油。"],[6,"泡菜下鍋炒3分鐘。"],[10,"加水和辣醬煮滾。"],[14,"豆腐和洋蔥下鍋煮4分鐘，撒蔥花。"]],
+ tip:"越酸的老泡菜煮起來越好吃。炒泡菜那三分鐘是整鍋的靈魂，不要偷懶直接加水。"},
+
+{id:"gyeranjjim",n:"韓式蒸蛋",c:"韓",e:"湯鍋",t:12,kid:1,need:["雞蛋"],sneed:[],
+ ing:[["雞蛋",5,"顆"],["水",250,"ml"],["蔥花",1,"根"],["白芝麻",null,"適量"]],
+ sauce:[["鹽",0.5,"小匙"],["麻油",1,"小匙"]],
+ st:[[0,"蛋打散加水和鹽，過篩。"],[3,"倒進小湯鍋，中小火一邊加熱一邊攪。"],[6,"開始凝固成粥狀時停止攪拌。"],[8,"蓋鍋轉最小火燜4分鐘，會膨起來。"],[12,"淋麻油撒蔥花芝麻。"]],
+ tip:"跟日式茶碗蒸完全不同，這個是蓬鬆的。前半段要一直攪，後半段完全不要動。"},
+
+{id:"bibimguksu",n:"韓式辣拌麵",c:"韓",e:"湯鍋",t:10,spicy:1,need:["麵條","小黃瓜","雞蛋"],sneed:["韓式辣醬","白醋"],
+ ing:[["麵條",300,"g"],["小黃瓜",1,"根"],["雞蛋",3,"顆"],["泡菜",null,"隨意"]],
+ sauce:[["韓式辣醬",3,"大匙"],["白醋",2,"大匙"],["糖",1.5,"大匙"],["麻油",1,"大匙"],["蒜末",2,"瓣"]],
+ st:[[0,"水煮滾，同時煮麵和水煮蛋。"],[3,"小黃瓜切絲，醬料全部調勻。"],[6,"麵煮好撈起用冰水沖到全冷，瀝到很乾。"],[9,"拌醬，鋪小黃瓜和半顆蛋。"]],
+ tip:"麵一定要沖到冰冷再瀝乾，帶溫度或帶水醬就散了。這道夏天做特別開胃。"},
+
+{id:"budae",n:"快手部隊鍋",c:"韓",e:"湯鍋",t:18,spicy:1,need:["香腸","泡麵","嫩豆腐","泡菜"],sneed:["韓式辣醬"],
+ ing:[["香腸",2,"條"],["泡麵",2,"包"],["嫩豆腐",1,"盒"],["泡菜",150,"g"],["洋蔥",0.5,"顆"],["起司片",2,"片"],["水",800,"ml"]],
+ sauce:[["韓式辣醬",2,"大匙"],["醬油",1,"大匙"],["蒜末",3,"瓣"],["糖",1,"小匙"]],
+ st:[[0,"香腸斜切，洋蔥切絲，全部食材排進鍋裡。"],[5,"醬料調好放在正中間。"],[7,"倒水，開大火煮滾。"],[12,"轉中火煮4分鐘，把中間的醬料攪散。"],[16,"泡麵下鍋煮2分鐘，最後鋪起司片。"]],
+ tip:"材料排整齊再開火，看起來就是一回事。泡麵最後放，早了會爛成糊。"},
+
+{id:"gamja",n:"韓式醬燒馬鈴薯",c:"韓",e:"炒鍋",t:15,kid:1,need:["馬鈴薯"],sneed:[],
+ ing:[["馬鈴薯",3,"顆"],["洋蔥",0.5,"顆"],["白芝麻",null,"適量"],["水",200,"ml"]],
+ sauce:[["醬油",2,"大匙"],["糖",1.5,"大匙"],["麻油",1,"大匙"],["蒜末",2,"瓣"]],
+ st:[[0,"馬鈴薯切1.5公分丁，泡水去澱粉。"],[3,"熱鍋下油，馬鈴薯炒到表面微透明。"],[7,"加水和醬汁煮滾。"],[9,"蓋鍋中火煮5分鐘。"],[14,"開蓋大火收汁到亮亮的，撒芝麻。"]],
+ tip:"泡水去澱粉可以避免糊掉。收汁那一步要一直翻，讓每一顆都裹上醬。冷了當便當菜也好。"},
+
+{id:"ssam",n:"韓式烤五花生菜包",c:"韓",e:"炒鍋",t:15,need:["五花肉片","生菜"],sneed:["韓式辣醬","芝麻醬"],
+ ing:[["五花肉片",400,"g"],["生菜",1,"顆"],["蒜片",6,"瓣"],["白飯",3,"碗"]],
+ sauce:[["韓式辣醬",2,"大匙"],["芝麻醬",1,"大匙"],["麻油",1,"大匙"],["糖",1,"小匙"],["蒜末",2,"瓣"]],
+ st:[[0,"生菜洗好瀝乾，包醬調勻。"],[4,"平底鍋不放油，五花肉片直接下鍋。"],[7,"煎到出油、邊緣焦脆，約6分鐘。"],[13,"蒜片用逼出來的油煎香。"],[15,"上桌，用生菜包肉、飯、蒜片和醬。"]],
+ tip:"完全不用另外加油，五花自己會出很多。包醬的比例記辣醬2芝麻醬1，甜鹹剛好。"}
+,
+/* ===== 擴充 · 西式 ===== */
+{id:"tomatoshrimp",n:"番茄鮮蝦義大利麵",c:"西式",e:"湯鍋",t:15,kid:1,need:["義大利麵","蝦仁","小番茄"],sneed:["橄欖油"],
+ ing:[["義大利麵",250,"g"],["蝦仁",250,"g"],["小番茄",15,"顆"],["蒜片",5,"瓣"],["橄欖油",3,"大匙"]],
+ st:[[0,"水煮滾下重鹽，麵下鍋。"],[3,"蝦仁擦乾抹鹽，平底鍋大火煎30秒兩面，先撈起。"],[7,"轉小火，蒜片下鍋煸香。"],[9,"小番茄對半下鍋，用鍋鏟壓破出汁，煮4分鐘。"],[13,"麵和一杓煮麵水下鍋拌勻，蝦仁回鍋。"]],
+ tip:"小番茄一定要壓破，那個汁就是醬。蝦仁分開煎再回鍋，不然會煮成橡皮。"},
+
+{id:"pestochicken",n:"青醬雞肉義大利麵",c:"西式",e:"湯鍋",t:15,kid:1,need:["義大利麵","雞胸肉"],sneed:["青醬","起司"],
+ ing:[["義大利麵",250,"g"],["雞胸肉",1,"片"],["青醬",4,"大匙"],["起司粉",2,"大匙"],["小番茄",null,"隨意"]],
+ st:[[0,"水煮滾下鹽，麵下鍋。雞胸剖薄抹鹽黑胡椒。"],[3,"平底鍋煎雞胸，一面3分鐘。"],[9,"雞胸起鍋靜置，切條。"],[11,"關火，麵撈進鍋裡，加青醬和兩大匙煮麵水拌勻。"],[13,"鋪雞肉，撒起司粉。"]],
+ tip:"青醬絕對不能加熱，會變黑變苦。一定要關火再拌，用麵的餘溫就夠了。"},
+
+{id:"buttersalmon",n:"奶油蒜香鮭魚",c:"西式",e:"炒鍋",t:12,kid:1,need:["鮭魚"],sneed:["奶油"],
+ ing:[["鮭魚",2,"片"],["奶油",25,"g"],["蒜末",4,"瓣"],["檸檬",0.5,"顆"],["鹽與黑胡椒",null,"適量"]],
+ st:[[0,"鮭魚抹鹽靜置3分鐘，然後擦到很乾。"],[3,"熱鍋下少許油，皮朝下中火煎4分鐘不要動。"],[8,"翻面，轉小火，奶油和蒜末下鍋。"],[10,"用湯匙不斷把奶油澆在魚上，約2分鐘。"],[12,"擠檸檬，黑胡椒。"]],
+ tip:"澆油那個動作叫baste，是餐廳做法，兩分鐘讓魚均勻熟又不會乾。奶油一定要等翻面後才放，早放會焦。"},
+
+{id:"chickensalad",n:"香煎雞胸溫沙拉",c:"西式",e:"炒鍋",t:15,kid:1,need:["雞胸肉","生菜","小番茄"],sneed:["橄欖油"],
+ ing:[["雞胸肉",2,"片"],["生菜",1,"顆"],["小番茄",10,"顆"],["橄欖油",3,"大匙"],["檸檬",0.5,"顆"]],
+ sauce:[["橄欖油",3,"大匙"],["檸檬汁",2,"大匙"],["蜂蜜或糖",1,"小匙"],["鹽與黑胡椒",null,"適量"]],
+ st:[[0,"雞胸剖薄，兩面抹鹽和黑胡椒靜置。"],[3,"中火煎，一面3分半不要翻。"],[10,"起鍋靜置3分鐘再切，這步不能省。"],[12,"生菜撕塊、小番茄對半，淋油醋醬。"],[14,"雞肉切條鋪上。"]],
+ tip:"煎完靜置三分鐘，肉汁會回到肉裡。馬上切的話汁全流到砧板上，肉就柴了。"},
+
+{id:"rosti",n:"馬鈴薯煎餅",c:"西式",e:"炒鍋",t:18,kid:1,need:["馬鈴薯"],sneed:["奶油","起司"],
+ ing:[["馬鈴薯",3,"顆"],["起司絲",50,"g"],["奶油",20,"g"],["鹽與黑胡椒",null,"適量"]],
+ st:[[0,"馬鈴薯刨粗絲，用布擰乾水分，越乾越脆。"],[5,"拌鹽、黑胡椒和起司絲。"],[7,"平底鍋融奶油，馬鈴薯絲鋪平壓緊。"],[9,"中小火煎7分鐘不要動。"],[16,"用盤子倒扣翻面，再煎3分鐘。"]],
+ tip:"擰乾是唯一重點，帶水永遠煎不脆。翻面用盤子倒扣最安全，直接翻一定散。"},
+
+{id:"mushroomsoupw",n:"蘑菇濃湯",c:"西式",e:"湯鍋",t:18,kid:1,need:["鴻喜菇","洋蔥"],sneed:["鮮奶","奶油"],
+ ing:[["鴻喜菇",2,"包"],["洋蔥",1,"顆"],["鮮奶",400,"ml"],["奶油",25,"g"],["麵粉",2,"大匙"],["水",300,"ml"]],
+ st:[[0,"菇撕開，洋蔥切絲。"],[2,"奶油下鍋，洋蔥炒到透明。"],[6,"菇下鍋炒到出水並收乾，這步香氣才出來。"],[11,"麵粉下鍋炒1分鐘。"],[13,"分次倒鮮奶和水，邊倒邊攪，煮4分鐘到濃稠。"]],
+ tip:"菇一定要炒到水收乾才會香，直接加牛奶會是一鍋淡湯。想更滑就用調理棒打一半。"},
+
+{id:"cheesetoast",n:"起司烤吐司",c:"西式",e:"氣炸鍋",t:8,kid:1,need:["吐司"],sneed:["起司","奶油"],
+ ing:[["厚片吐司",3,"片"],["起司絲",100,"g"],["奶油",15,"g"],["黑胡椒",null,"適量"]],
+ st:[[0,"吐司單面抹薄薄一層奶油。"],[2,"鋪滿起司絲，邊緣也要鋪到。"],[4,"氣炸鍋180度5分鐘。"],[8,"起司邊緣焦黃冒泡就好。"]],
+ tip:"起司要鋪到邊緣，烤出來的焦邊是最好吃的部分。八分鐘的救急晚餐，配一碗湯就成立。"},
+
+{id:"baconeggtoast",n:"培根蛋吐司",c:"西式",e:"炒鍋",t:12,kid:1,need:["吐司","培根","雞蛋"],sneed:["奶油"],
+ ing:[["厚片吐司",3,"片"],["培根",4,"片"],["雞蛋",3,"顆"],["生菜",null,"隨意"],["奶油",15,"g"]],
+ st:[[0,"冷鍋下培根，小火煸到出油變脆，撈起。"],[5,"用培根油煎蛋，喜歡的熟度。"],[8,"吐司抹奶油，用同一鍋兩面煎香。"],[11,"疊起來：吐司、生菜、培根、蛋。"]],
+ tip:"整套用一個鍋、一鍋油完成。培根冷鍋下小火慢煸，油才會出得乾淨、肉才會脆。"},
+
+{id:"gambas",n:"西班牙蒜蝦",c:"西式",e:"炒鍋",t:12,need:["帶殼蝦"],sneed:["橄欖油"],
+ ing:[["帶殼蝦",400,"g"],["蒜",10,"瓣"],["乾辣椒",2,"根"],["橄欖油",150,"ml"],["吐司或麵包",null,"配著吃"]],
+ st:[[0,"蝦剝殼留尾，擦乾抹鹽。"],[4,"小鍋倒橄欖油，蒜片和乾辣椒冷油下鍋。"],[6,"小火慢煸5分鐘到蒜片淡金色。"],[11,"蝦下鍋，1分半就好，變紅立刻關火。"]],
+ tip:"油量要多到能淹過蝦，那鍋蒜油就是主角，配麵包沾著吃。蒜片絕對不能煸到深褐色。"},
+
+{id:"sausagepepper",n:"香腸炒甜椒",c:"西式",e:"炒鍋",t:12,kid:1,need:["香腸","甜椒","洋蔥"],sneed:["橄欖油"],
+ ing:[["香腸",4,"條"],["甜椒",2,"顆"],["洋蔥",1,"顆"],["蒜片",3,"瓣"],["橄欖油",2,"大匙"]],
+ sauce:[["黑胡椒",null,"適量"],["鹽",null,"適量"]],
+ st:[[0,"香腸斜切、甜椒和洋蔥切條。"],[3,"冷鍋下香腸小火煸出油，撈起。"],[7,"用香腸油炒洋蔥和甜椒，大火4分鐘。"],[11,"香腸回鍋，黑胡椒起鍋。"]],
+ tip:"甜椒要大火快炒保持脆度，炒軟就沒意思了。台式香腸做西式很搭，不用特地買德式的。"},
+
+{id:"macncheese",n:"焗烤白醬通心粉",c:"西式",e:"湯鍋",t:18,kid:1,need:["義大利麵"],sneed:["起司","鮮奶","奶油"],
+ ing:[["通心粉或義大利麵",250,"g"],["起司絲",120,"g"],["鮮奶",400,"ml"],["奶油",30,"g"],["麵粉",3,"大匙"]],
+ st:[[0,"水煮滾下鹽，麵煮到比包裝時間少2分鐘。"],[3,"另一鍋融奶油，麵粉下鍋小火炒1分鐘。"],[6,"分次倒鮮奶，邊倒邊攪成滑順白醬。"],[11,"起司絲分兩次加進去攪到融化。"],[14,"麵撈進去拌勻，黑胡椒。"]],
+ tip:"麵要煮不足，因為在醬裡還會繼續吸水變軟。起司分兩次加比較好化開不結塊。"},
+
+{id:"onionsoup",n:"快手洋蔥湯",c:"西式",e:"湯鍋",t:20,kid:1,need:["洋蔥","吐司"],sneed:["奶油","起司"],
+ ing:[["洋蔥",3,"顆"],["奶油",30,"g"],["起司絲",60,"g"],["吐司",2,"片"],["水",800,"ml"],["糖",1,"小匙"]],
+ st:[[0,"洋蔥切細絲，越細越快焦糖化。"],[3,"奶油融化，洋蔥下鍋加一小撮鹽和糖。"],[6,"中火一直炒，炒到深褐色，約10分鐘。"],[16,"加水煮滾3分鐘。"],[19,"吐司烤過切塊放上，鋪起司絲。"]],
+ tip:"傳統做法要炒四十分鐘，加糖和鹽可以壓到十分鐘。炒到深褐色不是金黃，那個顏色就是甜味。"},
+
+/* ===== 擴充 · 泰越 ===== */
+{id:"greencurry",n:"泰式綠咖哩雞",c:"泰越",e:"湯鍋",t:18,spicy:1,need:["去骨雞腿排","茄子","九層塔"],sneed:["綠咖哩醬","椰奶","魚露"],
+ ing:[["去骨雞腿排",2,"片"],["茄子",1,"條"],["綠咖哩醬",2,"大匙"],["椰奶",400,"ml"],["九層塔",1,"把"]],
+ sauce:[["魚露",1.5,"大匙"],["糖",1,"大匙"]],
+ st:[[0,"雞腿切塊，茄子切滾刀。"],[3,"鍋內先倒三分之一椰奶，中火煮到冒油泡。"],[6,"綠咖哩醬下鍋炒2分鐘到很香。"],[9,"雞肉下鍋炒到變色，倒剩下的椰奶。"],[13,"茄子下鍋煮4分鐘，加魚露和糖。"],[17,"關火拌九層塔。"]],
+ tip:"椰奶先煮到出油再炒咖哩醬，香氣差很多，這是泰式做法的核心。怕辣就減醬加椰奶。"},
+
+{id:"padthai",n:"泰式炒河粉",c:"泰越",e:"炒鍋",t:15,need:["河粉","蝦仁","雞蛋","豆芽菜","花生"],sneed:["魚露"],
+ ing:[["河粉",250,"g"],["蝦仁",200,"g"],["雞蛋",2,"顆"],["豆芽菜",150,"g"],["韭菜",0.5,"把"],["花生碎",3,"大匙"],["檸檬",0.5,"顆"]],
+ sauce:[["魚露",2,"大匙"],["糖",2,"大匙"],["烏醋或羅望子",1,"大匙"],["水",2,"大匙"]],
+ st:[[0,"河粉泡溫水到軟但仍有硬芯。醬汁調好糖要化開。"],[5,"大火熱鍋炒蝦仁，變色撈起。"],[8,"下蛋液炒散。"],[9,"河粉下鍋，倒醬汁快速翻拌。"],[12,"豆芽和韭菜下鍋炒30秒，蝦仁回鍋。"],[14,"撒花生碎，擠檸檬。"]],
+ tip:"河粉泡到有硬芯就好，在鍋裡會繼續熟。豆芽最後30秒下鍋才會脆。"},
+
+{id:"tomyum",n:"泰式酸辣蝦湯",c:"泰越",e:"湯鍋",t:15,spicy:1,need:["帶殼蝦","小番茄","香茅","檸檬"],sneed:["魚露"],
+ ing:[["帶殼蝦",400,"g"],["小番茄",10,"顆"],["香茅",2,"根"],["鴻喜菇",1,"包"],["檸檬",1,"顆"],["水",900,"ml"],["辣椒",2,"根"]],
+ sauce:[["魚露",3,"大匙"],["糖",1,"大匙"],["檸檬汁",4,"大匙"]],
+ st:[[0,"蝦剝殼，蝦殼留著。香茅拍扁切段。"],[3,"蝦殼乾鍋炒香，加水煮滾5分鐘後濾掉。"],[9,"香茅和辣椒下鍋煮2分鐘。"],[11,"小番茄和菇下鍋。"],[13,"蝦仁下鍋1分鐘，關火才加魚露和檸檬汁。"]],
+ tip:"蝦殼熬湯是鮮味的來源，別丟。檸檬汁一定要關火才加，煮過會變苦。"},
+
+{id:"vietroll",n:"越式生春捲",c:"泰越",e:"免開火",t:15,kid:1,need:["蝦仁","小黃瓜","生菜","冬粉"],sneed:["魚露"],
+ ing:[["春捲皮",12,"張"],["蝦仁",200,"g"],["小黃瓜",1,"根"],["生菜",0.5,"顆"],["冬粉",1,"把"],["九層塔",null,"隨意"]],
+ sauce:[["魚露",2,"大匙"],["檸檬汁",2,"大匙"],["糖",2,"大匙"],["水",3,"大匙"],["蒜末",2,"瓣"]],
+ st:[[0,"蝦仁燙熟對半剖開，冬粉燙軟沖冷水。"],[6,"小黃瓜切絲，生菜撕小片。"],[8,"春捲皮泡溫水3秒就拿起來，會繼續變軟。"],[10,"鋪蝦仁、冬粉、蔬菜，捲起來像捲壽司。"],[14,"沾醬調勻。"]],
+ tip:"春捲皮泡三秒就好，泡到全軟就會破。捲的時候先摺兩側再往前捲才不會散。"},
+
+{id:"thaibasilchicken",n:"泰式打拋雞",c:"泰越",e:"炒鍋",t:10,spicy:1,need:["雞胸肉","九層塔","小番茄"],sneed:["魚露","蠔油"],
+ ing:[["雞胸肉",2,"片"],["九層塔",1,"大把"],["小番茄",8,"顆"],["蒜末",4,"瓣"],["辣椒",2,"根"]],
+ sauce:[["魚露",1,"大匙"],["醬油",1,"大匙"],["蠔油",1,"小匙"],["糖",1,"小匙"]],
+ st:[[0,"雞胸切小丁，用一點太白粉抓過。"],[3,"大火爆香蒜末，雞丁下鍋炒到變白。"],[6,"小番茄下鍋壓破，倒醬汁。"],[8,"關火拌九層塔。"]],
+ tip:"雞胸切小丁加太白粉才不柴。跟打拋豬的做法一樣，用雞胸油脂少很多。"},
+
+{id:"vietsandwich",n:"越式三明治",c:"泰越",e:"炒鍋",t:15,need:["吐司","五花肉片","小黃瓜","紅蘿蔔"],sneed:["魚露","白醋"],
+ ing:[["法國麵包或厚片吐司",3,"份"],["五花肉片",250,"g"],["小黃瓜",1,"根"],["紅蘿蔔",0.5,"根"],["香菜",null,"隨意"]],
+ sauce:[["魚露",1,"大匙"],["白醋",3,"大匙"],["糖",2,"大匙"],["醬油",1,"大匙"]],
+ st:[[0,"紅蘿蔔切絲，用白醋加糖醃著，這是酸菜。"],[3,"五花肉片用魚露和醬油抓醃。"],[6,"熱鍋煎肉片到焦香。"],[11,"麵包烤過剖開。"],[13,"夾肉、醃蘿蔔、小黃瓜條、香菜。"]],
+ tip:"醃蘿蔔絲十分鐘就夠酸，這道的清爽全靠它。麵包一定要烤過才有對比口感。"}
+,
+{id:"congyoubing",n:"蔥抓餅夾蛋",c:"台",e:"炒鍋",t:8,kid:1,need:["蔥抓餅","雞蛋"],sneed:[],
+ ing:[["冷凍蔥抓餅",3,"片"],["雞蛋",3,"顆"],["起司片",null,"隨意"],["生菜",null,"隨意"]],
+ sauce:[["醬油膏",null,"隨意"],["白胡椒",null,"適量"]],
+ st:[[0,"蔥抓餅不用解凍，直接下鍋不加油。"],[1,"中火煎2分鐘，用兩支鏟子把它抓鬆。"],[3,"翻面，同時旁邊煎蛋。"],[5,"餅翻面後把蛋鋪上去，對摺。"],[7,"再各煎30秒，切塊。"]],
+ tip:"要抓才會有層次，煎的時候用兩支鏟子往中間推。不用放油，餅本身油就夠多了。"}
+];
+
+
+/* ---------- 儲存：Claude 環境用 window.storage，自架站用 localStorage，都不行就存在記憶體 ---------- */
+const STORE=(()=>{const mem={};return{
+  async get(k){
+    try{const r=await window.storage.get(k);if(r&&r.value)return r.value;}catch(e){}
+    try{const v=localStorage.getItem(k);if(v!==null)return v;}catch(e){}
+    return mem[k]||null;
+  },
+  async set(k,v){
+    mem[k]=v;
+    try{await window.storage.set(k,v);}catch(e){}
+    try{localStorage.setItem(k,v);}catch(e){}
+  }};})();
+
+const ALL=GROUPS.flatMap(g=>g.items);
+const CUISINES=[...new Set(R.map(r=>r.c))];
+const GEAR=[...new Set(R.map(r=>r.e))];
+let HAVE=new Set(["雞蛋","白飯"]),NOSAUCE=new Set(),FAV=new Set();
+let S={time:20,serv:3,kid:false,fav:false,c:new Set(),e:new Set()};
+let OPEN=true,SHELF=false,REFOCUS=null,Q="",NQ="",MY=[],SHOW=[12,12,12];
+const PAGE=12;
+const RECIPES=()=>R.concat(MY);
+
+async function load(){
+  const v=await STORE.get("kitchen");
+  if(v)try{const d=JSON.parse(v);
+    if(d.have)HAVE=new Set(d.have);
+    if(d.nosauce)NOSAUCE=new Set(d.nosauce);
+    if(d.fav)FAV=new Set(d.fav);
+    if(d.serv)S.serv=d.serv;
+    if(HAVE.size>2)OPEN=false;
+  }catch(e){}
+  const m=await STORE.get("myrecipes");
+  if(m){try{MY=JSON.parse(m)||[];}catch(e){}}
+}
+function saveMine(){STORE.set("myrecipes",JSON.stringify(MY));}
+function save(){STORE.set("kitchen",JSON.stringify({have:[...HAVE],nosauce:[...NOSAUCE],fav:[...FAV],serv:S.serv}));}
+
+/* ---------- 份量換算 ---------- */
+const FR={0.5:"½",0.25:"¼"};
+function fmt(v,u){
+  let x=v*(S.serv/3);
+  if(u==="g")x=Math.max(25,Math.round(x/25)*25);
+  else if(u==="ml")x=Math.max(50,Math.round(x/50)*50);
+  else if(u==="顆"&&v<1)x=Math.max(.25,Math.round(x*4)/4);
+  else x=Math.max(.5,Math.round(x*2)/2);
+  const i=Math.floor(x),f=+(x-i).toFixed(2);
+  if(u==="g"||u==="ml"||!FR[f])return String(+x.toFixed(2));
+  return (i?i:"")+FR[f];
+}
+const qtyText=a=>a[1]===null?a[2]:fmt(a[1],a[2])+(a[2]==="g"||a[2]==="ml"?"":" ")+a[2];
+
+/* ---------- 比對：need 裡的陣列代表「有其中一樣就算有」 ---------- */
+const nameOf=x=>Array.isArray(x)?x.slice(0,2).join("或"):x;
+const okNeed=x=>Array.isArray(x)?x.some(i=>HAVE.has(i)):HAVE.has(x);
+function lacking(r){
+  return r.need.filter(x=>!okNeed(x)).map(nameOf)
+    .concat((r.sneed||[]).filter(x=>NOSAUCE.has(x)));
+}
+function missingSet(r){
+  const s=new Set();
+  r.need.forEach(x=>{if(!okNeed(x))(Array.isArray(x)?x:[x]).forEach(i=>s.add(i));});
+  (r.sneed||[]).forEach(x=>{if(NOSAUCE.has(x))s.add(x);});
+  return s;
+}
+function pass(r){
+  if(NQ&&!r.n.includes(NQ))return false;
+  if(r.t>S.time)return false;
+  if(S.kid&&!r.kid)return false;
+  if(S.fav&&!FAV.has(r.id))return false;
+  if(S.c.size&&!S.c.has(r.c))return false;
+  if(S.e.size&&!S.e.has(r.e))return false;
+  return true;
+}
+const USES={};ALL.forEach(i=>USES[i]=R.filter(r=>r.need.some(x=>Array.isArray(x)?x.includes(i):x===i)).length);
+function unlock(){
+  let best=null;
+  for(const it of ALL){
+    if(HAVE.has(it))continue;
+    let c=0;
+    for(const r of RECIPES()){
+      if(!pass(r))continue;
+      const un=r.need.filter(x=>!okNeed(x));
+      if(un.length!==1||(r.sneed||[]).some(x=>NOSAUCE.has(x)))continue;
+      const g=un[0];
+      if(Array.isArray(g)?g.includes(it):g===it)c++;
+    }
+    if(c&&(!best||c>best.c||(c===best.c&&USES[it]>USES[best.it])))best={it,c};
+  }
+  return best;
+}
+
+/* ---------- 冰箱 ---------- */
+function fridge(){
+  const el=document.getElementById("fridge");
+  document.getElementById("tog").textContent=OPEN?"收起冰箱":"打開冰箱";
+  if(!OPEN){
+    const picked=ALL.filter(i=>HAVE.has(i));
+    el.innerHTML=`<div class="folded">${picked.length?picked.map(i=>`<span>${i}</span>`).join(""):
+      "<em>還沒勾任何東西。</em>"}</div>`;
+    return;
+  }
+  const hit=i=>!Q||i.includes(Q);
+  el.innerHTML=`<div class="tools">
+      <input id="q" placeholder="搜尋食材…" value="${Q}" aria-label="搜尋食材">
+      <span class="have-n">冰箱裡有 <b>${[...HAVE].filter(i=>ALL.includes(i)).length}</b> 樣</span>
+      <button class="clear" id="clear">全部清空</button></div>`+
+    GROUPS.map(g=>{const its=g.items.filter(hit);return its.length?
+      `<div class="gname">${g.g}</div><div class="items">`+
+      its.map(i=>`<button class="it" data-i="${i}" aria-pressed="${HAVE.has(i)}">${i}</button>`).join("")+
+      `</div>`:"";}).join("")+
+    `<details${SHELF?" open":""}><summary>醬料櫃　${SAUCES.length-NOSAUCE.size}/${SAUCES.length}</summary>
+      <div class="shelf-note">預設當作你都有。用完了就點掉，需要它的菜會被標成缺料。</div>
+      <div class="items">`+SAUCES.filter(hit).map(s=>
+        `<button class="it sauce" data-s="${s}" aria-pressed="${!NOSAUCE.has(s)}">${s}</button>`).join("")+
+      `</div></details>`;
+  const q=el.querySelector("#q");
+  q.oninput=()=>{Q=q.value.trim();REFOCUS="#q";draw();};
+  el.querySelector("#clear").onclick=()=>{HAVE=new Set();NOSAUCE=new Set();save();draw();};
+  const d=el.querySelector("details");if(d)d.ontoggle=e=>{SHELF=e.target.open;};
+  el.querySelectorAll(".it[data-i]").forEach(b=>b.onclick=()=>{
+    const v=b.dataset.i;HAVE.has(v)?HAVE.delete(v):HAVE.add(v);REFOCUS=`[data-i="${v}"]`;save();draw();});
+  el.querySelectorAll(".it[data-s]").forEach(b=>b.onclick=()=>{
+    const v=b.dataset.s;NOSAUCE.has(v)?NOSAUCE.delete(v):NOSAUCE.add(v);REFOCUS=`[data-s="${v}"]`;save();draw();});
+  if(REFOCUS&&REFOCUS!=="#nq"){const t=el.querySelector(REFOCUS);
+    if(t){const p=t.selectionStart;t.focus({preventScroll:true});if(p!=null&&t.setSelectionRange)t.setSelectionRange(t.value.length,t.value.length);}
+    REFOCUS=null;}
+}
+function bars(){
+  document.getElementById("bar1").innerHTML=
+    `<span class="lab">時間</span>`+[5,10,15,20].map(v=>
+      `<button class="mini" data-t="${v}" aria-pressed="${S.time===v}">${v}</button>`).join("")+
+    `<div class="sep"></div><span class="lab">份量</span>`+
+    [2,3,4].map(v=>`<button class="mini" data-v="${v}" aria-pressed="${S.serv===v}">${v}</button>`).join("")+
+    `<div class="sep"></div>
+     <button class="pill kid" data-k="kid" aria-pressed="${S.kid}">小孩吃得下</button>
+     <button class="pill fav" data-k="fav" aria-pressed="${S.fav}">★ 收藏</button>
+     <input id="nq" placeholder="搜尋菜名…" value="${NQ}" aria-label="搜尋菜名">
+     <button class="roll" id="roll">抽一道</button>`;
+  document.getElementById("bar2").innerHTML=
+    `<span class="lab">菜系</span>`+CUISINES.map(v=>
+      `<button class="pill" data-c="${v}" aria-pressed="${S.c.has(v)}">${v}</button>`).join("")+
+    `<div class="sep"></div><span class="lab">器具</span>`+GEAR.map(v=>
+      `<button class="pill" data-e="${v}" aria-pressed="${S.e.has(v)}">${v}</button>`).join("");
+  const b1=document.getElementById("bar1"),b2=document.getElementById("bar2");
+  b1.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{S.time=+b.dataset.t;draw();});
+  b1.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{S.serv=+b.dataset.v;save();draw();});
+  b1.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{S[b.dataset.k]=!S[b.dataset.k];draw();});
+  b2.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{
+    S.c.has(b.dataset.c)?S.c.delete(b.dataset.c):S.c.add(b.dataset.c);draw();});
+  b2.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{
+    S.e.has(b.dataset.e)?S.e.delete(b.dataset.e):S.e.add(b.dataset.e);draw();});
+  const nq=b1.querySelector("#nq");
+  nq.oninput=()=>{NQ=nq.value.trim();SHOW=[PAGE,PAGE,PAGE];REFOCUS="#nq";draw();};
+  if(REFOCUS==="#nq"){nq.focus({preventScroll:true});nq.setSelectionRange(nq.value.length,nq.value.length);REFOCUS=null;}
+  b1.querySelector("#roll").onclick=()=>{
+    const A=RECIPES(),ok=A.filter(r=>pass(r)&&!lacking(r).length),p=ok.length?ok:A.filter(pass);
+    if(p.length)openDish(p[Math.floor(Math.random()*p.length)].id,b1.querySelector("#roll"));};
+}
+function card(r){
+  const l=lacking(r);
+  return `<div class="card${l.length?" dim":""}${r.own?" own":""}" role="button" tabindex="0" data-id="${r.id}">
+    <button class="star" data-fav="${r.id}" aria-pressed="${FAV.has(r.id)}" aria-label="收藏 ${r.n}">★</button>
+    ${r.own?'<span class="mine">MINE</span>':""}
+    <span class="arc" style="--p:${r.t/20*100}"><span>${r.t}</span></span>
+    <h3>${r.n}</h3><div class="meta">${r.c} · ${r.e}</div>
+    ${l.length?`<div class="lack">缺 ${l.join("、")}</div>`:""}
+    <div class="tags">${r.kid?'<span class="tag k">小孩OK</span>':""}${r.spicy?'<span class="tag s">辣度可調</span>':""}</div>
+  </div>`;
+}
+function draw(){
+  fridge();bars();
+  const list=RECIPES().filter(pass).sort((a,b)=>(b.own?1:0)-(a.own?1:0)||a.t-b.t),bins=[[],[],[]];
+  list.forEach(r=>{const k=lacking(r).length;if(k<=2)bins[k].push(r);});
+  const u=unlock();
+  document.getElementById("hint").innerHTML=u?
+    `<div class="hint"><span class="k">順手買</span><span>再加一樣「<b>${u.it}</b>」，就多開 ${u.c} 道菜。</span>
+     <button id="addit">加進冰箱</button></div>`:"";
+  if(u)document.getElementById("addit").onclick=()=>{HAVE.add(u.it);save();draw();};
+
+  const T=["現在就能做","差 1 樣","差 2 樣"];let html="";
+  if(!HAVE.size){
+    html=`<div class="empty"><b>先勾幾樣冰箱裡有的</b>從今天買了什麼肉開始最快。下面是全部 ${R.length} 道。</div>
+      <div class="band"><h2>全部菜色</h2><span class="n">${list.length}</span></div>
+      <div class="grid">${list.slice(0,SHOW[0]).map(card).join("")}</div>
+      ${list.length>SHOW[0]?`<button class="more" data-b="0">還有 ${list.length-SHOW[0]} 道，顯示更多</button>`:""}`;
+  }else if(!bins.some(b=>b.length)){
+    html=`<div class="empty"><b>這些條件下沒有菜</b>把時間拉長，或放寬上面的篩選。</div>`;
+  }else{
+    html=bins.map((b,i)=>b.length?
+      `<div class="band${i?"":" go"}"><h2>${T[i]}</h2><span class="n">${b.length}</span></div>
+       <div class="grid">${b.slice(0,SHOW[i]).map(card).join("")}</div>
+       ${b.length>SHOW[i]?`<button class="more" data-b="${i}">還有 ${b.length-SHOW[i]} 道，顯示更多</button>`:""}`:"").join("");
+  }
+  const out=document.getElementById("out");out.innerHTML=html;
+  out.querySelectorAll(".card").forEach(c=>{
+    c.onclick=e=>{if(e.target.closest(".star"))return;openDish(c.dataset.id,c);};
+    c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDish(c.dataset.id,c);}};});
+  out.querySelectorAll(".more").forEach(b=>b.onclick=()=>{SHOW[+b.dataset.b]+=24;draw();});
+  out.querySelectorAll(".star").forEach(s=>s.onclick=e=>{
+    e.stopPropagation();const id=s.dataset.fav;
+    FAV.has(id)?FAV.delete(id):FAV.add(id);save();draw();});
+}
+
+/* ---------- 食譜細節 ---------- */
+let LAST=null;
+function openDish(id,trigger){
+  const r=RECIPES().find(x=>x.id===id);if(trigger)LAST=trigger;
+  const l=lacking(r),ms=missingSet(r);
+  const row=a=>`<div class="ing${[...ms].some(m=>a[0].includes(m))?" miss":""}">
+    <span>${a[0]}</span><span class="q">${qtyText(a)}</span></div>`;
+  document.getElementById("panel").innerHTML=`
+    <div class="phead"><div><h2 id="ptitle">${r.n}</h2>
+      <div class="psub">${r.c} · ${r.e} · 約 ${r.t} 分鐘 · ${S.serv} 人份${
+        l.length?` · <span style="color:#E4705C">缺 ${l.join("、")}</span>`:""}</div></div>
+      <button class="close" id="cl" aria-label="關閉">✕</button></div>
+    <div class="sec">材料</div>${r.ing.map(row).join("")}
+    ${r.sauce?`<div class="sec">醬汁　先調好再開火</div>
+      <div class="sauce-box">${r.sauce.map(row).join("")}</div>`:""}
+    <div class="sec">做法　時間軸</div>
+    ${r.st.map(s=>`<div class="step"><div class="t">${s[0]}<small>MIN</small></div><p>${s[1]}</p></div>`).join("")}
+    <div class="tip"><b>關鍵</b>${r.tip}</div>
+    ${r.own?`<div class="actions"><button class="btn danger" id="del">刪掉這道</button></div>`:""}`;
+  const db=document.getElementById("del");
+  if(db)db.onclick=()=>{MY=MY.filter(x=>x.id!==r.id);saveMine();closeSheet();draw();};
+  document.getElementById("sheet").hidden=false;
+  document.body.style.overflow="hidden";
+  document.getElementById("cl").onclick=closeSheet;
+  document.getElementById("cl").focus();
+}
+function closeSheet(){
+  document.getElementById("sheet").hidden=true;document.body.style.overflow="";
+  if(LAST&&document.body.contains(LAST))LAST.focus();
+}
+document.getElementById("sheet").onclick=e=>{if(e.target.id==="sheet")closeSheet();};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet();});
+document.getElementById("tog").onclick=()=>{OPEN=!OPEN;draw();};
+
+/* ---------- 我的食譜：新增、匯出、匯入 ---------- */
+function esc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");}
+let PICK=new Set();
+function openEditor(){
+  PICK=new Set();
+  document.getElementById("panel").innerHTML=`
+    <div class="phead"><div><h2 id="ptitle">我的食譜</h2>
+      <div class="psub">自己加的菜會跟內建的 ${R.length} 道一起被冰箱比對。目前有 ${MY.length} 道。</div></div>
+      <button class="close" id="cl" aria-label="關閉">✕</button></div>
+    <div class="form">
+      <div class="two">
+        <div><label>菜名</label><input type="text" id="f_n" placeholder="例：蔭鳳梨蒸魚"></div>
+        <div><label>幾分鐘</label><input type="number" id="f_t" value="15" min="1" max="20"></div>
+      </div>
+      <div class="two">
+        <div><label>菜系</label><select id="f_c">${CUISINES.map(c=>`<option>${c}</option>`).join("")}</select></div>
+        <div><label>器具</label><select id="f_e">${GEAR.map(g=>`<option>${g}</option>`).join("")}</select></div>
+      </div>
+      <label>需要哪些食材　點選後才會被冰箱比對</label>
+      <div class="items" id="f_pick">${ALL.map(i=>
+        `<button type="button" class="it" data-p="${i}" aria-pressed="false">${i}</button>`).join("")}</div>
+      <label>材料　一行一樣，寫成「名稱 數量 單位」</label>
+      <textarea id="f_ing" placeholder="鯛魚片 2 片&#10;蔭鳳梨 3 大匙&#10;薑絲 適量"></textarea>
+      <label>做法　一行一步，開頭寫第幾分鐘</label>
+      <textarea id="f_st" placeholder="0 魚片擦乾鋪盤&#10;2 蔭鳳梨鋪上，電鍋一杯水&#10;12 跳起來撒蔥絲"></textarea>
+      <label>關鍵　這道最容易做壞的地方</label>
+      <input type="text" id="f_tip" placeholder="蒸完的水一定要倒掉再調味">
+      <div class="two" style="margin-top:16px">
+        <div><label>小孩吃得下</label><select id="f_kid"><option value="1">是</option><option value="0">否</option></select></div>
+        <div><label>會辣</label><select id="f_spicy"><option value="0">否</option><option value="1">是</option></select></div>
+      </div>
+      <div id="f_warn"></div>
+      <div class="actions">
+        <button class="btn" id="f_save">存進我的食譜</button>
+        <button class="btn ghost" id="f_out">匯出備份</button>
+        <button class="btn ghost" id="f_in">匯入</button>
+      </div>
+      <div class="hintline">存在這台裝置的瀏覽器裡。換手機或清快取會不見，重要的話先匯出一份。</div>
+    </div>`;
+  document.getElementById("sheet").hidden=false;
+  document.body.style.overflow="hidden";
+  document.getElementById("cl").onclick=closeSheet;
+  document.querySelectorAll("#f_pick .it").forEach(b=>b.onclick=()=>{
+    const v=b.dataset.p; PICK.has(v)?PICK.delete(v):PICK.add(v);
+    b.setAttribute("aria-pressed",PICK.has(v));});
+  document.getElementById("f_save").onclick=saveForm;
+  document.getElementById("f_out").onclick=exportMine;
+  document.getElementById("f_in").onclick=importMine;
+}
+function parseIng(txt){
+  return txt.split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{
+    const p=l.split(/\s+/);
+    if(p.length>=3&&!isNaN(parseFloat(p[p.length-2])))
+      return [p.slice(0,-2).join(" "),parseFloat(p[p.length-2]),p[p.length-1]];
+    if(p.length>=2&&!isNaN(parseFloat(p[p.length-1])))
+      return [p.slice(0,-1).join(" "),parseFloat(p[p.length-1]),"份"];
+    return [p.slice(0,-1).join(" ")||l,null,p.length>1?p[p.length-1]:"適量"];
+  });
+}
+function parseSt(txt){
+  return txt.split("\n").map(l=>l.trim()).filter(Boolean).map(l=>{
+    const m=l.match(/^(\d+)\s+(.*)$/);
+    return m?[+m[1],m[2]]:[0,l];
+  });
+}
+function saveForm(){
+  const g=id=>document.getElementById(id).value.trim();
+  const w=document.getElementById("f_warn");
+  const n=g("f_n"), t=+g("f_t"), ing=g("f_ing"), st=g("f_st");
+  if(!n){w.innerHTML='<div class="warn">菜名不能空白。</div>';return;}
+  if(!ing||!st){w.innerHTML='<div class="warn">材料和做法都要填，不然這道菜在廚房裡沒用。</div>';return;}
+  if(!PICK.size){w.innerHTML='<div class="warn">至少點一樣食材，否則冰箱比對不到這道菜。</div>';return;}
+  MY.push({id:"my_"+Date.now(),own:1,n,c:g("f_c"),e:g("f_e"),t:Math.min(60,Math.max(1,t||15)),
+    kid:+g("f_kid"),spicy:+g("f_spicy"),need:[...PICK],sneed:[],
+    ing:parseIng(ing),st:parseSt(st),tip:g("f_tip")||"（還沒寫）"});
+  saveMine();closeSheet();draw();
+}
+function exportMine(){
+  const blob=new Blob([JSON.stringify(MY,null,1)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="my-recipes.json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importMine(){
+  const i=document.createElement("input");i.type="file";i.accept=".json,application/json";
+  i.onchange=()=>{const f=i.files[0];if(!f)return;
+    const rd=new FileReader();
+    rd.onload=()=>{try{
+      const d=JSON.parse(rd.result);
+      if(!Array.isArray(d))throw 0;
+      const have=new Set(MY.map(x=>x.id));
+      d.forEach(x=>{if(x&&x.n&&x.need&&!have.has(x.id))MY.push({...x,own:1});});
+      saveMine();closeSheet();draw();
+    }catch(e){
+      document.getElementById("f_warn").innerHTML='<div class="warn">這個檔案讀不出來，要匯出時產生的 my-recipes.json。</div>';
+    }};
+    rd.readAsText(f);};
+  i.click();
+}
+document.getElementById("mine").onclick=openEditor;
+
+load().then(draw);
+</script>
+</body></html>
