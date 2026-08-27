@@ -170,17 +170,115 @@ summary:hover{color:var(--dim)}
 .btn.danger{background:none;border:1px solid rgba(200,65,44,.5);color:#E4705C}
 .warn{color:#E4705C;font-size:13px;margin-top:10px}
 footer{color:var(--dimmer);font-size:12.5px;line-height:1.8;margin-top:44px;padding-top:20px;border-top:1px solid var(--ink3)}
+/* ===== v5：使用者狀態 · 庫存效期 · 熱量 ===== */
+html{color-scheme:dark}
+.hbtns{display:flex;gap:8px;flex-wrap:wrap}
+#dash{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:9px;margin-top:16px}
+.tile{background:var(--ink2);border:1px solid var(--ink3);border-radius:4px;padding:12px 14px}
+.tile .lb{font-family:var(--num);font-size:10.5px;letter-spacing:.2em;color:var(--dimmer)}
+.tile .vl{font-family:var(--num);font-size:24px;color:var(--paper);line-height:1.15;margin-top:6px}
+.tile .vl small{font-size:12px;color:var(--dimmer);letter-spacing:.08em;margin-left:4px}
+.tile .sub{font-size:12px;color:var(--dim);margin-top:4px;line-height:1.5}
+.tile.hot .vl{color:var(--yolk)}
+.tile.bad{border-color:rgba(200,65,44,.4)}
+.tile.bad .vl{color:#E4705C}
+.meter{height:5px;border-radius:3px;background:var(--ink3);margin-top:9px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--scallion);border-radius:3px;transition:width .3s}
+.meter i.mid{background:var(--yolk)}
+.meter i.over{background:var(--chili)}
+.setup{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:rgba(240,180,41,.07);
+  border:1px solid rgba(240,180,41,.22);border-radius:4px;padding:13px 16px;margin-top:16px}
+.setup b{font-family:var(--serif);font-size:16px;display:block;margin-bottom:3px}
+.setup span{font-size:13px;color:var(--dim);line-height:1.6}
+.setup button{background:var(--yolk);border:0;color:#1B1408;border-radius:3px;padding:7px 16px;
+  font-size:13.5px;font-family:var(--sans);font-weight:500;cursor:pointer;margin-left:auto;white-space:nowrap}
+
+.alertbox{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-radius:4px;padding:11px 15px;margin-top:12px;font-size:14px;
+  background:rgba(200,65,44,.08);border:1px solid rgba(200,65,44,.28)}
+.alertbox.soon{background:rgba(240,180,41,.07);border-color:rgba(240,180,41,.22)}
+.alertbox .k{font-family:var(--num);font-size:11px;letter-spacing:.2em;color:#E4705C}
+.alertbox.soon .k{color:var(--yolk)}
+.alertbox b{color:var(--paper)}
+.alertbox button{background:none;border:1px solid var(--ink4);color:var(--dim);border-radius:3px;
+  padding:5px 12px;font-size:13px;font-family:var(--sans);cursor:pointer;margin-left:auto}
+.alertbox button:hover{color:var(--paper);border-color:var(--dim)}
+
+.suggbox{margin-top:18px;border:1px solid var(--ink3);border-radius:4px;background:var(--ink2);padding:14px 16px 6px}
+.suggbox .st{font-family:var(--num);font-size:11px;letter-spacing:.24em;color:var(--yolk);margin-bottom:4px}
+.suggbox .sn0{font-size:12.5px;color:var(--dimmer);margin-bottom:10px;line-height:1.6}
+.sug{display:flex;align-items:baseline;gap:12px;padding:9px 0;border-top:1px solid var(--ink3);cursor:pointer;text-align:left;
+  background:none;border-left:0;border-right:0;border-bottom:0;width:100%;font-family:var(--sans);color:var(--paper)}
+.sug:hover .nm{color:var(--yolk)}
+.sug .rk{font-family:var(--num);font-size:12px;color:var(--dimmer);width:16px;flex:none}
+.sug .nm{font-family:var(--serif);font-weight:700;font-size:16px;white-space:nowrap}
+.sug .wy{font-size:12.5px;color:var(--dim);line-height:1.5}
+.sug .kk{font-family:var(--num);font-size:13px;color:var(--dimmer);margin-left:auto;white-space:nowrap}
+
+.it .dd{font-family:var(--num);font-size:10px;margin-left:5px;padding:0 4px;border-radius:2px;font-weight:400;
+  background:rgba(240,180,41,.18);color:var(--yolk)}
+.it .dd.red{background:rgba(200,65,44,.22);color:#E4705C}
+.it[aria-pressed=true] .dd{background:rgba(240,180,41,.3);color:#7A5A05}
+.it[aria-pressed=true] .dd.red{background:rgba(200,65,44,.25);color:#8C2216}
+.stockbox summary b{color:var(--yolk);letter-spacing:.1em}
+.srow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dotted var(--ink3);flex-wrap:wrap}
+.srow .sn{font-size:14px;min-width:88px}
+.srow input{background:var(--ink);border:1px solid var(--ink3);color:var(--paper);border-radius:3px;
+  padding:4px 8px;font-family:var(--sans);font-size:13px}
+.srow .sq{width:92px}
+.srow .se{width:140px;font-family:var(--num)}
+.srow .sx{background:none;border:1px solid var(--ink3);color:var(--dimmer);border-radius:3px;
+  padding:4px 10px;font-size:12.5px;cursor:pointer;margin-left:auto;font-family:var(--sans)}
+.srow .sx:hover{color:#E4705C;border-color:rgba(200,65,44,.5)}
+.srow .lft{font-family:var(--num);font-size:12px;color:var(--yolk);min-width:46px}
+.srow .lft.red{color:#E4705C}
+
+.card .kc{color:var(--dim)}
+.card .use{font-size:12.5px;color:var(--scallion);margin-top:7px;line-height:1.5}
+.tag.e{background:rgba(240,180,41,.16);color:var(--yolk)}
+
+.nut{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:9px}
+.nbox{background:var(--ink);border:1px solid var(--ink3);border-radius:3px;padding:10px 12px}
+.nbox .lb{font-family:var(--num);font-size:10px;letter-spacing:.18em;color:var(--dimmer)}
+.nbox .vv{font-family:var(--num);font-size:19px;margin-top:4px}
+.nbox.k .vv{color:var(--yolk)}
+.nnote{font-size:12.5px;color:var(--dimmer);margin-top:10px;line-height:1.7}
+.fitline{font-size:13.5px;margin-top:10px;padding:9px 12px;border-radius:3px;line-height:1.6;
+  background:rgba(143,176,94,.12);border:1px solid rgba(143,176,94,.28);color:#C9DDA6}
+.fitline.over{background:rgba(200,65,44,.1);border-color:rgba(200,65,44,.3);color:#E4705C}
+
+.logrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--ink3);font-size:14.5px}
+.logrow .lk{font-family:var(--num);color:var(--yolk);margin-left:auto;white-space:nowrap}
+.logrow .lx{background:none;border:0;color:var(--ink4);cursor:pointer;font-size:16px;padding:0 2px}
+.logrow .lx:hover{color:#E4705C}
+.logrow .ls{font-size:12px;color:var(--dimmer)}
+.days{display:flex;align-items:flex-end;gap:7px;height:96px;margin-top:6px}
+.day{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.day i{width:100%;background:var(--ink4);border-radius:2px 2px 0 0;min-height:2px;display:block}
+.day i.on{background:var(--yolk)}
+.day i.over{background:var(--chili)}
+.day span{font-family:var(--num);font-size:10px;color:var(--dimmer)}
+.dline{position:relative;border-top:1px dashed var(--ink4);margin-top:-1px}
+.pickrow{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+#dash .setup{grid-column:1/-1;margin-top:0}
 </style>
 
 <body>
 <div class="wrap">
 <header>
-  <div class="eyebrow">今晚 · <b>兩大一小</b></div>
-  <div class="htitle"><h1>冰箱裡有什麼?</h1><div style="display:flex;gap:8px"><button class="tog" id="mine">我的食譜</button><button class="tog" id="tog"></button></div></div>
+  <div class="eyebrow" id="eyebrow">今晚 · <b>兩大一小</b></div>
+  <div class="htitle"><h1>冰箱裡有什麼?</h1><div class="hbtns">
+    <button class="tog" id="me">我</button>
+    <button class="tog" id="today">今天吃了</button>
+    <button class="tog" id="mine">我的食譜</button>
+    <button class="tog" id="tog"></button></div></div>
+  <div id="dash"></div>
+  <div id="alert"></div>
   <div id="fridge"></div>
   <div class="bar" id="bar1"></div>
   <div class="bar" id="bar2"></div>
+  <div class="bar" id="bar3"></div>
   <div id="hint"></div>
+  <div id="sugg"></div>
 </header>
 <main id="out"></main>
 <footer>
@@ -948,7 +1046,8 @@ const ALL=GROUPS.flatMap(g=>g.items);
 const CUISINES=[...new Set(R.map(r=>r.c))];
 const GEAR=[...new Set(R.map(r=>r.e))];
 let HAVE=new Set(["雞蛋","白飯"]),NOSAUCE=new Set(),FAV=new Set();
-let S={time:20,serv:3,kid:false,fav:false,c:new Set(),e:new Set()};
+let STOCK={},PROF=null,LOG=[];
+let S={time:20,serv:3,kid:false,fav:false,c:new Set(),e:new Set(),kcap:0,fit:false,exp:false};
 let OPEN=true,SHELF=false,REFOCUS=null,Q="",NQ="",MY=[],SHOW=[12,12,12];
 const PAGE=12;
 const RECIPES=()=>R.concat(MY);
@@ -960,13 +1059,22 @@ async function load(){
     if(d.nosauce)NOSAUCE=new Set(d.nosauce);
     if(d.fav)FAV=new Set(d.fav);
     if(d.serv)S.serv=d.serv;
+    if(d.stock)STOCK=d.stock;
     if(HAVE.size>2)OPEN=false;
   }catch(e){}
   const m=await STORE.get("myrecipes");
   if(m){try{MY=JSON.parse(m)||[];}catch(e){}}
+  const p=await STORE.get("profile");
+  if(p){try{PROF=JSON.parse(p);}catch(e){}}
+  const g=await STORE.get("eatlog");
+  if(g){try{LOG=JSON.parse(g)||[];}catch(e){}}
+  LOG=LOG.filter(x=>x&&x.d&&daysAgo(x.d)<=90);
+  Object.keys(STOCK).forEach(k=>{if(!HAVE.has(k))delete STOCK[k];});
 }
 function saveMine(){STORE.set("myrecipes",JSON.stringify(MY));}
-function save(){STORE.set("kitchen",JSON.stringify({have:[...HAVE],nosauce:[...NOSAUCE],fav:[...FAV],serv:S.serv}));}
+function save(){STORE.set("kitchen",JSON.stringify({have:[...HAVE],nosauce:[...NOSAUCE],fav:[...FAV],serv:S.serv,stock:STOCK}));}
+function saveProf(){STORE.set("profile",JSON.stringify(PROF));}
+function saveLog(){STORE.set("eatlog",JSON.stringify(LOG));}
 
 /* ---------- 份量換算 ---------- */
 const FR={0.5:"½",0.25:"¼"};
@@ -981,6 +1089,170 @@ function fmt(v,u){
   return (i?i:"")+FR[f];
 }
 const qtyText=a=>a[1]===null?a[2]:fmt(a[1],a[2])+(a[2]==="g"||a[2]==="ml"?"":" ")+a[2];
+
+/* ---------- 熱量估算：食材重量 × 每 100 克熱量 ----------
+   UG 是通用單位換算，UO 是單一食材的例外，NUT=[大卡,蛋白,脂肪,碳水]/100g。
+   食譜本身以 3 人份寫，算完除以 3 就是每份。 */
+const UG={g:1,ml:1,"大匙":15,"小匙":5,"杯":200,"顆":100,"根":80,"片":30,"把":120,"條":150,"包":120,
+ "瓣":5,"塊":40,"盒":300,"份":180,"碗":180,"朵":4,"罐":200,"支":50,"隻":15,"張":25,"大把":15,
+ "小把":4,"少許":2,"適量":3,"隨意":5,"配菜":60,"配著吃":60};
+const UO={
+ "雞蛋|顆":55,"水煮蛋|顆":55,"皮蛋|顆":60,"洋蔥|顆":200,"牛番茄|顆":150,"小番茄|顆":15,
+ "甜椒|顆":150,"青花菜|顆":350,"馬鈴薯|顆":150,"高麗菜|顆":900,"大白菜|顆":1500,"檸檬|顆":70,
+ "紅蔥頭|顆":10,"生菜|顆":300,"冷凍水餃|顆":25,
+ "玉米|根":250,"新鮮玉米|根":250,"紅蘿蔔|根":180,"白蘿蔔|根":700,"蔥|根":15,"蔥花|根":15,
+ "青蒜或蔥|根":25,"芹菜|根":40,"小黃瓜|根":120,"香茅|根":15,"玉米筍|根":15,"杏鮑菇|根":80,
+ "辣椒|根":8,"乾辣椒|根":1,
+ "培根|片":20,"吐司|片":30,"厚片吐司|片":45,"鯛魚片|片":120,"鮭魚|片":120,"鯖魚|片":120,
+ "去骨雞腿排|片":250,"雞胸肉|片":200,"老薑|片":3,"薑|片":3,"起司片|片":20,"冷凍蔥抓餅|片":100,
+ "冬粉|把":50,"韭菜|把":150,"菠菜|把":200,"空心菜|把":250,"九層塔|把":20,"九層塔|大把":30,
+ "柴魚片|大把":8,"柴魚片|小把":3,"嫩豆腐|盒":300,"板豆腐|盒":300,
+ "豆干|塊":35,"油豆腐|塊":30,"咖哩塊|塊":20,
+ "春捲皮|張":25,"泡麵|包":85,"金針菇|包":150,"鴻喜菇|包":150,
+ "烏龍麵|份":200,"法國麵包或厚片吐司|份":60,
+ "雞翅|支":50,"蝦仁|隻":15,"乾香菇|朵":3,"玉米粒|罐":200,"白飯|碗":180,"米|杯":180,"水|杯":200,
+ "香腸|條":50,"茄子|條":150,"櫛瓜|條":200,"絲瓜|條":500,
+ "高麗菜絲|配菜":80,"吐司或麵包|配著吃":60,"年糕或馬鈴薯|隨意":80,"泡菜|隨意":40,
+ "鴻喜菇|隨意":50,"小番茄|隨意":60,"生菜|隨意":50,"起司片|隨意":20,"九層塔|隨意":15,
+ "紅蘿蔔丁|隨意":30,"醬油膏|隨意":10,"海苔絲|隨意":2,"海苔絲|適量":2,"辣油|隨意":5,
+ "白芝麻|適量":3,"蔥花|適量":10,"蒜粉|適量":2,"白胡椒|適量":1,"黑胡椒|適量":1,"太白粉水|適量":8};
+const NUT={
+ "五花肉片":[395,14,37,0],"火鍋豬肉片":[260,17,21,0],"里肌肉片":[130,22,4,0],"豬絞肉":[250,17,20,0],
+ "火鍋牛肉片":[250,18,19,0],"牛絞肉":[250,17,20,0],"去骨雞腿排":[200,17,14,0],"雞胸肉":[110,23,1.5,0],
+ "雞翅":[200,18,14,0],"培根":[400,13,38,1],"香腸":[350,14,30,6],"排骨":[280,16,24,0],
+ "蝦仁":[90,20,1,0],"帶殼蝦":[80,18,1,0],"鮭魚":[200,20,13,0],"鯖魚":[250,19,19,0],"鯛魚片":[100,20,2,0],
+ "透抽":[80,16,1,1],"蛤蜊":[50,9,1,2],"吻仔魚":[80,15,2,0],
+ "雞蛋":[145,13,10,1],"水煮蛋":[145,13,10,1],"皮蛋":[170,14,12,2],
+ "高麗菜":[25,1.3,.1,5],"高麗菜絲":[25,1.3,.1,5],"大白菜":[15,1.2,.1,3],"青江菜或地瓜葉":[25,2,.3,4],
+ "空心菜":[25,2,.3,3],"菠菜":[23,2.9,.4,3.6],"韭菜":[27,2.4,.4,4],"生菜":[15,1.4,.2,2.9],
+ "洋蔥":[40,1.1,.1,9],"牛番茄":[18,.9,.2,3.9],"小番茄":[20,.9,.2,4],"櫛瓜":[17,1.2,.3,3],
+ "小黃瓜":[15,.7,.1,3],"甜椒":[30,1,.3,6],"青花菜":[34,2.8,.4,7],"四季豆":[31,1.8,.2,7],
+ "秋葵":[33,2,.2,7],"茄子":[25,1,.2,6],"絲瓜":[20,1,.2,4],"玉米筍":[30,2,.3,6],
+ "玉米":[90,3.3,1.4,19],"新鮮玉米":[90,3.3,1.4,19],"玉米粒":[80,2.8,1,17],"芹菜":[16,.7,.2,3],
+ "豆芽菜":[30,3,.2,4],"冬瓜":[13,.4,.2,3],"白蘿蔔":[18,.6,.1,4],"紅蘿蔔":[41,.9,.2,10],
+ "紅蘿蔔丁":[41,.9,.2,10],"馬鈴薯":[77,2,.1,17],"泡菜":[30,1.5,.5,5],
+ "香菇":[35,2.2,.3,7],"乾香菇":[280,20,1,60],"金針菇":[35,2.7,.3,7],"鴻喜菇":[30,2.5,.3,6],
+ "杏鮑菇":[35,2.5,.3,6],"木耳":[25,1,.1,6],
+ "嫩豆腐":[50,5,3,2],"板豆腐":[90,9,5,2],"豆干":[190,17,10,6],"油豆腐":[240,17,18,3],
+ "白飯":[130,2.4,.3,28],"米":[350,7,1,77],"義大利麵":[350,12,1.5,72],"通心粉或義大利麵":[350,12,1.5,72],
+ "冬粉":[350,.2,.1,86],"米粉":[350,6,.5,80],"烏龍麵":[130,3,.5,27],"麵條":[350,11,1.5,71],
+ "河粉":[130,2,.3,28],"泡麵":[450,9,20,60],"吐司":[290,9,4,50],"厚片吐司":[290,9,4,50],
+ "吐司或麵包":[290,9,4,50],"法國麵包或厚片吐司":[290,9,3,55],"冷凍水餃":[220,8,9,26],
+ "冷凍蔥抓餅":[330,6,18,36],"春捲皮":[280,8,1,58],"年糕或馬鈴薯":[200,3,.5,45],
+ "九層塔":[23,3,.6,2.6],"香菜":[23,2,.5,4],"蔥":[30,1.8,.2,7],"蔥花":[30,1.8,.2,7],
+ "蔥花或巴西里":[30,1.8,.2,7],"青蒜或蔥":[30,1.8,.2,7],"蒜":[130,6,.5,28],"蒜末":[130,6,.5,28],
+ "蒜片":[130,6,.5,28],"蒜泥":[130,6,.5,28],"蒜粉":[330,17,.7,72],"薑":[80,1.8,.8,18],
+ "老薑":[80,1.8,.8,18],"薑絲":[80,1.8,.8,18],"薑泥":[80,1.8,.8,18],"紅薑":[20,.5,0,4],
+ "紅蔥頭":[70,2.5,.1,17],"辣椒":[40,2,.4,9],"辣椒末":[40,2,.4,9],"乾辣椒":[280,12,10,50],
+ "香茅":[100,1.8,.5,25],"檸檬":[30,1,.3,9],"檸檬汁":[25,.4,.2,8],"海苔絲":[180,30,2,10],
+ "白芝麻":[570,17,50,23],"花生":[570,26,49,16],"花生碎":[570,26,49,16],
+ "蝦米":[320,60,3,3],"乾蝦米":[320,60,3,3],"柴魚片":[350,77,3,0],
+ "油":[884,0,100,0],"熱油":[884,0,100,0],"辣油":[884,0,100,0],"橄欖油":[884,0,100,0],
+ "麻油":[884,0,100,0],"香油":[884,0,100,0],"奶油":[720,.8,81,.5],
+ "鮮奶":[63,3.2,3.6,4.8],"椰奶":[200,2,21,3],"起司片":[350,22,28,2],"起司粉":[400,35,25,3],
+ "起司絲":[350,25,26,2],
+ "醬油":[60,8,0,7],"醬油膏":[90,5,0,17],"味醂":[250,.2,0,60],"米酒":[100,0,0,4],
+ "米酒或清酒":[100,0,0,4],"糖":[400,0,0,100],"蜂蜜或糖":[320,.3,0,82],"鹽":[0,0,0,0],
+ "鹽與白胡椒":[0,0,0,0],"鹽與黑胡椒":[0,0,0,0],"白胡椒":[250,10,3,50],"黑胡椒":[250,10,3,50],
+ "五香粉":[300,10,10,50],"芥末":[60,4,3,6],"太白粉":[350,0,0,86],"太白粉水":[0,0,0,0],
+ "麵粉":[360,10,1,76],"番茄醬":[100,1,0,25],"白醋":[20,0,0,1],"烏醋":[60,0,0,14],
+ "烏醋或羅望子":[60,0,0,14],"味噌":[190,12,6,25],"韓式大醬":[190,12,6,25],"韓式辣醬":[220,5,2,45],
+ "豆瓣醬":[150,10,7,12],"沙茶醬":[550,10,55,10],"咖哩塊":[500,6,32,45],"泰式甜辣醬":[250,.5,0,60],
+ "魚露":[50,8,0,4],"蠔油":[120,5,0,25],"芝麻醬":[600,17,55,18],"青醬":[450,5,45,5],
+ "綠咖哩醬":[150,3,8,15],
+ "水":[0,0,0,0],"冰水":[0,0,0,0],"冷開水":[0,0,0,0],"高湯或水":[5,.5,0,0],
+ "雞肉":[200,18,13,0],"豬肉":[250,17,20,0],"牛肉":[250,18,19,0],"魚":[110,20,3,0],
+ "蝦":[85,19,1,0],"豆腐":[70,7,4,2],"蛋":[145,13,10,1],"飯":[130,2.4,.3,28],
+ "麵":[350,11,1.5,71],"菜":[25,2,.3,4],"醬":[150,5,5,20]};
+
+const NKEYS=Object.keys(NUT).sort((a,b)=>b.length-a.length);
+function look(n){
+  if(NUT[n])return NUT[n];
+  for(const k of NKEYS)if(n.indexOf(k)>=0)return NUT[k];
+  return [40,2,.5,6];
+}
+function gramsOf(name,qty,unit){
+  const q=(qty===null||qty===undefined||isNaN(qty))?1:qty;
+  const o=UO[name+"|"+unit];
+  const per=o!==undefined?o:(UG[unit]!==undefined?UG[unit]:20);
+  return q*per;
+}
+const NCACHE=new Map();
+function nutOf(r){
+  if(NCACHE.has(r.id))return NCACHE.get(r.id);
+  let k=0,p=0,f=0,c=0;
+  (r.ing||[]).concat(r.sauce||[]).forEach(a=>{
+    const g=gramsOf(a[0],a[1],a[2]),v=look(a[0]);
+    k+=v[0]*g/100;p+=v[1]*g/100;f+=v[2]*g/100;c+=v[3]*g/100;
+  });
+  const o={kcal:Math.round(k/3),p:Math.round(p/3),f:Math.round(f/3),c:Math.round(c/3)};
+  NCACHE.set(r.id,o);return o;
+}
+const kcalOf=r=>nutOf(r).kcal;
+
+/* ---------- 日期 ---------- */
+const pad2=n=>(n<10?"0":"")+n;
+function today(){const d=new Date();return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());}
+function dnum(s){const a=String(s).split("-").map(Number);return Date.UTC(a[0],a[1]-1,a[2])/864e5;}
+const daysAgo=d=>dnum(today())-dnum(d);
+const daysTo=d=>dnum(d)-dnum(today());
+function shiftDay(n){const d=new Date();d.setDate(d.getDate()+n);
+  return d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());}
+const WD=["日","一","二","三","四","五","六"];
+
+/* ---------- 使用者狀態：BMR / TDEE / 每日目標 ---------- */
+const ACT=[[1.2,"幾乎不動"],[1.375,"每週動 1-3 天"],[1.55,"每週動 3-5 天"],[1.725,"天天在動"]];
+const GOALS=[[-.15,"減重"],[0,"維持"],[.1,"增重"]];
+function calc(){
+  if(!PROF||!PROF.h||!PROF.w)return null;
+  const bmr=Math.round(10*PROF.w+6.25*PROF.h-5*PROF.age+(PROF.sex==="f"?-161:5));
+  const tdee=Math.round(bmr*PROF.act);
+  const target=Math.round(tdee*(1+PROF.goal));
+  const prot=Math.round(PROF.w*(PROF.goal<0?1.6:1.4));
+  return{bmr:bmr,tdee:tdee,target:target,prot:prot};
+}
+function eaten(d){
+  const day=d||today();
+  return LOG.filter(x=>x.d===day).reduce((o,x)=>({kcal:o.kcal+(x.kcal||0),p:o.p+(x.p||0)}),{kcal:0,p:0});
+}
+function remain(){const c=calc();return c?c.target-eaten().kcal:null;}
+function recentIds(n){const L=n||2;return new Set(LOG.filter(x=>daysAgo(x.d)<L).map(x=>x.id));}
+
+/* ---------- 所剩食材：數量與效期 ---------- */
+function expDays(i){const s=STOCK[i];return s&&s.exp?daysTo(s.exp):null;}
+function expiring(n){
+  const lim=n===undefined?2:n;
+  return [...HAVE].filter(i=>{const d=expDays(i);return d!==null&&d<=lim;})
+    .sort((a,b)=>expDays(a)-expDays(b));
+}
+function expText(d){return d<0?"已過期":d===0?"今天":d===1?"明天":d+"天";}
+function usesExp(r){
+  const E=new Set(expiring()),out=new Set();
+  r.need.forEach(x=>(Array.isArray(x)?x:[x]).forEach(i=>{if(E.has(i))out.add(i);}));
+  return [...out];
+}
+function dropItem(i){HAVE.delete(i);delete STOCK[i];}
+
+/* ---------- 今晚建議：能做的菜裡，挑最該現在煮的 ---------- */
+function suggest(){
+  const rem=remain(),c=calc(),ate=eaten(),rec=recentIds(2);
+  const pool=RECIPES().filter(r=>r.t<=S.time&&!lacking(r).length&&(!S.kid||r.kid)
+    &&(!S.c.size||S.c.has(r.c))&&(!S.e.size||S.e.has(r.e)));
+  return pool.map(r=>{
+    const n=nutOf(r),why=[];let sc=(20-r.t)/5;
+    const ue=usesExp(r);
+    if(ue.length){sc+=45*Math.min(2,ue.length);why.push("用掉快過期的"+ue.slice(0,2).join("、"));}
+    if(rem!==null){
+      if(n.kcal<=Math.max(150,rem)){sc+=22;why.push("每份 "+n.kcal+" 大卡，今天還吃得下");}
+      else sc-=Math.min(45,(n.kcal-rem)/15);
+    }
+    if(c&&ate.p<c.prot*.6&&n.p>=22){sc+=16;why.push("補蛋白質 "+n.p+" 克");}
+    if(FAV.has(r.id)){sc+=6;why.push("你收藏過");}
+    if(rec.has(r.id))sc-=35;
+    if(!why.length)why.push("材料都有，"+r.e+"就能做");
+    return{r:r,sc:sc,why:why,n:n};
+  }).sort((a,b)=>b.sc-a.sc).slice(0,3);
+}
 
 /* ---------- 比對：need 裡的陣列代表「有其中一樣就算有」 ---------- */
 const nameOf=x=>Array.isArray(x)?x.slice(0,2).join("或"):x;
@@ -1002,6 +1274,9 @@ function pass(r){
   if(S.fav&&!FAV.has(r.id))return false;
   if(S.c.size&&!S.c.has(r.c))return false;
   if(S.e.size&&!S.e.has(r.e))return false;
+  if(S.kcap&&kcalOf(r)>S.kcap)return false;
+  if(S.fit){const rm=remain();if(rm!==null&&kcalOf(r)>Math.max(150,rm))return false;}
+  if(S.exp&&!usesExp(r).length)return false;
   return true;
 }
 const USES={};ALL.forEach(i=>USES[i]=R.filter(r=>r.need.some(x=>Array.isArray(x)?x.includes(i):x===i)).length);
@@ -1022,25 +1297,94 @@ function unlock(){
   return best;
 }
 
+/* ---------- 上方狀態列：今天還能吃多少、冰箱剩什麼 ---------- */
+let STOCKOPEN=false;
+function dash(){
+  const el=document.getElementById("dash"),c=calc(),a=eaten(),ex=expiring(2),bad=expiring(-1);
+  const nHave=[...HAVE].filter(i=>ALL.includes(i)).length;
+  let tiles="";
+  if(c){
+    const rem=c.target-a.kcal,pct=Math.max(0,Math.min(100,a.kcal/c.target*100));
+    const cls=a.kcal>c.target?"over":(pct>80?"mid":"");
+    const pp=Math.max(0,Math.min(100,a.p/c.prot*100));
+    tiles=
+      `<div class="tile"><div class="lb">今天吃了</div>
+        <div class="vl">${Math.round(a.kcal)}<small>/ ${c.target} 大卡</small></div>
+        <div class="meter"><i class="${cls}" style="width:${pct}%"></i></div>
+        <div class="sub">${LOG.filter(x=>x.d===today()).length} 筆紀錄</div></div>
+      <div class="tile ${rem<0?"bad":"hot"}"><div class="lb">還可以吃</div>
+        <div class="vl">${rem<0?"超過 "+Math.round(-rem):Math.round(rem)}<small>大卡</small></div>
+        <div class="sub">${rem<0?"明天調回來就好。":"一道主菜大約 400 到 600。"}</div></div>
+      <div class="tile"><div class="lb">蛋白質</div>
+        <div class="vl">${Math.round(a.p)}<small>/ ${c.prot} 克</small></div>
+        <div class="meter"><i style="width:${pp}%"></i></div>
+        <div class="sub">${PROF.w} 公斤 · ${GOALS.find(g=>g[0]===PROF.goal)[1]}</div></div>`;
+  }
+  tiles+=
+    `<div class="tile ${bad.length?"bad":""}"><div class="lb">冰箱</div>
+      <div class="vl">${nHave}<small>樣</small></div>
+      <div class="sub">${ex.length?ex.length+" 樣該先用掉":(nHave?"沒有標效期的東西。":"還沒勾任何東西。")}</div></div>`;
+  el.innerHTML=(c?"":`<div class="setup"><div><b>先花 30 秒設定你自己</b>
+      <span>填一次身高體重和活動量，之後每道菜都會告訴你：今天還能吃多少、這道吃不吃得下。</span></div>
+      <button id="setupbtn">開始設定</button></div>`)+
+    `<div id="tiles" style="display:contents">${tiles}</div>`;
+  const sb=document.getElementById("setupbtn");if(sb)sb.onclick=openProfile;
+  const ts=[...el.querySelectorAll(".tile")];
+  ts.forEach(t=>t.style.cursor="pointer");
+  if(c){if(ts[0])ts[0].onclick=openToday;if(ts[1])ts[1].onclick=openToday;if(ts[2])ts[2].onclick=openProfile;}
+  const ft=ts[c?3:0];
+  if(ft)ft.onclick=()=>{STOCKOPEN=true;OPEN=true;draw();
+    const d=document.querySelector(".stockbox");if(d)d.scrollIntoView({block:"center"});};
+}
+function alertbar(){
+  const el=document.getElementById("alert");
+  const bad=expiring(-1),soon=expiring(1).filter(i=>expDays(i)>=0);
+  if(!bad.length&&!soon.length){el.innerHTML="";return;}
+  let h="";
+  if(bad.length)h+=`<div class="alertbox"><span class="k">已過期</span>
+    <span>${bad.map(i=>`<b>${i}</b>`).join("、")}　放到今天已經超過你填的日期了。</span>
+    <button id="dropbad">從冰箱移除</button></div>`;
+  if(soon.length)h+=`<div class="alertbox soon"><span class="k">今明兩天</span>
+    <span>${soon.map(i=>`<b>${i}</b>（${expText(expDays(i))}）`).join("、")}　該排進今天的菜了。</span>
+    <button id="onlyexp">${S.exp?"取消只看":"只看用得到的菜"}</button></div>`;
+  el.innerHTML=h;
+  const db=document.getElementById("dropbad");
+  if(db)db.onclick=()=>{bad.forEach(dropItem);save();draw();};
+  const oe=document.getElementById("onlyexp");
+  if(oe)oe.onclick=()=>{S.exp=!S.exp;draw();};
+}
+
 /* ---------- 冰箱 ---------- */
 function fridge(){
   const el=document.getElementById("fridge");
   document.getElementById("tog").textContent=OPEN?"收起冰箱":"打開冰箱";
+  const badge=i=>{const d=expDays(i);return d===null?"":`<b class="dd${d<=0?" red":""}">${expText(d)}</b>`;};
   if(!OPEN){
     const picked=ALL.filter(i=>HAVE.has(i));
-    el.innerHTML=`<div class="folded">${picked.length?picked.map(i=>`<span>${i}</span>`).join(""):
+    el.innerHTML=`<div class="folded">${picked.length?picked.map(i=>`<span>${i}${badge(i)}</span>`).join(""):
       "<em>還沒勾任何東西。</em>"}</div>`;
     return;
   }
   const hit=i=>!Q||i.includes(Q);
+  const mine=[...HAVE].filter(i=>ALL.includes(i));
   el.innerHTML=`<div class="tools">
       <input id="q" placeholder="搜尋食材…" value="${Q}" aria-label="搜尋食材">
-      <span class="have-n">冰箱裡有 <b>${[...HAVE].filter(i=>ALL.includes(i)).length}</b> 樣</span>
+      <span class="have-n">冰箱裡有 <b>${mine.length}</b> 樣</span>
       <button class="clear" id="clear">全部清空</button></div>`+
     GROUPS.map(g=>{const its=g.items.filter(hit);return its.length?
       `<div class="gname">${g.g}</div><div class="items">`+
-      its.map(i=>`<button class="it" data-i="${i}" aria-pressed="${HAVE.has(i)}">${i}</button>`).join("")+
+      its.map(i=>`<button class="it" data-i="${i}" aria-pressed="${HAVE.has(i)}">${i}${HAVE.has(i)?badge(i):""}</button>`).join("")+
       `</div>`:"";}).join("")+
+    (mine.length?`<details class="stockbox"${STOCKOPEN?" open":""}><summary>還剩多少 · 什麼時候要吃掉　${
+        expiring().length?`<b>${expiring().length} 樣快到期</b>`:mine.length+" 樣"}</summary>
+      <div class="shelf-note">填了日期，快到期的會被排到最前面，也會影響「今晚建議」。用完的按「用完」就從冰箱拿掉。</div>
+      ${mine.map(i=>{const d=expDays(i);return `<div class="srow">
+        <span class="sn">${i}</span>
+        <span class="lft${d!==null&&d<=1?" red":""}">${d===null?"":expText(d)}</span>
+        <input class="sq" data-q="${i}" placeholder="還剩…" value="${esc((STOCK[i]||{}).q||"")}" aria-label="${i} 還剩多少">
+        <input class="se" type="date" data-e="${i}" value="${(STOCK[i]||{}).exp||""}" aria-label="${i} 吃掉的期限">
+        <button class="sx" data-x="${i}">用完</button></div>`;}).join("")}
+      </details>`:"")+
     `<details${SHELF?" open":""}><summary>醬料櫃　${SAUCES.length-NOSAUCE.size}/${SAUCES.length}</summary>
       <div class="shelf-note">預設當作你都有。用完了就點掉，需要它的菜會被標成缺料。</div>
       <div class="items">`+SAUCES.filter(hit).map(s=>
@@ -1048,12 +1392,22 @@ function fridge(){
       `</div></details>`;
   const q=el.querySelector("#q");
   q.oninput=()=>{Q=q.value.trim();REFOCUS="#q";draw();};
-  el.querySelector("#clear").onclick=()=>{HAVE=new Set();NOSAUCE=new Set();save();draw();};
-  const d=el.querySelector("details");if(d)d.ontoggle=e=>{SHELF=e.target.open;};
+  el.querySelector("#clear").onclick=()=>{HAVE=new Set();NOSAUCE=new Set();STOCK={};save();draw();};
+  el.querySelectorAll("details").forEach(d=>d.ontoggle=e=>{
+    if(e.target.classList.contains("stockbox"))STOCKOPEN=e.target.open;else SHELF=e.target.open;});
   el.querySelectorAll(".it[data-i]").forEach(b=>b.onclick=()=>{
-    const v=b.dataset.i;HAVE.has(v)?HAVE.delete(v):HAVE.add(v);REFOCUS=`[data-i="${v}"]`;save();draw();});
+    const v=b.dataset.i;
+    if(HAVE.has(v))dropItem(v);else HAVE.add(v);
+    REFOCUS=`[data-i="${v}"]`;save();draw();});
   el.querySelectorAll(".it[data-s]").forEach(b=>b.onclick=()=>{
     const v=b.dataset.s;NOSAUCE.has(v)?NOSAUCE.delete(v):NOSAUCE.add(v);REFOCUS=`[data-s="${v}"]`;save();draw();});
+  el.querySelectorAll(".sq").forEach(inp=>inp.oninput=()=>{
+    const i=inp.dataset.q;STOCK[i]=Object.assign({},STOCK[i],{q:inp.value});save();});
+  el.querySelectorAll(".se").forEach(inp=>inp.onchange=()=>{
+    const i=inp.dataset.e;STOCK[i]=Object.assign({},STOCK[i],{exp:inp.value});
+    STOCKOPEN=true;save();draw();});
+  el.querySelectorAll(".sx").forEach(b=>b.onclick=()=>{
+    dropItem(b.dataset.x);STOCKOPEN=true;save();draw();});
   if(REFOCUS&&REFOCUS!=="#nq"){const t=el.querySelector(REFOCUS);
     if(t){const p=t.selectionStart;t.focus({preventScroll:true});if(p!=null&&t.setSelectionRange)t.setSelectionRange(t.value.length,t.value.length);}
     REFOCUS=null;}
@@ -1074,7 +1428,14 @@ function bars(){
       `<button class="pill" data-c="${v}" aria-pressed="${S.c.has(v)}">${v}</button>`).join("")+
     `<div class="sep"></div><span class="lab">器具</span>`+GEAR.map(v=>
       `<button class="pill" data-e="${v}" aria-pressed="${S.e.has(v)}">${v}</button>`).join("");
-  const b1=document.getElementById("bar1"),b2=document.getElementById("bar2");
+  const rm=remain();
+  document.getElementById("bar3").innerHTML=
+    `<span class="lab">每份熱量</span>`+[[0,"不限"],[350,"≤350"],[500,"≤500"],[700,"≤700"]].map(v=>
+      `<button class="mini" data-kc="${v[0]}" aria-pressed="${S.kcap===v[0]}">${v[1]}</button>`).join("")+
+    `<div class="sep"></div>
+     <button class="pill fav" data-k2="fit" aria-pressed="${S.fit}">吃得進今天剩下的${rm!==null?"（"+Math.round(rm)+"）":""}</button>
+     <button class="pill kid" data-k2="exp" aria-pressed="${S.exp}">先用快過期的</button>`;
+  const b1=document.getElementById("bar1"),b2=document.getElementById("bar2"),b3=document.getElementById("bar3");
   b1.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{S.time=+b.dataset.t;draw();});
   b1.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{S.serv=+b.dataset.v;save();draw();});
   b1.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{S[b.dataset.k]=!S[b.dataset.k];draw();});
@@ -1082,6 +1443,10 @@ function bars(){
     S.c.has(b.dataset.c)?S.c.delete(b.dataset.c):S.c.add(b.dataset.c);draw();});
   b2.querySelectorAll("[data-e]").forEach(b=>b.onclick=()=>{
     S.e.has(b.dataset.e)?S.e.delete(b.dataset.e):S.e.add(b.dataset.e);draw();});
+  b3.querySelectorAll("[data-kc]").forEach(b=>b.onclick=()=>{S.kcap=+b.dataset.kc;draw();});
+  b3.querySelectorAll("[data-k2]").forEach(b=>b.onclick=()=>{
+    if(b.dataset.k2==="fit"&&!calc()){openProfile();return;}
+    S[b.dataset.k2]=!S[b.dataset.k2];draw();});
   const nq=b1.querySelector("#nq");
   nq.oninput=()=>{NQ=nq.value.trim();SHOW=[PAGE,PAGE,PAGE];REFOCUS="#nq";draw();};
   if(REFOCUS==="#nq"){nq.focus({preventScroll:true});nq.setSelectionRange(nq.value.length,nq.value.length);REFOCUS=null;}
@@ -1090,25 +1455,49 @@ function bars(){
     if(p.length)openDish(p[Math.floor(Math.random()*p.length)].id,b1.querySelector("#roll"));};
 }
 function card(r){
-  const l=lacking(r);
+  const l=lacking(r),n=nutOf(r),ue=usesExp(r);
   return `<div class="card${l.length?" dim":""}${r.own?" own":""}" role="button" tabindex="0" data-id="${r.id}">
     <button class="star" data-fav="${r.id}" aria-pressed="${FAV.has(r.id)}" aria-label="收藏 ${r.n}">★</button>
     ${r.own?'<span class="mine">MINE</span>':""}
     <span class="arc" style="--p:${r.t/20*100}"><span>${r.t}</span></span>
-    <h3>${r.n}</h3><div class="meta">${r.c} · ${r.e}</div>
+    <h3>${r.n}</h3><div class="meta">${r.c} · ${r.e} · <span class="kc">每份 ${n.kcal} 大卡</span></div>
     ${l.length?`<div class="lack">缺 ${l.join("、")}</div>`:""}
-    <div class="tags">${r.kid?'<span class="tag k">小孩OK</span>':""}${r.spicy?'<span class="tag s">辣度可調</span>':""}</div>
+    ${ue.length?`<div class="use">正好用掉 ${ue.join("、")}</div>`:""}
+    <div class="tags">${r.kid?'<span class="tag k">小孩OK</span>':""}${r.spicy?'<span class="tag s">辣度可調</span>':""}${
+      n.p>=25?`<span class="tag e">蛋白質 ${n.p}g</span>`:""}</div>
   </div>`;
 }
+function suggBox(){
+  const el=document.getElementById("sugg");
+  if(!HAVE.size){el.innerHTML="";return;}
+  const s=suggest();
+  if(!s.length){el.innerHTML="";return;}
+  const c=calc();
+  el.innerHTML=`<div class="suggbox"><div class="st">今晚建議</div>
+    <div class="sn0">從你現在做得出來的菜裡挑的，順序看的是：冰箱裡什麼快壞了${
+      c?"、你今天還剩多少熱量":"、幾分鐘能上桌"}、最近煮過沒有。</div>
+    ${s.map((x,i)=>`<button class="sug" data-sg="${x.r.id}">
+      <span class="rk">${i+1}</span>
+      <span class="nm">${x.r.n}</span>
+      <span class="wy">${x.why.slice(0,2).join("　·　")}</span>
+      <span class="kk">${x.r.t} 分 · ${x.n.kcal} 大卡</span></button>`).join("")}</div>`;
+  el.querySelectorAll(".sug").forEach(b=>b.onclick=()=>openDish(b.dataset.sg,b));
+}
 function draw(){
-  fridge();bars();
-  const list=RECIPES().filter(pass).sort((a,b)=>(b.own?1:0)-(a.own?1:0)||a.t-b.t),bins=[[],[],[]];
+  const c=calc();
+  document.getElementById("eyebrow").innerHTML=
+    `${today().slice(5).replace("-","/")} 週${WD[new Date().getDay()]} · <b>${S.serv} 人份</b>`+
+    (c?` · 今天還剩 <b>${Math.round(c.target-eaten().kcal)}</b> 大卡`:"");
+  dash();alertbar();fridge();bars();
+  const list=RECIPES().filter(pass).sort((a,b)=>
+    (usesExp(b).length?1:0)-(usesExp(a).length?1:0)||(b.own?1:0)-(a.own?1:0)||a.t-b.t),bins=[[],[],[]];
   list.forEach(r=>{const k=lacking(r).length;if(k<=2)bins[k].push(r);});
   const u=unlock();
   document.getElementById("hint").innerHTML=u?
     `<div class="hint"><span class="k">順手買</span><span>再加一樣「<b>${u.it}</b>」，就多開 ${u.c} 道菜。</span>
      <button id="addit">加進冰箱</button></div>`:"";
   if(u)document.getElementById("addit").onclick=()=>{HAVE.add(u.it);save();draw();};
+  suggBox();
 
   const T=["現在就能做","差 1 樣","差 2 樣"];let html="";
   if(!HAVE.size){
@@ -1125,9 +1514,9 @@ function draw(){
        ${b.length>SHOW[i]?`<button class="more" data-b="${i}">還有 ${b.length-SHOW[i]} 道，顯示更多</button>`:""}`:"").join("");
   }
   const out=document.getElementById("out");out.innerHTML=html;
-  out.querySelectorAll(".card").forEach(c=>{
-    c.onclick=e=>{if(e.target.closest(".star"))return;openDish(c.dataset.id,c);};
-    c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDish(c.dataset.id,c);}};});
+  out.querySelectorAll(".card").forEach(c2=>{
+    c2.onclick=e=>{if(e.target.closest(".star"))return;openDish(c2.dataset.id,c2);};
+    c2.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDish(c2.dataset.id,c2);}};});
   out.querySelectorAll(".more").forEach(b=>b.onclick=()=>{SHOW[+b.dataset.b]+=24;draw();});
   out.querySelectorAll(".star").forEach(s=>s.onclick=e=>{
     e.stopPropagation();const id=s.dataset.fav;
@@ -1137,24 +1526,40 @@ function draw(){
 /* ---------- 食譜細節 ---------- */
 let LAST=null;
 function openDish(id,trigger){
-  const r=RECIPES().find(x=>x.id===id);if(trigger)LAST=trigger;
-  const l=lacking(r),ms=missingSet(r);
+  const r=RECIPES().find(x=>x.id===id);if(!r)return;if(trigger)LAST=trigger;
+  const l=lacking(r),ms=missingSet(r),n=nutOf(r),c=calc(),rm=remain(),ue=usesExp(r);
   const row=a=>`<div class="ing${[...ms].some(m=>a[0].includes(m))?" miss":""}">
     <span>${a[0]}</span><span class="q">${qtyText(a)}</span></div>`;
   document.getElementById("panel").innerHTML=`
     <div class="phead"><div><h2 id="ptitle">${r.n}</h2>
-      <div class="psub">${r.c} · ${r.e} · 約 ${r.t} 分鐘 · ${S.serv} 人份${
+      <div class="psub">${r.c} · ${r.e} · 約 ${r.t} 分鐘 · ${S.serv} 人份 · 每份約 ${n.kcal} 大卡${
         l.length?` · <span style="color:#E4705C">缺 ${l.join("、")}</span>`:""}</div></div>
       <button class="close" id="cl" aria-label="關閉">✕</button></div>
+    ${ue.length?`<div class="fitline">這道正好用掉快到期的 ${ue.map(i=>i+"（"+expText(expDays(i))+"）").join("、")}。</div>`:""}
     <div class="sec">材料</div>${r.ing.map(row).join("")}
     ${r.sauce?`<div class="sec">醬汁　先調好再開火</div>
       <div class="sauce-box">${r.sauce.map(row).join("")}</div>`:""}
     <div class="sec">做法　時間軸</div>
     ${r.st.map(s=>`<div class="step"><div class="t">${s[0]}<small>MIN</small></div><p>${s[1]}</p></div>`).join("")}
     <div class="tip"><b>關鍵</b>${r.tip}</div>
-    ${r.own?`<div class="actions"><button class="btn danger" id="del">刪掉這道</button></div>`:""}`;
+    <div class="sec">每份營養　估算</div>
+    <div class="nut">
+      <div class="nbox k"><div class="lb">KCAL</div><div class="vv">${n.kcal}</div></div>
+      <div class="nbox"><div class="lb">蛋白質</div><div class="vv">${n.p} <span style="font-size:12px">g</span></div></div>
+      <div class="nbox"><div class="lb">脂肪</div><div class="vv">${n.f} <span style="font-size:12px">g</span></div></div>
+      <div class="nbox"><div class="lb">碳水</div><div class="vv">${n.c} <span style="font-size:12px">g</span></div></div>
+    </div>
+    ${c?`<div class="fitline${n.kcal>rm?" over":""}">${n.kcal>rm?
+        `吃一份會超過今天的量 ${Math.round(n.kcal-rm)} 大卡。真的想吃就吃半份，或明天少一點。`:
+        `吃一份之後，今天還剩 ${Math.round(rm-n.kcal)} 大卡、蛋白質再進 ${n.p} 克。`}</div>`:""}
+    <div class="nnote">用每樣食材的重量粗估，調味料和油也算進去了，以食譜的 3 人份為基準除以 3。
+      牌子和你手抖的程度都會讓數字跑掉，當個參考就好，不是營養標示。</div>
+    <div class="actions">
+      <button class="btn" id="cook">煮好了 · 記一筆</button>
+      ${r.own?`<button class="btn danger" id="del">刪掉這道</button>`:""}</div>`;
   const db=document.getElementById("del");
   if(db)db.onclick=()=>{MY=MY.filter(x=>x.id!==r.id);saveMine();closeSheet();draw();};
+  document.getElementById("cook").onclick=()=>openCook(r.id);
   document.getElementById("sheet").hidden=false;
   document.body.style.overflow="hidden";
   document.getElementById("cl").onclick=closeSheet;
@@ -1267,6 +1672,173 @@ function importMine(){
     rd.readAsText(f);};
   i.click();
 }
+/* ---------- 煮好了：記熱量、扣冰箱 ---------- */
+function openCook(id){
+  const r=RECIPES().find(x=>x.id===id);if(!r)return;
+  const n=nutOf(r);
+  let cs=S.serv,es=1;
+  const items=[...new Set(r.need.reduce((a,x)=>a.concat(Array.isArray(x)?x:[x]),[]).filter(i=>HAVE.has(i)))];
+  const used=new Set();
+  const panel=document.getElementById("panel");
+  function render(){
+    const c=calc(),rm=remain();
+    panel.innerHTML=`
+      <div class="phead"><div><h2 id="ptitle">煮好了：${r.n}</h2>
+        <div class="psub">記一筆到今天，順便把用完的食材從冰箱拿掉。</div></div>
+        <button class="close" id="cl" aria-label="關閉">✕</button></div>
+      <div class="sec">煮了幾人份</div>
+      <div class="pickrow">${[1,2,3,4,5,6].map(v=>
+        `<button class="mini" data-cs="${v}" aria-pressed="${cs===v}">${v}</button>`).join("")}</div>
+      <div class="sec">你自己吃了幾份</div>
+      <div class="pickrow">${[[0.5,"半份"],[1,"1 份"],[1.5,"1.5 份"],[2,"2 份"]].map(v=>
+        `<button class="mini" data-es="${v[0]}" aria-pressed="${es===v[0]}">${v[1]}</button>`).join("")}</div>
+      <div class="fitline${c&&n.kcal*es>rm?" over":""}">記進去的是 <b>${Math.round(n.kcal*es)}</b> 大卡、蛋白質 ${Math.round(n.p*es)} 克。${
+        c?(n.kcal*es>rm?`　今天會超過 ${Math.round(n.kcal*es-rm)} 大卡。`:`　今天還會剩 ${Math.round(rm-n.kcal*es)} 大卡。`):""}</div>
+      <div class="sec">哪些食材用完了</div>
+      <div class="shelf-note">點起來的會從冰箱拿掉，剩下的留著。沒點就當作還有。</div>
+      <div class="items">${items.length?items.map(i=>
+        `<button class="it" data-u="${i}" aria-pressed="${used.has(i)}">${i}</button>`).join(""):
+        "<em style=\"color:var(--dimmer);font-size:13px\">這道用到的東西冰箱裡都沒勾。</em>"}</div>
+      <div class="actions">
+        <button class="btn" id="cok">記一筆</button>
+        <button class="btn ghost" id="cback">回食譜</button></div>`;
+    panel.querySelectorAll("[data-cs]").forEach(b=>b.onclick=()=>{cs=+b.dataset.cs;render();});
+    panel.querySelectorAll("[data-es]").forEach(b=>b.onclick=()=>{es=+b.dataset.es;render();});
+    panel.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>{
+      const v=b.dataset.u;used.has(v)?used.delete(v):used.add(v);render();});
+    panel.querySelector("#cl").onclick=closeSheet;
+    panel.querySelector("#cback").onclick=()=>openDish(r.id);
+    panel.querySelector("#cok").onclick=()=>{
+      LOG.push({ts:Date.now(),d:today(),id:r.id,n:r.n,serv:es,cook:cs,
+        kcal:Math.round(n.kcal*es),p:Math.round(n.p*es),f:Math.round(n.f*es),c:Math.round(n.c*es)});
+      saveLog();
+      used.forEach(dropItem);
+      save();closeSheet();draw();
+    };
+  }
+  render();
+  document.getElementById("sheet").hidden=false;
+  document.body.style.overflow="hidden";
+}
+
+/* ---------- 我：身高體重活動量，算出每天能吃多少 ---------- */
+function openProfile(){
+  const panel=document.getElementById("panel");
+  const p=PROF||{sex:"m",age:38,h:172,w:68,act:1.375,goal:0};
+  const c0=calc();
+  panel.innerHTML=`
+    <div class="phead"><div><h2 id="ptitle">我</h2>
+      <div class="psub">只存在這台裝置。用 Mifflin-St Jeor 公式算基礎代謝，再乘活動量。</div></div>
+      <button class="close" id="cl" aria-label="關閉">✕</button></div>
+    <div class="form">
+      <div class="two">
+        <div><label>生理性別</label><select id="p_sex">
+          <option value="m"${p.sex==="m"?" selected":""}>男</option>
+          <option value="f"${p.sex==="f"?" selected":""}>女</option></select></div>
+        <div><label>年齡</label><input type="number" id="p_age" value="${p.age}" min="12" max="99"></div>
+      </div>
+      <div class="two">
+        <div><label>身高 CM</label><input type="number" id="p_h" value="${p.h}" min="120" max="220"></div>
+        <div><label>體重 KG</label><input type="number" id="p_w" value="${p.w}" min="30" max="200" step="0.5"></div>
+      </div>
+      <div class="two">
+        <div><label>活動量</label><select id="p_act">${ACT.map(a=>
+          `<option value="${a[0]}"${p.act===a[0]?" selected":""}>${a[1]}</option>`).join("")}</select></div>
+        <div><label>目標</label><select id="p_goal">${GOALS.map(g=>
+          `<option value="${g[0]}"${p.goal===g[0]?" selected":""}>${g[1]}</option>`).join("")}</select></div>
+      </div>
+      <label>家裡幾個人吃　會直接套到每道菜的份量</label>
+      <div class="pickrow">${[2,3,4,5].map(v=>
+        `<button type="button" class="mini" data-sv="${v}" aria-pressed="${S.serv===v}">${v}</button>`).join("")}</div>
+      ${c0?`<div class="sec">目前算出來</div>
+        <div class="nut">
+          <div class="nbox"><div class="lb">基礎代謝</div><div class="vv">${c0.bmr}</div></div>
+          <div class="nbox"><div class="lb">每日消耗</div><div class="vv">${c0.tdee}</div></div>
+          <div class="nbox k"><div class="lb">每日目標</div><div class="vv">${c0.target}</div></div>
+          <div class="nbox"><div class="lb">蛋白質</div><div class="vv">${c0.prot} <span style="font-size:12px">g</span></div></div>
+        </div>`:""}
+      <div id="p_warn"></div>
+      <div class="actions">
+        <button class="btn" id="p_save">存起來</button>
+        ${PROF?`<button class="btn danger" id="p_del">清掉資料</button>`:""}</div>
+      <div class="hintline">這只是估算，用來抓一個大概。有特殊疾病、懷孕或在做飲食控制，以醫師或營養師講的為準。</div>
+    </div>`;
+  panel.querySelectorAll("[data-sv]").forEach(b=>b.onclick=()=>{
+    S.serv=+b.dataset.sv;save();
+    panel.querySelectorAll("[data-sv]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.sv===S.serv));});
+  panel.querySelector("#cl").onclick=closeSheet;
+  const pd=panel.querySelector("#p_del");
+  if(pd)pd.onclick=()=>{PROF=null;saveProf();S.fit=false;closeSheet();draw();};
+  panel.querySelector("#p_save").onclick=()=>{
+    const v=id=>document.getElementById(id).value;
+    const age=+v("p_age"),h=+v("p_h"),w=+v("p_w");
+    if(!(age>=12&&age<=99)||!(h>=120&&h<=220)||!(w>=30&&w<=200)){
+      document.getElementById("p_warn").innerHTML='<div class="warn">年齡 12-99、身高 120-220、體重 30-200，數字填在範圍裡。</div>';return;}
+    PROF={sex:v("p_sex"),age:age,h:h,w:w,act:+v("p_act"),goal:+v("p_goal")};
+    saveProf();closeSheet();draw();
+  };
+  document.getElementById("sheet").hidden=false;
+  document.body.style.overflow="hidden";
+}
+
+/* ---------- 今天吃了：紀錄與最近七天 ---------- */
+function openToday(){
+  const panel=document.getElementById("panel");
+  function render(){
+    const c=calc(),a=eaten(),rows=LOG.filter(x=>x.d===today()).sort((x,y)=>y.ts-x.ts);
+    const days=[];for(let i=6;i>=0;i--){const d=shiftDay(-i);days.push({d:d,k:eaten(d).kcal});}
+    const top=Math.max(c?c.target:0,...days.map(x=>x.k),1);
+    panel.innerHTML=`
+      <div class="phead"><div><h2 id="ptitle">今天吃了</h2>
+        <div class="psub">${today()} 週${WD[new Date().getDay()]}${
+          c?` · 目標 ${c.target} 大卡`:" · 還沒設定每日目標"}</div></div>
+        <button class="close" id="cl" aria-label="關閉">✕</button></div>
+      ${c?`<div class="nut" style="margin-top:18px">
+        <div class="nbox k"><div class="lb">已攝取</div><div class="vv">${Math.round(a.kcal)}</div></div>
+        <div class="nbox"><div class="lb">還可以吃</div><div class="vv">${Math.round(c.target-a.kcal)}</div></div>
+        <div class="nbox"><div class="lb">蛋白質</div><div class="vv">${Math.round(a.p)}/${c.prot}</div></div>
+      </div>`:`<div class="fitline" style="margin-top:18px">還沒設定身高體重，只能記錄、算不出還能吃多少。
+        <button class="btn ghost" id="togo" style="margin-left:8px;padding:4px 12px">去設定</button></div>`}
+      <div class="sec">今天的紀錄</div>
+      ${rows.length?rows.map(x=>`<div class="logrow">
+        <span>${x.n}</span><span class="ls">${x.serv?x.serv+" 份":""}</span>
+        <span class="lk">${x.kcal} 大卡</span>
+        <button class="lx" data-del="${x.ts}" aria-label="刪掉">✕</button></div>`).join(""):
+        `<div class="shelf-note">還沒記東西。做完一道菜，在食譜裡按「煮好了」就會記進來；外食或早餐用下面手動加。</div>`}
+      <div class="sec">手動加一筆　外食、早餐、零食</div>
+      <div class="form"><div class="two">
+        <div><input type="text" id="m_n" placeholder="例：便當、超商御飯糰"></div>
+        <div><input type="number" id="m_k" placeholder="大卡" min="1" max="3000"></div>
+      </div>
+      <div class="actions" style="margin-top:12px"><button class="btn" id="m_add">加進今天</button></div></div>
+      <div class="sec">最近七天</div>
+      <div class="days">${days.map(x=>{
+        const h=Math.max(2,Math.round(x.k/top*88));
+        const cls=c?(x.k>c.target?"over":(x.k?"on":"")):(x.k?"on":"");
+        return `<div class="day" title="${x.d} ${Math.round(x.k)} 大卡">
+          <i class="${cls}" style="height:${h}px"></i>
+          <span>${WD[new Date(x.d+"T00:00:00").getDay()]}</span></div>`;}).join("")}</div>
+      <div class="nnote">${c?`柱子變紅的那天就是吃超過 ${c.target} 大卡。`:""}紀錄留 90 天，只存在這台裝置。</div>
+      <div class="actions">${rows.length?`<button class="btn ghost" id="clr">清掉今天</button>`:""}</div>`;
+    panel.querySelector("#cl").onclick=closeSheet;
+    const tg=panel.querySelector("#togo");if(tg)tg.onclick=openProfile;
+    panel.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
+      LOG=LOG.filter(x=>String(x.ts)!==b.dataset.del);saveLog();render();draw();});
+    const cl=panel.querySelector("#clr");
+    if(cl)cl.onclick=()=>{LOG=LOG.filter(x=>x.d!==today());saveLog();render();draw();};
+    panel.querySelector("#m_add").onclick=()=>{
+      const n=document.getElementById("m_n").value.trim(),k=+document.getElementById("m_k").value;
+      if(!n||!(k>0))return;
+      LOG.push({ts:Date.now(),d:today(),id:"manual",n:n,serv:0,kcal:Math.round(k),p:0,f:0,c:0});
+      saveLog();render();draw();};
+  }
+  render();
+  document.getElementById("sheet").hidden=false;
+  document.body.style.overflow="hidden";
+}
+document.getElementById("me").onclick=openProfile;
+document.getElementById("today").onclick=openToday;
+
 document.getElementById("mine").onclick=openEditor;
 
 load().then(draw);
