@@ -220,6 +220,10 @@ html{color-scheme:dark}
 .it[aria-pressed=true] .dd{background:rgba(240,180,41,.3);color:#7A5A05}
 .it[aria-pressed=true] .dd.red{background:rgba(200,65,44,.25);color:#8C2216}
 .stockbox summary b{color:var(--yolk);letter-spacing:.1em}
+summary b{color:var(--yolk);letter-spacing:.1em}
+.lnk{background:none;border:0;color:var(--dim);font-family:var(--sans);font-size:12.5px;
+  cursor:pointer;padding:0;margin-left:12px;text-decoration:underline;text-underline-offset:3px}
+.lnk:hover{color:var(--yolk)}
 .srow{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dotted var(--ink3);flex-wrap:wrap}
 .srow .sn{font-size:14px;min-width:88px}
 .srow input{background:var(--ink);border:1px solid var(--ink3);color:var(--paper);border-radius:3px;
@@ -282,7 +286,7 @@ html{color-scheme:dark}
 </header>
 <main id="out"></main>
 <footer>
-  蒜、薑、蔥、醬油、米酒、糖、鹽、太白粉、香油、白胡椒、黑胡椒當作你一定有，所以沒列在清單裡。<br>
+  蒜、薑、蔥、醬油、米酒、糖、鹽這些基本調味預設當作你都有。家裡剛好沒有的，到冰箱的「調味料」裡點掉，需要它的菜就會標成缺料。<br>
   勾選會存在這台裝置上，買完菜回來更新一次就好。時間從你站到爐子前開始算，白飯假設電鍋已經在煮了。
 </footer>
 </div>
@@ -303,6 +307,24 @@ const GROUPS=[
  {g:"辛香 · 其他",items:["九層塔","檸檬","泡菜","花生","紅蔥頭","香茅"]}
 ];
 const SAUCES=["味醂","魚露","蠔油","味噌","韓式大醬","韓式辣醬","豆瓣醬","沙茶醬","咖哩塊","泰式甜辣醬","醬油膏","烏醋","白醋","番茄醬","橄欖油","奶油","起司","鮮奶","柴魚片","芝麻醬","青醬","綠咖哩醬","椰奶","麵粉"];
+/* 基本調味：以前當作你一定有、沒列出來，現在一樣預設有，但可以點掉 */
+const BASICS=["蒜","薑","蔥","醬油","米酒","糖","鹽","太白粉","香油／麻油","白胡椒","黑胡椒","沙拉油"];
+const SEAS=BASICS.concat(SAUCES);
+/* 材料寫法 → 對應的基本調味。用完全比對，才不會把「青蒜或蔥」算成蒜、「紅蔥頭」算成蔥。 */
+const STAPLE={
+ "蒜":["蒜"],"蒜末":["蒜"],"蒜片":["蒜"],"蒜泥":["蒜"],"蒜粉":["蒜"],
+ "薑":["薑"],"老薑":["薑"],"薑絲":["薑"],"薑泥":["薑"],
+ "蔥":["蔥"],"蔥花":["蔥"],"蔥花或巴西里":["蔥"],"青蒜或蔥":["蔥"],
+ "醬油":["醬油"],"米酒":["米酒"],"米酒或清酒":["米酒"],
+ "糖":["糖"],"蜂蜜或糖":["糖"],
+ "鹽":["鹽"],"鹽與白胡椒":["鹽","白胡椒"],"鹽與黑胡椒":["鹽","黑胡椒"],
+ "太白粉":["太白粉"],"太白粉水":["太白粉"],
+ "香油":["香油／麻油"],"麻油":["香油／麻油"],
+ "白胡椒":["白胡椒"],"黑胡椒":["黑胡椒"],
+ "油":["沙拉油"],"熱油":["沙拉油"]};
+/* 自己新增的食譜寫法不固定，退回關鍵字比對 */
+const STAPLE_FALL=[["香油／麻油",/麻油|香油/],["醬油",/醬油/],["太白粉",/太白粉/],["米酒",/米酒/],
+ ["白胡椒",/白胡椒/],["黑胡椒",/黑胡椒/],["蒜",/蒜/],["薑",/薑/],["蔥",/蔥/],["鹽",/鹽/],["糖",/糖/]];
 
 /* 常見替代寫法：[[a,b,c]] = 有其中一樣就算有 */
 const LEAF=["青江菜","地瓜葉","空心菜","菠菜"];
@@ -1257,14 +1279,31 @@ function suggest(){
 /* ---------- 比對：need 裡的陣列代表「有其中一樣就算有」 ---------- */
 const nameOf=x=>Array.isArray(x)?x.slice(0,2).join("或"):x;
 const okNeed=x=>Array.isArray(x)?x.some(i=>HAVE.has(i)):HAVE.has(x);
+/* 這道菜需要哪些調味料：食譜自己寫的 sneed，加上從材料表推出來的基本調味 */
+const SNCACHE=new Map();
+function sauceNeed(r){
+  if(SNCACHE.has(r.id))return SNCACHE.get(r.id);
+  const s=new Set(r.sneed||[]);
+  (r.ing||[]).concat(r.sauce||[]).forEach(a=>{
+    const n=a[0];
+    if(STAPLE[n]){STAPLE[n].forEach(b=>s.add(b));return;}
+    if(ALL.some(i=>n.includes(i))||SAUCES.some(x=>n.includes(x)))return;
+    STAPLE_FALL.forEach(f=>{if(f[1].test(n))s.add(f[0]);});
+  });
+  const out=[...s];SNCACHE.set(r.id,out);return out;
+}
 function lacking(r){
   return r.need.filter(x=>!okNeed(x)).map(nameOf)
-    .concat((r.sneed||[]).filter(x=>NOSAUCE.has(x)));
+    .concat(sauceNeed(r).filter(x=>NOSAUCE.has(x)));
 }
 function missingSet(r){
   const s=new Set();
   r.need.forEach(x=>{if(!okNeed(x))(Array.isArray(x)?x:[x]).forEach(i=>s.add(i));});
-  (r.sneed||[]).forEach(x=>{if(NOSAUCE.has(x))s.add(x);});
+  const mb=new Set(sauceNeed(r).filter(x=>NOSAUCE.has(x)));
+  (r.sneed||[]).forEach(x=>{if(mb.has(x))s.add(x);});
+  (r.ing||[]).concat(r.sauce||[]).forEach(a=>{
+    if((STAPLE[a[0]]||[]).some(x=>mb.has(x)))s.add(a[0]);
+  });
   return s;
 }
 function pass(r){
@@ -1288,7 +1327,7 @@ function unlock(){
     for(const r of RECIPES()){
       if(!pass(r))continue;
       const un=r.need.filter(x=>!okNeed(x));
-      if(un.length!==1||(r.sneed||[]).some(x=>NOSAUCE.has(x)))continue;
+      if(un.length!==1||sauceNeed(r).some(x=>NOSAUCE.has(x)))continue;
       const g=un[0];
       if(Array.isArray(g)?g.includes(it):g===it)c++;
     }
@@ -1385,8 +1424,15 @@ function fridge(){
         <input class="se" type="date" data-e="${i}" value="${(STOCK[i]||{}).exp||""}" aria-label="${i} 吃掉的期限">
         <button class="sx" data-x="${i}">用完</button></div>`;}).join("")}
       </details>`:"")+
-    `<details${SHELF?" open":""}><summary>醬料櫃　${SAUCES.length-NOSAUCE.size}/${SAUCES.length}</summary>
-      <div class="shelf-note">預設當作你都有。用完了就點掉，需要它的菜會被標成缺料。</div>
+    `<details${SHELF?" open":""}><summary>調味料　有 ${SEAS.length-NOSAUCE.size} / ${SEAS.length}${
+        NOSAUCE.size?`　<b>缺 ${NOSAUCE.size} 樣</b>`:""}</summary>
+      <div class="shelf-note">預設當作你都有。家裡沒有或用完了就點掉，需要它的菜會被標成缺料。
+        <button class="lnk" id="allyes">全部都有</button><button class="lnk" id="allno">全部沒有</button></div>
+      <div class="gname">基本調味</div>
+      <div class="items">`+BASICS.filter(hit).map(s=>
+        `<button class="it sauce" data-s="${s}" aria-pressed="${!NOSAUCE.has(s)}">${s}</button>`).join("")+
+      `</div>
+      <div class="gname">醬料 · 常備</div>
       <div class="items">`+SAUCES.filter(hit).map(s=>
         `<button class="it sauce" data-s="${s}" aria-pressed="${!NOSAUCE.has(s)}">${s}</button>`).join("")+
       `</div></details>`;
@@ -1401,6 +1447,9 @@ function fridge(){
     REFOCUS=`[data-i="${v}"]`;save();draw();});
   el.querySelectorAll(".it[data-s]").forEach(b=>b.onclick=()=>{
     const v=b.dataset.s;NOSAUCE.has(v)?NOSAUCE.delete(v):NOSAUCE.add(v);REFOCUS=`[data-s="${v}"]`;save();draw();});
+  const ay=el.querySelector("#allyes"),an=el.querySelector("#allno");
+  if(ay)ay.onclick=()=>{NOSAUCE=new Set();SHELF=true;save();draw();};
+  if(an)an.onclick=()=>{NOSAUCE=new Set(SEAS);SHELF=true;save();draw();};
   el.querySelectorAll(".sq").forEach(inp=>inp.oninput=()=>{
     const i=inp.dataset.q;STOCK[i]=Object.assign({},STOCK[i],{q:inp.value});save();});
   el.querySelectorAll(".se").forEach(inp=>inp.onchange=()=>{
