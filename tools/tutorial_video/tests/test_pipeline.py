@@ -6,78 +6,65 @@ from unittest.mock import patch
 
 from tools.tutorial_video.assets import candidate_matches, pick_stock
 from tools.tutorial_video.imagine import ImagineClient, ImagineError
+from tools.tutorial_video.lessons import get_lesson
 from tools.tutorial_video.planner import (
     BANNED_STOCK_QUERIES,
     assert_shot_searchable,
-    plan_recipe,
+    plan_lesson,
     plan_topic,
 )
-from tools.tutorial_video.recipes import get_recipe, parse_recipes
 
 
-class RecipeParseTests(unittest.TestCase):
-    def test_parses_tomato_egg(self):
-        recipes = parse_recipes()
-        self.assertGreaterEqual(len(recipes), 10)
-        dish = get_recipe("tomatoegg")
-        self.assertEqual(dish["name"], "番茄炒蛋")
-        self.assertTrue(dish["steps"])
-        self.assertTrue(any("番茄" in i["name"] for i in dish["ingredients"]))
+class LessonTests(unittest.TestCase):
+    def test_ohms_law_is_locked_to_the_concept(self):
+        board = plan_lesson(get_lesson("ohms-law"))
+        self.assertEqual(board["series"], "電學小知識")
+        self.assertEqual(board["asset_policy"], "generate_per_shot")
+        self.assertGreaterEqual(len(board["shots"]), 6)
+        for shot in board["shots"]:
+            self.assertEqual(shot["source"], "imagine")
+            self.assertIn("歐姆定律", shot["visual"]["must_include"])
+            self.assertIn("lightning bolt stock footage", shot["visual"]["must_not"])
+            self.assertIn("歐姆定律", shot["image_prompt"])
 
 
 class PlannerTests(unittest.TestCase):
-    def test_recipe_shots_lock_the_dish(self):
-        board = plan_recipe(get_recipe("tomatoegg"))
-        self.assertEqual(board["asset_policy"], "generate_per_shot")
-        self.assertGreaterEqual(len(board["shots"]), 5)
-        for shot in board["shots"]:
-            self.assertEqual(shot["source"], "imagine")
-            self.assertIn("番茄炒蛋", " ".join(shot["visual"]["must_include"]))
-            self.assertIn("番茄炒蛋", shot["image_prompt"])
-
     def test_topic_requires_real_steps(self):
         with self.assertRaises(ValueError):
-            plan_topic("怎麼用這個網站", [])
-        board = plan_topic("怎麼用冰箱篩晚餐", ["勾選食材", "看推薦"])
-        self.assertEqual(board["shots"][1]["narration"], "勾選食材")
+            plan_topic("電容器", [])
+        board = plan_topic("電容器為什麼能通交流", ["平行板結構", "交流正負對調"])
+        self.assertEqual(board["shots"][1]["narration"], "平行板結構")
 
-    def test_blocks_generic_stock_queries(self):
-        shot = plan_recipe(get_recipe("tomatoegg"))["shots"][0]
-        for query in ("cooking", "kitchen", "美食", "cooking video"):
+    def test_blocks_generic_electricity_queries(self):
+        shot = plan_lesson(get_lesson("ohms-law"))["shots"][0]
+        for query in ("electricity", "lightning", "電工", "電力"):
             self.assertIn(query, BANNED_STOCK_QUERIES)
             with self.assertRaises(ValueError):
                 assert_shot_searchable(shot, query)
         with self.assertRaises(ValueError):
-            assert_shot_searchable(shot, "chef plating pasta")
-        assert_shot_searchable(shot, "番茄炒蛋 成品 家常")
+            assert_shot_searchable(shot, "cool sparks tesla coil")
+        assert_shot_searchable(shot, "歐姆定律 V=IR 電路圖")
 
 
 class AssetPolicyTests(unittest.TestCase):
-    def test_stock_must_mention_the_dish(self):
-        shot = plan_recipe(get_recipe("tomatoegg"))["shots"][0]
-        self.assertTrue(candidate_matches("Random pasta night", "stock dinner", shot))
-        self.assertEqual(
-            candidate_matches(
-                "番茄炒蛋 炒鍋 finished plate 家常",
-                "home cooked 番茄炒蛋",
-                shot,
-            ),
-            [],
-        )
+    def test_stock_must_mention_the_concept(self):
+        shot = plan_lesson(get_lesson("ohms-law"))["shots"][0]
+        self.assertTrue(candidate_matches("Lightning over a city", "stock electricity", shot))
+        self.assertEqual(candidate_matches("歐姆定律 電路圖", "V=IR 歐姆定律", shot), [])
 
     def test_pick_stock_refuses_when_nothing_matches(self):
-        shot = plan_recipe(get_recipe("tomatoegg"))["shots"][0]
+        shot = plan_lesson(get_lesson("ohms-law"))["shots"][0]
         fake_hits = [
             {
-                "title": "File:Kitchen.jpg",
-                "description": "A generic kitchen",
+                "title": "File:Lightning.jpg",
+                "description": "A thunderstorm",
                 "url": "https://example.com/k.jpg",
                 "mime": "image/jpeg",
             }
         ]
         with patch("tools.tutorial_video.assets.search_commons", return_value=fake_hits):
             with self.assertRaises(Exception) as ctx:
-                pick_stock(shot, "番茄炒蛋 家常")
+                pick_stock(shot, "歐姆定律 電路圖")
         self.assertIn("Imagine", str(ctx.exception))
 
 
@@ -115,7 +102,7 @@ class PlaceholderAssembleTests(unittest.TestCase):
     def test_placeholders_concat(self):
         from tools.tutorial_video.assemble import assemble_job, make_placeholder
 
-        board = plan_topic("測試", ["第一步"])
+        board = plan_topic("測試歐姆", ["第一步"])
         with tempfile.TemporaryDirectory() as tmp:
             job = Path(tmp)
             (job / "storyboard.json").write_text(json.dumps(board), encoding="utf-8")

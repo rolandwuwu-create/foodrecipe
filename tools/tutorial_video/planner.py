@@ -1,49 +1,55 @@
-"""Build a locked shot list. Stock-search keywords are not a plan."""
+"""Build a locked shot list for 電學小知識. Stock keywords are not a plan."""
 
 from __future__ import annotations
 
 from typing import Any
 
 STYLE_LOCK = (
-    "photorealistic Taiwan home kitchen, warm tungsten light, slightly used wok, "
-    "same cook's hands throughout, handheld cookbook tutorial, no on-screen text, "
-    "no logo, no watermark, no stock-video lower third"
+    "consistent 電學小知識 educational series: dark slate desk, clean vector "
+    "circuit diagrams, subtle electron-flow dots, high-school physics aesthetic, "
+    "same color language (amber voltage, teal current, coral resistor), "
+    "no on-screen channel logo, no watermark, no YouTube end screen"
 )
 
 BANNED_STOCK_QUERIES = frozenset(
     {
+        "electricity",
+        "electric",
+        "power",
+        "energy",
+        "lightning",
+        "spark",
+        "electrician",
+        "power plant",
+        "science",
+        "education",
+        "電",
+        "電力",
+        "閃電",
+        "電工",
+        "科普",
+        "教學",
+        "電路",
         "cooking",
         "kitchen",
         "food",
-        "recipe",
-        "chef",
-        "dinner",
-        "cooking video",
-        "food video",
-        "做菜",
-        "廚房",
         "美食",
-        "料理",
-        "教學",
-        "烹飪",
-        "食譜",
     }
 )
 
+GENERIC_MUST_NOT = [
+    "lightning bolt stock footage",
+    "power-plant cooling towers",
+    "electrician in a hard hat",
+    "tesla coil sparks",
+    "generic glowing earth",
+    "unrelated kitchen or food",
+    "random gadget unboxing",
+]
 
-def style_lock(dish: str) -> str:
-    return f"{STYLE_LOCK}, continuous tutorial about {dish}"
 
-
-def _ingredient_names(recipe: dict[str, Any], limit: int = 8) -> list[str]:
-    names: list[str] = []
-    for item in recipe.get("ingredients") or []:
-        name = item.get("name") if isinstance(item, dict) else str(item)
-        if name and name not in names:
-            names.append(name)
-        if len(names) >= limit:
-            break
-    return names
+def style_lock(topic: str) -> str:
+    return f"{STYLE_LOCK}, one continuous explainer about {topic}"
 
 
 def _shot(
@@ -56,15 +62,15 @@ def _shot(
     camera: str,
     motion: str,
     duration: int,
-    dish: str,
+    topic: str,
 ) -> dict[str, Any]:
     image_prompt = (
-        f"{subject}. {camera}. {style_lock(dish)}. "
+        f"{subject}. {camera}. {style_lock(topic)}. "
         f"Must show: {', '.join(must_include)}. Do not show: {', '.join(must_not)}."
     )
     video_prompt = (
-        f"{motion}. Keep the same framing and the same {dish} ingredients. "
-        f"{style_lock(dish)}. No jump cuts to unrelated food."
+        f"{motion}. Stay on this exact concept: {topic}. "
+        f"{style_lock(topic)}. No cutaway to unrelated electricity b-roll."
     )
     return {
         "id": shot_id,
@@ -84,172 +90,95 @@ def _shot(
     }
 
 
-def plan_recipe(recipe: dict[str, Any]) -> dict[str, Any]:
-    dish = recipe["name"]
-    equipment = recipe.get("equipment") or "炒鍋"
-    minutes = recipe.get("minutes")
-    ingredients = _ingredient_names(recipe)
-    must_not = [
-        "unrelated restaurant plating",
-        "western brunch",
-        "random grocery b-roll",
-        "talking-head influencer",
-        "stock footage kitchen montage",
-    ]
-    shots: list[dict[str, Any]] = []
-    shots.append(
-        _shot(
-            "s00",
-            "title",
-            f"今天做{dish}，大概 {minutes} 分鐘，用{equipment}就夠。",
-            f"title-worthy hero still of finished {dish} on a Taiwanese home table",
-            [dish, equipment, "finished plate"],
-            must_not,
-            "tight 3/4 hero, shallow depth of field",
-            "slow push-in over the plated dish, steam drifting",
-            5,
-            dish,
-        )
+def _title_shot(topic: str, hook: str) -> dict[str, Any]:
+    return _shot(
+        "s00",
+        "title",
+        hook or topic,
+        f"title card visual that is only about {topic}: a specific diagram, not generic electricity",
+        [topic],
+        GENERIC_MUST_NOT,
+        "centered educational wide, diagram occupies most of the frame",
+        f"slow push-in on the {topic} diagram",
+        5,
+        topic,
     )
-    if ingredients:
-        shots.append(
-            _shot(
-                "s01",
-                "mise",
-                "材料先備好：" + "、".join(ingredients) + "。",
-                f"mise en place for {dish}: {', '.join(ingredients)} in small bowls",
-                [dish, *ingredients[:4]],
-                must_not + ["cooked leftover from another dish"],
-                "overhead looking down at the cutting board",
-                "hands adjust bowls, no cutting yet",
-                6,
-                dish,
-            )
-        )
-    for index, step in enumerate(recipe.get("steps") or [], start=1):
-        text = step["text"]
-        shots.append(
-            _shot(
-                f"s{index + 1:02d}",
-                "step",
-                text,
-                f"{dish} cooking step: {text}",
-                [dish, equipment],
-                must_not + ["a different recipe"],
-                "over-the-shoulder into the wok, close enough to see the food",
-                f"perform only this action: {text}",
-                7,
-                dish,
-            )
-        )
-    tip = (recipe.get("tip") or "").strip()
-    if tip:
-        shots.append(
-            _shot(
-                f"s{len(shots):02d}",
-                "tip",
-                tip,
-                f"close detail that illustrates the tip for {dish}: {tip}",
-                [dish],
-                must_not,
-                "macro insert on the critical detail",
-                "hold the detail, tiny handheld drift",
-                6,
-                dish,
-            )
-        )
-    shots.append(
-        _shot(
-            f"s{len(shots):02d}",
-            "plate",
-            f"{dish}完成，趁熱吃。",
-            f"finished {dish} plated family-style, ready to eat",
-            [dish, "plated serving"],
-            must_not,
-            "table-level three-quarter",
-            "set chopsticks down, faint steam",
-            5,
-            dish,
-        )
-    )
-    return {
-        "kind": "recipe_tutorial",
-        "topic": dish,
-        "recipe_id": recipe["id"],
-        "style_lock": style_lock(dish),
-        "asset_policy": "generate_per_shot",
-        "shots": shots,
-    }
 
 
-def plan_topic(topic: str, steps: list[str]) -> dict[str, Any]:
-    if not topic.strip():
+def _recap_shot(topic: str, index: int) -> dict[str, Any]:
+    return _shot(
+        f"s{index:02d}",
+        "recap",
+        f"記住：這一則電學小知識只講{topic}。",
+        f"recap of the same {topic} diagram used in the lesson, not a generic end card",
+        [topic],
+        GENERIC_MUST_NOT,
+        "same desk and same diagram as the lesson",
+        "hold the final diagram, then fade",
+        5,
+        topic,
+    )
+
+
+def plan_topic(topic: str, steps: list[str] | list[dict[str, str]], hook: str = "") -> dict[str, Any]:
+    if not str(topic).strip():
         raise ValueError("topic is required")
-    if not steps:
+    cleaned: list[dict[str, str]] = []
+    for step in steps:
+        if isinstance(step, str):
+            text = step.strip()
+            if text:
+                cleaned.append({"text": text, "visual": f"diagram that shows only: {text}"})
+        else:
+            text = (step.get("text") or "").strip()
+            if not text:
+                continue
+            cleaned.append(
+                {
+                    "text": text,
+                    "visual": (step.get("visual") or f"diagram that shows only: {text}").strip(),
+                }
+            )
+    if not cleaned:
         raise ValueError("tutorial steps are required; do not invent stock b-roll")
-    must_not = [
-        "unrelated stock footage",
-        "generic office montage",
-        "random food close-up",
-        "celebrity talking head",
-    ]
-    shots = [
-        _shot(
-            "s00",
-            "title",
-            topic.strip(),
-            f"hero visual that is specifically about: {topic}",
-            [topic.strip()],
-            must_not,
-            "clean instructional wide",
-            "slow push-in on the actual subject of the lesson",
-            5,
-            topic.strip(),
-        )
-    ]
-    for index, step in enumerate(steps, start=1):
-        text = step.strip()
-        if not text:
-            continue
+
+    topic = topic.strip()
+    shots = [_title_shot(topic, hook.strip() or topic)]
+    for index, step in enumerate(cleaned, start=1):
         shots.append(
             _shot(
                 f"s{index:02d}",
                 "step",
-                text,
-                f"tutorial step for {topic}: {text}",
-                [topic.strip(), text],
-                must_not,
-                "clear view of the action being taught",
-                f"perform only: {text}",
+                step["text"],
+                f"{topic}: {step['visual']}",
+                [topic, step["text"]],
+                GENERIC_MUST_NOT,
+                "clear view of this one electrical idea, large readable diagram",
+                f"animate only this idea: {step['text']}",
                 7,
-                topic.strip(),
+                topic,
             )
         )
-    shots.append(
-        _shot(
-            f"s{len(shots):02d}",
-            "recap",
-            f"重點就是這樣做{topic}。",
-            f"recap still that still shows {topic}, not a generic end card",
-            [topic.strip()],
-            must_not,
-            "same location as the lesson",
-            "hold, then fade",
-            5,
-            topic.strip(),
-        )
-    )
+    shots.append(_recap_shot(topic, len(shots)))
     return {
-        "kind": "topic_tutorial",
-        "topic": topic.strip(),
-        "style_lock": style_lock(topic.strip()),
+        "kind": "electrical_short",
+        "series": "電學小知識",
+        "topic": topic,
+        "style_lock": style_lock(topic),
         "asset_policy": "generate_per_shot",
         "shots": shots,
     }
 
 
+def plan_lesson(lesson: dict[str, Any]) -> dict[str, Any]:
+    board = plan_topic(lesson["title"], lesson.get("steps") or [], hook=lesson.get("hook") or "")
+    board["lesson_id"] = lesson["id"]
+    board["series"] = lesson.get("series") or "電學小知識"
+    return board
+
+
 def assert_shot_searchable(shot: dict[str, Any], query: str) -> None:
-    """Reject the generic searches that make tutorial footage look wrong."""
+    """Reject the generic searches that make 電學 footage look like lightning reels."""
     cleaned = " ".join(query.lower().split())
     if cleaned in BANNED_STOCK_QUERIES:
         raise ValueError(f"generic stock query is blocked: {query!r}")

@@ -1,4 +1,4 @@
-"""CLI: plan a tutorial, then render it with Grok Imagine."""
+"""CLI: plan a 電學小知識 short, then render it with Grok Imagine."""
 
 from __future__ import annotations
 
@@ -10,11 +10,15 @@ from pathlib import Path
 from .assemble import assemble_job, make_placeholder
 from .assets import generate_shot_assets, write_json
 from .imagine import ImagineClient
-from .planner import plan_recipe, plan_topic
-from .recipes import get_recipe, parse_recipes
+from .lessons import get_lesson, load_lessons
+from .planner import plan_lesson, plan_topic
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "out" / "tutorial_video"
+
+
+def _slug(text: str) -> str:
+    return "".join(ch if ch.isalnum() else "-" for ch in text).strip("-")[:48] or "lesson"
 
 
 def _job_dir(slug: str) -> Path:
@@ -27,24 +31,31 @@ def _write_storyboard(storyboard: dict, job_dir: Path) -> Path:
 
 
 def cmd_list(_: argparse.Namespace) -> int:
-    for recipe in parse_recipes():
-        print(f"{recipe['id']:20} {recipe['minutes']:>3}m  {recipe['name']}")
+    for lesson in load_lessons():
+        print(f"{lesson['id']:18}  {lesson['title']}")
     return 0
 
 
-def cmd_plan(args: argparse.Namespace) -> int:
-    if args.recipe:
-        storyboard = plan_recipe(get_recipe(args.recipe))
-        slug = storyboard["recipe_id"]
-    else:
+def _plan_from_args(args: argparse.Namespace) -> tuple[dict, Path]:
+    if args.lesson:
+        board = plan_lesson(get_lesson(args.lesson))
+        slug = board["lesson_id"]
+    elif args.topic:
         steps = [s.strip() for s in (args.steps or "").split("|") if s.strip()]
-        storyboard = plan_topic(args.topic, steps)
-        slug = "".join(ch if ch.isalnum() else "-" for ch in args.topic)[:40] or "topic"
-    job_dir = Path(args.out) if args.out else _job_dir(slug)
-    path = _write_storyboard(storyboard, job_dir)
+        board = plan_topic(args.topic, steps, hook=args.hook or "")
+        slug = _slug(args.topic)
+    else:
+        raise SystemExit("plan needs --lesson or --topic")
+    job_dir = Path(args.out) if getattr(args, "out", None) else _job_dir(slug)
+    return board, job_dir
+
+
+def cmd_plan(args: argparse.Namespace) -> int:
+    board, job_dir = _plan_from_args(args)
+    path = _write_storyboard(board, job_dir)
     print(path)
-    print(f"{len(storyboard['shots'])} shots  policy={storyboard['asset_policy']}")
-    for shot in storyboard["shots"]:
+    print(f"{len(board['shots'])} shots  policy={board['asset_policy']}  {board['topic']}")
+    for shot in board["shots"]:
         print(f"  {shot['id']}  {shot['role']:6}  {shot['narration']}")
     return 0
 
@@ -54,12 +65,11 @@ def _load_board(args: argparse.Namespace) -> tuple[dict, Path]:
         job_dir = Path(args.job)
         board = json.loads((job_dir / "storyboard.json").read_text(encoding="utf-8"))
         return board, job_dir
-    if args.recipe:
-        board = plan_recipe(get_recipe(args.recipe))
-        job_dir = Path(args.out) if args.out else _job_dir(board["recipe_id"])
+    if args.lesson or args.topic:
+        board, job_dir = _plan_from_args(args)
         _write_storyboard(board, job_dir)
         return board, job_dir
-    raise SystemExit("render needs --recipe or --job")
+    raise SystemExit("render needs --lesson, --topic, or --job")
 
 
 def cmd_render(args: argparse.Namespace) -> int:
@@ -97,24 +107,28 @@ def cmd_render(args: argparse.Namespace) -> int:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Plan and render cooking tutorial videos with Grok Imagine."
+        description="Plan and render 電學小知識 shorts with Grok Imagine."
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    p_list = sub.add_parser("list", help="list recipes from index.html")
+    p_list = sub.add_parser("list", help="list built-in electrical lessons")
     p_list.set_defaults(func=cmd_list)
 
     p_plan = sub.add_parser("plan", help="write a locked shot list, do not search stock")
-    p_plan.add_argument("--recipe", help="recipe id or Chinese name")
-    p_plan.add_argument("--topic", help="free-form tutorial topic")
-    p_plan.add_argument("--steps", help="pipe-separated steps for --topic")
+    p_plan.add_argument("--lesson", help="built-in lesson id, e.g. ohms-law")
+    p_plan.add_argument("--topic", help="new 電學小知識 topic")
+    p_plan.add_argument("--hook", default="", help="opening line")
+    p_plan.add_argument("--steps", help="pipe-separated beats")
     p_plan.add_argument("--out", help="job directory")
     p_plan.set_defaults(func=cmd_plan)
 
     p_render = sub.add_parser("render", help="generate each shot with Imagine and concat")
-    p_render.add_argument("--recipe", help="plan + render this recipe")
+    p_render.add_argument("--lesson", help="plan + render a built-in lesson")
+    p_render.add_argument("--topic", help="plan + render a new topic")
+    p_render.add_argument("--hook", default="")
+    p_render.add_argument("--steps", help="pipe-separated beats when using --topic")
     p_render.add_argument("--job", help="existing job directory with storyboard.json")
-    p_render.add_argument("--out", help="job directory when using --recipe")
+    p_render.add_argument("--out", help="job directory")
     p_render.add_argument("--resolution", default="720p")
     p_render.add_argument("--silent", action="store_true")
     p_render.add_argument("--placeholders", action="store_true", help="ffmpeg bars, no API")
@@ -126,7 +140,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
-    if args.cmd == "plan" and not args.recipe and not args.topic:
-        print("plan needs --recipe or --topic", file=sys.stderr)
+    if args.cmd == "plan" and not args.lesson and not args.topic:
+        print("plan needs --lesson or --topic", file=sys.stderr)
         return 2
     return args.func(args)

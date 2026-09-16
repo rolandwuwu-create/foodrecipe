@@ -1,11 +1,11 @@
-# 教學影片（Grok Imagine）
+# 電學小知識 × Grok Imagine
 
-Cursor 的 4.6 不會生片。這條 pipeline 接的是 **Grok Imagine**：
+Cursor 4.6 不會生片。這條 pipeline 接 **Grok Imagine**，給電腦端「電學小知識」短片用：
 
 - 靜幀：`grok-imagine-image-2.0`
 - 影片：`grok-imagine-video-1.5`（圖生影片）
 
-預設**不搜圖庫**。每一鏡先鎖定這道菜、這一步，再生成。亂搜 `cooking` / `美食` 就是素材會錯的原因。
+預設**不搜圖庫**。每一鏡鎖定「這個概念、這張電路圖」。搜 `electricity` / `閃電` / `電力` 會拿到雷暴和電塔，那就是素材會錯的原因。
 
 ## 設定
 
@@ -13,40 +13,23 @@ Cursor 的 4.6 不會生片。這條 pipeline 接的是 **Grok Imagine**：
 export XAI_API_KEY=xai-...
 ```
 
-金鑰只放環境變數，不要寫進 repo。
-
 ## 用法
 
 ```bash
-# 看食譜 id
+# 內建課
 python3 -m tools.tutorial_video list
+python3 -m tools.tutorial_video plan --lesson ohms-law
+python3 -m tools.tutorial_video render --lesson ohms-law
 
-# 只出分鏡（不花 API）
-python3 -m tools.tutorial_video plan --recipe tomatoegg
-
-# 生成每一鏡並接成一支片
-python3 -m tools.tutorial_video render --recipe tomatoegg
-
-# 不是食譜、是功能教學
+# 新的一則小知識
 python3 -m tools.tutorial_video plan \
-  --topic "怎麼用冰箱篩出20分鐘晚餐" \
-  --steps "打開網站|勾選現有食材|看推薦|點進步驟"
+  --topic "短路為什麼會跳閘" \
+  --hook "電流抄近路的時候，保護裝置在做什麼。" \
+  --steps "什麼是短路|電流為什麼暴衝|斷路器怎麼斷開"
 ```
 
-沒有金鑰時可用色塊檢查接片：
+沒有金鑰時可先看分鏡，或 `--placeholders` 檢查接片。
 
-```bash
-python3 -m tools.tutorial_video render --recipe tomatoegg --placeholders
-```
+輸出：`out/tutorial_video/<id>/tutorial.mp4`，以及每一鏡的 still / clip。
 
-輸出在 `out/tutorial_video/<id>/`：
-
-- `storyboard.json` — 分鏡、旁白、must_include
-- `shots/sXX/still.jpg` + `clip.mp4`
-- `tutorial.mp4`
-
-## 素材規則
-
-1. 一鏡一個畫面，畫面必須是這道菜的這一步。
-2. 禁止泛詞搜尋：`cooking`, `kitchen`, `food`, `美食`, `料理`。
-3. 若真的要用圖庫，標題／說明必須包含該鏡全部 `must_include`，且不能出現 `must_not`。對不上就改生成，不要硬塞。
+內建課在 `data/lessons.json`，直接加一則即可。
