@@ -22,6 +22,8 @@ class SkinEffectLessonTests(unittest.TestCase):
         self.assertEqual(board["jinju"], "高頻世界裡，粗電線的心是空的。")
         self.assertEqual(board["asset_policy"], "imagine_hero_then_slides")
         self.assertEqual(board["shots"][0]["source"], "imagine+overlay")
+        self.assertEqual(board["shots"][0]["slide"], "photo_title")
+        self.assertEqual(board["shots"][0]["photo"], "copper_hero_right.png")
         self.assertIn("no text", board["hero_prompt"])
         self.assertIn("no lightning", board["hero_prompt"])
         roles = [s["role"] for s in board["shots"]]
@@ -29,6 +31,15 @@ class SkinEffectLessonTests(unittest.TestCase):
         self.assertEqual(roles[-1], "jinju")
         for shot in board["shots"][1:]:
             self.assertEqual(shot["source"], "slide")
+
+
+class ProximityLessonTests(unittest.TestCase):
+    def test_uses_hero_photos(self):
+        board = plan_lesson(get_lesson("proximity-effect"))
+        self.assertEqual(board["jinju"], "旁邊那根線，也在偷你的電流。")
+        self.assertEqual(board["shots"][0]["slide"], "photo_title")
+        self.assertEqual(board["shots"][0]["photo"], "proximity_hero_right.png")
+        self.assertEqual(board["shots"][2]["photo"], "proximity_section.png")
 
 
 class PlannerTests(unittest.TestCase):
@@ -54,6 +65,16 @@ class SlideTests(unittest.TestCase):
                 path = render_beat(shot, Path(tmp) / f"{shot['id']}.png")
                 self.assertTrue(path.exists())
                 self.assertGreater(path.stat().st_size, 8000)
+
+    def test_photo_title_is_cinematic_overlay(self):
+        from PIL import Image
+
+        board = plan_lesson(get_lesson("proximity-effect"))
+        with tempfile.TemporaryDirectory() as tmp:
+            path = render_beat(board["shots"][0], Path(tmp) / "title.png")
+            img = Image.open(path)
+            self.assertEqual(img.size, (1920, 1080))
+            self.assertGreater(path.stat().st_size, 40000)
 
 
 class AssembleTests(unittest.TestCase):

@@ -17,7 +17,7 @@
     "muted": "#8AA0B8"
   },
   "rules": [
-    "Imagine is only for a photoreal hero metaphor of THIS mechanism. No text in the Imagine prompt.",
+    "Photoreal hero metaphor of THIS mechanism via GenerateImage or Imagine. No text in the image prompt.",
     "All Traditional Chinese, 金句, captions, badges are composited later. Never ask the video model to write Chinese.",
     "Teaching beats are dark-navy motion-graphics slides: cross-section, heatmap, 金句 card.",
     "Never search electricity / lightning / 電力 / 電工 stock.",

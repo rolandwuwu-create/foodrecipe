@@ -51,6 +51,7 @@ def plan_lesson(lesson: dict[str, Any]) -> dict[str, Any]:
             "title": beat.get("title") or "",
             "caption": beat.get("caption") or beat.get("sub") or "",
             "sub": beat.get("sub") or lesson.get("sub") or "",
+            "photo": beat.get("photo") or "",
             "visual": {
                 "must_include": [topic, jinju],
                 "must_not": GENERIC_MUST_NOT,

@@ -100,11 +100,26 @@ def slide_jinju(topic: str, jinju: str, caption: str) -> Image.Image:
     return img
 
 
-def slide_title(topic: str, jinju: str, sub: str) -> Image.Image:
-    img, draw = canvas()
+TOPIC_EN = {
+    "集膚效應": "Skin Effect",
+    "鄰近效應": "Proximity Effect",
+    "繼電器黏死": "Relay Weld",
+}
+
+
+def _english(topic: str) -> str:
+    return TOPIC_EN.get(topic, topic)
+
+
+def _topic_badge(draw: ImageDraw.ImageDraw, topic: str) -> None:
     draw.rounded_rectangle((1480, 70, 1850, 160), radius=12, outline=GOLD, width=2)
     draw.text((1510, 82), topic, font=_font(32), fill=WHITE)
-    draw.text((1510, 118), "Skin Effect" if "膚" in topic else topic, font=_font(20), fill=GOLD)
+    draw.text((1510, 118), _english(topic), font=_font(20), fill=GOLD)
+
+
+def slide_title(topic: str, jinju: str, sub: str) -> Image.Image:
+    img, draw = canvas()
+    _topic_badge(draw, topic)
     draw.text((120, 300), jinju, font=_font(120), fill=WHITE)
     draw.line((120, 470, 420, 470), fill=CYAN, width=8)
     draw.ellipse((420, 454, 452, 486), fill=CYAN)
@@ -115,10 +130,61 @@ def slide_title(topic: str, jinju: str, sub: str) -> Image.Image:
     return img
 
 
+HEROES = Path(__file__).resolve().parent / "data" / "heroes"
+
+
+def _fit_hero(name: str) -> Image.Image:
+    src = Image.open(HEROES / Path(name).name).convert("RGB")
+    if src.size == (W, H):
+        return src
+    return src.resize((W, H), Image.Resampling.LANCZOS)
+
+
+def slide_photo_title(photo: str, topic: str, jinju: str, sub: str) -> Image.Image:
+    img = _fit_hero(photo).convert("RGBA")
+    shade = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    d = ImageDraw.Draw(shade)
+    for x in range(0, 1040):
+        alpha = int(230 * (1 - x / 1040))
+        d.line([(x, 0), (x, H)], fill=(7, 21, 38, alpha))
+    img = Image.alpha_composite(img, shade).convert("RGB")
+    draw = ImageDraw.Draw(img)
+    _topic_badge(draw, topic)
+    size = 108
+    font = _font(size)
+    box = draw.textbbox((0, 0), jinju, font=font)
+    while size > 56 and (box[2] - box[0]) > 980:
+        size -= 8
+        font = _font(size)
+        box = draw.textbbox((0, 0), jinju, font=font)
+    draw.text((90, 300), jinju, font=font, fill=WHITE)
+    draw.line((120, 470, 420, 470), fill=CYAN, width=8)
+    draw.ellipse((420, 454, 452, 486), fill=CYAN)
+    draw.text((120, 520), sub, font=_font(48), fill=CYAN)
+    return img
+
+
+def slide_photo_caption(photo: str, topic: str, title: str, caption: str) -> Image.Image:
+    img = _fit_hero(photo)
+    draw = ImageDraw.Draw(img)
+    draw.rectangle((0, 0, W, 110), fill=BG)
+    draw.rectangle((0, 950, W, H), fill=BG)
+    badge(draw, topic)
+    _center(draw, title, 28, _font(36))
+    _center(draw, caption, 990, _font(36))
+    return img
+
+
 def render_beat(beat: dict[str, Any], dest: Path) -> Path:
     kind = beat["slide"]
     topic = beat.get("topic") or ""
-    if kind == "title":
+    if kind == "photo_title":
+        img = slide_photo_title(beat["photo"], topic, beat["jinju"], beat.get("sub") or "")
+    elif kind == "photo_caption":
+        img = slide_photo_caption(
+            beat["photo"], topic, beat.get("title") or "", beat.get("caption") or ""
+        )
+    elif kind == "title":
         img = slide_title(topic, beat["jinju"], beat.get("sub") or "")
     elif kind == "heatmap_low":
         img = slide_heatmap(topic, beat.get("title") or "電流密度", beat["caption"], "low")

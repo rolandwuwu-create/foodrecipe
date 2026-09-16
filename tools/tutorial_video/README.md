@@ -6,11 +6,11 @@
 Grok Bot 強，不是因為 4.6 比較會搜「電」。那支出片是：
 
 1. **金句當標題**（心是空的／電流只走這層）
-2. **Imagine 只生英雄鏡頭**（粗銅線剖面、電流只走表皮）——prompt **不准帶字**
+2. **電影感銅線英雄鏡頭**先無字生成（Cursor GenerateImage 或 Grok Imagine），prompt **不准帶字**
 3. **深藍解說圖**自己畫：電流密度熱圖、實心粗線剖面、金句卡
 4. 中文字、徽章、字幕是後製疊上去的
 
-Cursor 之前爛在：沒 Imagine、亂搜閃電電塔、還把「不要寫字」寫進教學片（教學片最需要大字金句）。
+Cursor 這邊本來就能生圖。銅線電影感不是 XAI Imagine API 獨佔的；缺的是「先出無字英雄圖，再疊金句」，不是不能畫銅。以前爛在亂搜閃電電塔、還把「不要寫字」寫進教學片。
 
 ## 用法
 
@@ -20,7 +20,7 @@ python3 -m tools.tutorial_video plan --lesson skin-effect
 python3 -m tools.tutorial_video render --lesson skin-effect
 ```
 
-解說圖不需要 API，會直接出 `tutorial.mp4`。要補 Grok Bot 那種銅線英雄鏡頭：
+解說圖不需要 API，內建英雄圖在 `data/heroes/`（銅管、集膚特寫、平行鄰近），會直接出 `tutorial.mp4`。要另走 Grok Imagine 動態鏡頭才需要 key：
 
 ```bash
 export XAI_API_KEY=xai-...

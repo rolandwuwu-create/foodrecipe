@@ -9,10 +9,10 @@
     "sub": "電流只走這層",
     "hero_prompt": "Photoreal cinematic 3D cutaway of a thick copper electrical conductor on a dark navy studio background, unused hollow-looking core, glowing orange current confined to a thin outer skin, brushed copper texture, product visualization, no people, no lightning, no power lines, no text, no watermark, no logo",
     "beats": [
-      {"role": "title", "slide": "title", "jinju": "心是空的", "sub": "電流只走這層", "duration_sec": 5, "narration": "線已經換很粗了，為什麼一上高頻還是燙？"},
+      {"role": "title", "slide": "photo_title", "photo": "copper_hero_right.png", "jinju": "心是空的", "sub": "電流只走這層", "duration_sec": 5, "narration": "線已經換很粗了，為什麼一上高頻還是燙？"},
       {"role": "hook", "slide": "heatmap_low", "title": "電流密度", "caption": "低頻：整根都在跑", "duration_sec": 8, "narration": "低頻的時候，電流幾乎把整根銅都當路用。"},
       {"role": "mechanism", "slide": "heatmap_high", "title": "電流密度", "caption": "高頻：被趕到表皮", "duration_sec": 8, "narration": "高頻電流被自己的磁場趕到表皮，中間那塊實心銅常常在旁邊看戲。"},
-      {"role": "picture", "slide": "ring", "title": "實心粗線", "caption": "付錢買整根截面積，電只啃那層皮", "duration_sec": 8, "narration": "你付錢買的是整根截面積，高頻時真正在載流的只剩那層皮。"},
+      {"role": "picture", "slide": "photo_caption", "photo": "copper_macro_skin.png", "title": "實心粗線", "caption": "付錢買整根截面積，電只啃那層皮", "duration_sec": 8, "narration": "你付錢買的是整根截面積，高頻時真正在載流的只剩那層皮。"},
       {"role": "practice", "slide": "ring", "title": "多股與銅箔", "caption": "利茲線、PCB 寬銅箔，是在把皮變多", "duration_sec": 8, "narration": "所以高頻愛多股絞線、利茲線，PCB 則常走寬銅箔——不是再粗一號就好。"},
       {"role": "jinju", "slide": "jinju", "jinju": "高頻世界裡，粗電線的心是空的。", "caption": "管子有電流，裡子很空虛", "duration_sec": 6, "narration": "記住這句：高頻世界裡，粗電線的心是空的。"}
     ]
@@ -32,6 +32,23 @@
       {"role": "mechanism", "slide": "heatmap_high", "title": "電弧", "caption": "局部熔化，冷卻後焊死", "duration_sec": 8, "narration": "電弧把接點局部熔化，冷卻後 ON 永遠 ON。"},
       {"role": "practice", "slide": "ring", "title": "給電流退路", "caption": "飛輪二極體、RC、壓敏", "duration_sec": 8, "narration": "重點不是無腦換更大顆，是給電流一條退路。"},
       {"role": "jinju", "slide": "jinju", "jinju": "接點不是壞掉，是被自己產生的電焊槍焊死了。", "caption": "給電流一條退路", "duration_sec": 6, "narration": "接點不是壞掉，是被自己產生的電焊槍焊死了。"}
+    ]
+  },
+  {
+    "id": "proximity-effect",
+    "title": "鄰近效應",
+    "series": "小東老師電子學",
+    "jinju": "旁邊那根線，也在偷你的電流。",
+    "hook": "集膚你懂了，線也換粗了，兩根平行一走高頻，還是燙。",
+    "sub": "旁邊那根也在偷",
+    "hero_prompt": "Photoreal two parallel copper conductors, current crowded onto facing surfaces, dark navy, no text",
+    "beats": [
+      {"role": "title", "slide": "photo_title", "photo": "proximity_hero_right.png", "jinju": "也被擠走", "sub": "旁邊那根也在偷", "duration_sec": 6, "narration": "集膚懂了，線也換粗了，兩根一平行還是燙。"},
+      {"role": "hook", "slide": "heatmap_low", "title": "以為只剩集膚", "caption": "一根線：電流被趕到自己的皮", "duration_sec": 7, "narration": "集膚是自己的磁場，把電流趕到自己的表皮。"},
+      {"role": "mechanism", "slide": "photo_caption", "photo": "proximity_section.png", "title": "兩根靠太近", "caption": "鄰居的磁場，把電流擠到另一側", "duration_sec": 8, "narration": "旁邊再放一根，它的磁場會把你的電流擠走。這叫鄰近效應。"},
+      {"role": "picture", "slide": "photo_caption", "photo": "proximity_hero.png", "title": "平行長走", "caption": "面對面那層在載流，外側幾乎在看戲", "duration_sec": 7, "narration": "兩根平行長走時，電流擠在面對面那一層，等於有效截面積又被偷走一次。"},
+      {"role": "practice", "slide": "ring", "title": "怎麼少被偷", "caption": "拉開間距、減少平行、該交錯就交錯", "duration_sec": 8, "narration": "不是再粗一號。先拉開間距、少平行長走；高頻繞組才輪到利茲線。"},
+      {"role": "jinju", "slide": "jinju", "jinju": "旁邊那根線，也在偷你的電流。", "caption": "鄰居比線徑還兇", "duration_sec": 6, "narration": "記住這句：旁邊那根線，也在偷你的電流。"}
     ]
   }
 ]
