@@ -141,6 +141,32 @@ class AssembleTests(unittest.TestCase):
             clip = still_to_clip(still, job / "clip.mp4", 2, audio=wav)
             self.assertGreater(probe_duration(clip), 1.4)
 
+    def test_heatmap_animation_changes_over_time(self):
+        from PIL import Image
+
+        from tools.tutorial_video.motion import animate_shot
+
+        board = plan_lesson(get_lesson("proximity-effect"))
+        shot = next(s for s in board["shots"] if s["slide"] == "heatmap_low")
+        with tempfile.TemporaryDirectory() as tmp:
+            job = Path(tmp)
+            still = render_beat(shot, job / "still.png")
+            clip = animate_shot(shot, still, job / "clip.mp4", 1.2)
+            first = job / "first.png"
+            last = job / "last.png"
+            subprocess.run(
+                ["ffmpeg", "-y", "-i", str(clip), "-vframes", "1", str(first)],
+                check=True,
+                capture_output=True,
+            )
+            subprocess.run(
+                ["ffmpeg", "-y", "-ss", "1.0", "-i", str(clip), "-vframes", "1", str(last)],
+                check=True,
+                capture_output=True,
+            )
+            with Image.open(first) as im_a, Image.open(last) as im_b:
+                self.assertNotEqual(list(im_a.getdata()), list(im_b.getdata()))
+
 
 class VoiceTests(unittest.TestCase):
     def test_empty_narration_is_error(self):

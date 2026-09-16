@@ -3,7 +3,13 @@
 對照成品：https://youtu.be/bN9DOArGQbE  
 《高頻世界裡，粗電線的心是空的｜集膚效應 5 分鐘搞懂》
 
-這條產線出的是**成片**：腳本、國語配音、分鏡畫面、字幕、mp4。不是只出幾張圖。
+這條產線出的是**成片**：腳本、國語配音、**電流／磁場動畫**、字幕、mp4。
+
+Grok Bot 等級的銅線鏡頭是 Imagine **video**（`grok-imagine-video-1.5`），要環境變數 `XAI_API_KEY`。沒有 key 時，銅線改跑程序動畫（電流脈衝、磁場圈、集膚空洞長大），不是靜態圖+Ken Burns。
+
+```bash
+python3 -m tools.tutorial_video render --lesson proximity-effect
+```
 
 ```bash
 python3 -m tools.tutorial_video list

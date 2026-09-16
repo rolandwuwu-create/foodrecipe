@@ -12,6 +12,19 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+def load_dotenv() -> None:
+    for path in (Path("/workspace/.env"), Path.cwd() / ".env"):
+        if not path.is_file():
+            continue
+        for raw in path.read_text(encoding="utf-8").splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+load_dotenv()
 DEFAULT_BASE = "https://api.x.ai/v1"
 IMAGE_MODEL = "grok-imagine-image-2.0"
 VIDEO_MODEL = "grok-imagine-video-1.5"
@@ -106,15 +119,15 @@ class ImagineClient:
         prompt: str,
         *,
         image: str | None = None,
-        duration: int = 6,
+        duration: int = 8,
         aspect_ratio: str = "16:9",
         resolution: str = "720p",
-        generate_audio: bool = True,
+        generate_audio: bool = False,
     ) -> str:
         payload: dict[str, Any] = {
             "model": VIDEO_MODEL,
             "prompt": prompt,
-            "duration": duration,
+            "duration": max(1, min(int(duration), 15)),
             "aspect_ratio": aspect_ratio,
             "resolution": resolution,
             "generate_audio": generate_audio,

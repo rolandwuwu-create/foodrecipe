@@ -12,7 +12,9 @@ When making a tutorial video:
 - Clone this grammar: 現場問題 → dark-navy mechanism slides → 金句 → 實務取捨.
 - Photoreal hero metaphor (copper skin current, welded contacts) is generated with Cursor GenerateImage or Grok Imagine. The image prompt must contain **no text**.
 - All 金句 / captions / badges / 字幕 are composited on slides via `tools/tutorial_video`. Never ask the image model to write Chinese into the pixels.
-- A deliverable is a **finished episode**: `SCRIPT.md` + zh-TW voiceover + `tutorial.mp4`. `python3 -m tools.tutorial_video render --lesson proximity-effect` (needs network for TTS). `--no-voice` is tests only.
+- A deliverable is a **finished episode with motion**: current crowding / field-ring animation, `SCRIPT.md`, zh-TW voiceover, `tutorial.mp4`. Ken Burns on stills is not enough.
+- Grok Bot copper heroes are Imagine **video** (`grok-imagine-video-1.5`). Requires `XAI_API_KEY` in the environment. Do not claim Bot quality without it.
+- Voice clone needs a reachable GPU worker plus reference WAVs in `tools/tutorial_video/data/voice_ref/`. edge-tts is a stand-in, not 小東老師.
 - Cinematic copper stills live in `tools/tutorial_video/data/heroes/`. Do not search electricity stock.
 - Do not turn the foodrecipe homepage into this series.
 - Do not stop at stills. The user wants 成片.

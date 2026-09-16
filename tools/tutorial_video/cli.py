@@ -9,11 +9,12 @@ from pathlib import Path
 
 from .assemble import assemble_job, still_to_clip, probe_duration
 from .assets import write_json
-from .imagine import ImagineClient, ImagineError
+from .imagine import ImagineClient, ImagineError, image_data_uri, load_dotenv
 from .lessons import get_lesson, load_lessons
+from .motion import animate_shot
 from .planner import plan_lesson, plan_topic
 from .script import srt_from_timeline, write_episode_docs
-from .slides import render_beat
+from .slides import HEROES, render_beat
 from .voice import VoiceError, synthesize
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -78,27 +79,48 @@ def _load_board(args: argparse.Namespace) -> tuple[dict, Path]:
 
 
 def cmd_render(args: argparse.Namespace) -> int:
+    load_dotenv()
     board, job_dir = _load_board(args)
     write_episode_docs(board, job_dir)
     print(job_dir / "SCRIPT.md")
+    key_present = bool(__import__("os").environ.get("XAI_API_KEY", "").strip())
     client = None
-    if args.imagine:
-        client = ImagineClient(
-            poll_interval=args.poll_interval,
-            poll_timeout=args.poll_timeout,
-        )
+    want_imagine = args.imagine or (key_present and not args.no_imagine)
+    if want_imagine:
+        try:
+            client = ImagineClient(
+                poll_interval=args.poll_interval,
+                poll_timeout=args.poll_timeout,
+            )
+        except ImagineError as exc:
+            print(f"imagine unavailable: {exc}")
+            client = None
+    if client is None:
+        print("Imagine video: no XAI_API_KEY — copper motion is procedural (current + field rings).")
     timeline: list[tuple[float, float, str]] = []
     t = 0.0
     for shot in board["shots"]:
         folder = job_dir / "shots" / shot["id"]
         still = render_beat(shot, folder / "still.png")
-        if args.imagine and shot.get("source") == "imagine+overlay" and shot.get("image_prompt"):
-            print(f"imagine hero {shot['id']} …", flush=True)
+        if client and shot.get("photo"):
+            print(f"imagine video {shot['id']} …", flush=True)
             try:
-                hero = client.generate_image(shot["image_prompt"])
-                client.save_bytes(hero, folder / "hero.jpg")
-            except ImagineError as exc:
-                print(f"  skip hero: {exc}")
+                raw = (HEROES / shot["photo"]).read_bytes()
+                prompt = shot.get("video_prompt") or (
+                    "Slow cinematic push-in on this exact copper object, orange current flowing "
+                    "along the conductor, faint magnetic-field rings, no new objects, no text, no lightning."
+                )
+                seconds = max(5, min(int(shot["duration_sec"]), 12))
+                rid = client.start_video(
+                    prompt,
+                    image=image_data_uri(raw, "image/png"),
+                    duration=seconds,
+                    generate_audio=False,
+                )
+                result = client.wait_for_video(rid)
+                client.save_bytes(client.download(result["video"]["url"]), folder / "imagine.mp4")
+            except (ImagineError, OSError) as exc:
+                print(f"  skip imagine video: {exc}")
         audio = None
         if not args.no_voice and shot.get("narration"):
             existing = folder / "vo.mp3"
@@ -113,13 +135,17 @@ def cmd_render(args: argparse.Namespace) -> int:
                     print(f"  voice failed: {exc}", file=sys.stderr)
                     return 1
         clip = folder / "clip.mp4"
-        still_to_clip(
-            still,
-            clip,
-            float(shot["duration_sec"]),
-            zoom=shot.get("slide") in {"photo_title", "photo_caption"},
-            audio=audio,
-        )
+        if args.no_motion:
+            still_to_clip(
+                still,
+                clip,
+                float(shot["duration_sec"]),
+                zoom=shot.get("slide") in {"photo_title", "photo_caption"},
+                audio=audio,
+            )
+        else:
+            print(f"  motion {shot['id']} {shot['slide']}", flush=True)
+            animate_shot(shot, still, clip, float(shot["duration_sec"]), audio=audio)
         dur = probe_duration(clip)
         timeline.append((t, t + dur, shot["narration"]))
         t += dur
@@ -158,7 +184,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_render.add_argument("--job", help="existing job directory with storyboard.json")
     p_render.add_argument("--out", help="job directory")
     p_render.add_argument("--resolution", default="720p")
-    p_render.add_argument("--imagine", action="store_true", help="also generate Imagine hero (needs XAI_API_KEY)")
+    p_render.add_argument("--imagine", action="store_true", help="force Imagine video (needs XAI_API_KEY)")
+    p_render.add_argument("--no-imagine", action="store_true", help="skip Imagine even if XAI_API_KEY is set")
+    p_render.add_argument("--no-motion", action="store_true", help="static Ken Burns instead of current/field animation")
     p_render.add_argument("--no-voice", action="store_true", help="skip TTS (silent picture-in-picture)")
     p_render.add_argument("--voice", default="zh-TW-YunJheNeural", help="edge-tts voice")
     p_render.add_argument("--placeholders", action="store_true", help="deprecated; slides are the default")
