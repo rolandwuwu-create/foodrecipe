@@ -190,8 +190,12 @@ def wrap_zh(text: str, width: int = 22) -> list[str]:
         elif len(buf) >= width + 8:
             lines.append(buf.strip())
             buf = ""
-    if buf.strip():
-        lines.append(buf.strip())
+    leftover = buf.strip()
+    if leftover:
+        if lines and (len(leftover) <= 2 or leftover in breaks):
+            lines[-1] += leftover
+        else:
+            lines.append(leftover)
     return lines[:4]
 
 
