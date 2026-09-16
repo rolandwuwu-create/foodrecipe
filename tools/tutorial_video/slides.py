@@ -60,15 +60,15 @@ def slide_heatmap(topic: str, title: str, caption: str, mode: str) -> Image.Imag
         draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=ORANGE)
         draw.ellipse((cx - r + 22, cy - r + 22, cx + r - 22, cy + r - 22), fill=(40, 140, 220))
         draw.ellipse((cx - r + 70, cy - r + 70, cx + r - 70, cy + r - 70), fill=BG)
-    draw.rounded_rectangle((80, 980, 360, 1010), radius=4, fill=None)
-    draw.rectangle((90, 986, 350, 1004), fill=NAVY)
+    draw.rounded_rectangle((80, 860, 360, 890), radius=4, fill=None)
+    draw.rectangle((90, 866, 350, 884), fill=NAVY)
     for i in range(0, 260, 4):
         t = i / 260
         color = (int(40 + 215 * t), int(40 + 80 * t), int(180 * (1 - t)))
-        draw.rectangle((90 + i, 986, 94 + i, 1004), fill=color)
-    draw.text((90, 950), "低", font=_font(20), fill=MUTED)
-    draw.text((320, 950), "高電流密度", font=_font(20), fill=MUTED)
-    _center(draw, caption, 900, _font(36), WHITE)
+        draw.rectangle((90 + i, 866, 94 + i, 884), fill=color)
+    draw.text((90, 830), "低", font=_font(20), fill=MUTED)
+    draw.text((320, 830), "高電流密度", font=_font(20), fill=MUTED)
+    _center(draw, caption, 760, _font(36), WHITE)
     return img
 
 
@@ -80,7 +80,7 @@ def slide_ring(topic: str, title: str, caption: str) -> Image.Image:
     draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=(255, 130, 50))
     draw.ellipse((cx - r + 28, cy - r + 28, cx + r - 28, cy + r - 28), fill=(40, 140, 220))
     draw.ellipse((cx - r + 70, cy - r + 70, cx + r - 70, cy + r - 70), fill=BG)
-    _center(draw, caption, 900, _font(32), MUTED)
+    _center(draw, caption, 820, _font(32), MUTED)
     return img
 
 
@@ -167,11 +167,108 @@ def slide_photo_title(photo: str, topic: str, jinju: str, sub: str) -> Image.Ima
 def slide_photo_caption(photo: str, topic: str, title: str, caption: str) -> Image.Image:
     img = _fit_hero(photo)
     draw = ImageDraw.Draw(img)
-    draw.rectangle((0, 0, W, 110), fill=BG)
-    draw.rectangle((0, 950, W, H), fill=BG)
+    draw.rectangle((0, 0, W, 120), fill=BG)
     badge(draw, topic)
-    _center(draw, title, 28, _font(36))
-    _center(draw, caption, 990, _font(36))
+    _center(draw, title, 18, _font(34))
+    if caption:
+        _center(draw, caption, 70, _font(26), MUTED)
+    return img
+
+
+def wrap_zh(text: str, width: int = 22) -> list[str]:
+    text = " ".join((text or "").split())
+    if not text:
+        return []
+    lines: list[str] = []
+    buf = ""
+    breaks = set("，。；、！？,.;!? ")
+    for ch in text:
+        buf += ch
+        if len(buf) >= width and ch in breaks:
+            lines.append(buf.strip())
+            buf = ""
+        elif len(buf) >= width + 8:
+            lines.append(buf.strip())
+            buf = ""
+    if buf.strip():
+        lines.append(buf.strip())
+    return lines[:4]
+
+
+def slide_bullets(topic: str, title: str, bullets: list[str]) -> Image.Image:
+    img, draw = canvas()
+    badge(draw, topic)
+    _center(draw, title, 140, _font(52))
+    y = 300
+    for item in bullets[:5]:
+        draw.ellipse((160, y + 16, 196, y + 52), fill=ORANGE)
+        draw.text((230, y), item, font=_font(40), fill=WHITE)
+        y += 110
+    return img
+
+
+def slide_compare(
+    topic: str,
+    title: str,
+    left_title: str,
+    left_body: str,
+    right_title: str,
+    right_body: str,
+) -> Image.Image:
+    img, draw = canvas()
+    badge(draw, topic)
+    _center(draw, title, 140, _font(52))
+    cards = [
+        (120, left_title, left_body),
+        (1020, right_title, right_body),
+    ]
+    for x, heading, body in cards:
+        draw.rounded_rectangle((x, 280, x + 780, 820), radius=18, fill=NAVY)
+        draw.text((x + 48, 320), heading, font=_font(44), fill=GOLD)
+        y = 420
+        for line in wrap_zh(body, 14):
+            draw.text((x + 48, y), line, font=_font(36), fill=WHITE)
+            y += 64
+    return img
+
+
+def slide_text(topic: str, title: str, caption: str) -> Image.Image:
+    img, draw = canvas()
+    badge(draw, topic)
+    _center(draw, title, 200, _font(56))
+    y = 380
+    for line in wrap_zh(caption, 16):
+        _center(draw, line, y, _font(44), WHITE)
+        y += 72
+    return img
+
+
+def slide_end(topic: str, jinju: str, caption: str) -> Image.Image:
+    img, draw = canvas()
+    _center(draw, "小東老師電子學", 280, _font(40), MUTED)
+    _center(draw, caption or topic, 380, _font(64), GOLD)
+    y = 520
+    for line in wrap_zh(jinju, 16) or [jinju]:
+        _center(draw, line, y, _font(48), WHITE)
+        y += 70
+    return img
+
+
+def paint_subtitle(img: Image.Image, text: str) -> Image.Image:
+    lines = wrap_zh(text, 26)
+    if not lines:
+        return img
+    bar_h = 36 + 44 * len(lines)
+    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(overlay)
+    y0 = H - bar_h
+    d.rectangle((0, y0, W, H), fill=(7, 21, 38, 210))
+    img = Image.alpha_composite(img.convert("RGBA"), overlay).convert("RGB")
+    draw = ImageDraw.Draw(img)
+    y = y0 + 12
+    for line in lines:
+        _center(draw, line, y, _font(30), WHITE)
+        y += 44
     return img
 
 
@@ -192,8 +289,25 @@ def render_beat(beat: dict[str, Any], dest: Path) -> Path:
         img = slide_heatmap(topic, beat.get("title") or "電流密度", beat["caption"], "high")
     elif kind == "ring":
         img = slide_ring(topic, beat.get("title") or "", beat["caption"])
+    elif kind == "bullets":
+        img = slide_bullets(topic, beat.get("title") or "", list(beat.get("bullets") or []))
+    elif kind == "compare":
+        img = slide_compare(
+            topic,
+            beat.get("title") or "",
+            beat.get("left_title") or "",
+            beat.get("left_body") or "",
+            beat.get("right_title") or "",
+            beat.get("right_body") or "",
+        )
+    elif kind == "text":
+        img = slide_text(topic, beat.get("title") or "", beat.get("caption") or "")
+    elif kind == "end":
+        img = slide_end(topic, beat.get("jinju") or "", beat.get("caption") or topic)
     elif kind == "jinju":
         img = slide_jinju(topic, beat["jinju"], beat.get("caption") or "")
     else:
         img = slide_jinju(topic, beat.get("caption") or beat.get("jinju") or "", "")
+    if beat.get("narration") and kind not in {"photo_title", "jinju", "end"}:
+        img = paint_subtitle(img, beat["narration"])
     return save(img, dest)

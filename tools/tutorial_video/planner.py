@@ -52,6 +52,11 @@ def plan_lesson(lesson: dict[str, Any]) -> dict[str, Any]:
             "caption": beat.get("caption") or beat.get("sub") or "",
             "sub": beat.get("sub") or lesson.get("sub") or "",
             "photo": beat.get("photo") or "",
+            "bullets": list(beat.get("bullets") or []),
+            "left_title": beat.get("left_title") or "",
+            "left_body": beat.get("left_body") or "",
+            "right_title": beat.get("right_title") or "",
+            "right_body": beat.get("right_body") or "",
             "visual": {
                 "must_include": [topic, jinju],
                 "must_not": GENERIC_MUST_NOT,
@@ -73,6 +78,7 @@ def plan_lesson(lesson: dict[str, Any]) -> dict[str, Any]:
         "jinju": jinju,
         "reference": lesson.get("reference"),
         "hero_prompt": lesson.get("hero_prompt"),
+        "youtube_title": lesson.get("youtube_title") or f"{jinju}｜{topic}",
         "asset_policy": "imagine_hero_then_slides",
         "shots": shots,
     }

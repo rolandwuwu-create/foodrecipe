@@ -59,53 +59,101 @@ def make_placeholder(path: Path, text: str, duration: int, size: str = "1280x720
     return path
 
 
+def probe_duration(path: Path) -> float:
+    proc = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-show_entries",
+            "format=duration",
+            "-of",
+            "default=nw=1:nokey=1",
+            str(path),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise AssembleError(proc.stderr.strip() or "ffprobe failed")
+    return float(proc.stdout.strip())
+
+
 def still_to_clip(
     png: Path,
     output: Path,
-    duration: int,
+    duration: float = 6,
     size: str = "1920x1080",
     zoom: bool = False,
+    audio: Path | None = None,
+    pad_head: float = 0.35,
+    pad_tail: float = 0.55,
 ) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
     w, h = size.split("x")
+    if audio:
+        adur = probe_duration(audio)
+        pad_tail = max(pad_tail, float(duration) - adur - pad_head)
+        total = adur + pad_head + pad_tail
+    else:
+        total = float(duration)
+    total = max(total, 1.2)
+    frames = max(int(round(total * 25)), 25)
     if zoom:
-        frames = max(int(duration) * 25, 25)
-        vf = (
-            f"scale={w}:{h},"
-            f"zoompan=z='min(1.0+0.0009*on,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
-            f":d={frames}:s={w}x{h}:fps=25"
+        z_inc = 0.08 / frames
+        vfilter = (
+            f"scale={w}:{h},zoompan=z='min(1.0+{z_inc}*on,1.08)'"
+            f":x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={frames}:s={w}x{h}:fps=25,"
+            "format=yuv420p"
         )
     else:
-        vf = (
-            f"scale={size}:force_original_aspect_ratio=decrease,"
-            f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2"
+        vfilter = (
+            f"scale={w}:{h}:force_original_aspect_ratio=decrease,"
+            f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2,fps=25,format=yuv420p"
         )
-    _run(
-        [
-            "ffmpeg",
-            "-y",
-            "-loop",
-            "1",
+    cmd = ["ffmpeg", "-y", "-framerate", "25", "-loop", "1", "-i", str(png)]
+    if audio:
+        delay_ms = int(pad_head * 1000)
+        cmd += [
             "-i",
-            str(png),
+            str(audio),
+            "-filter_complex",
+            f"[0:v]{vfilter}[v];"
+            f"[1:a]adelay={delay_ms}|{delay_ms},apad=pad_dur={pad_tail:.2f},"
+            "aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[a]",
+            "-map",
+            "[v]",
+            "-map",
+            "[a]",
+        ]
+    else:
+        cmd += [
             "-f",
             "lavfi",
             "-i",
             "anullsrc=channel_layout=stereo:sample_rate=44100",
             "-vf",
-            vf,
-            "-t",
-            str(duration),
-            "-shortest",
-            "-c:v",
-            "libx264",
-            "-pix_fmt",
-            "yuv420p",
-            "-c:a",
-            "aac",
-            str(output),
+            vfilter,
         ]
-    )
+    cmd += [
+        "-t",
+        f"{total:.3f}",
+        "-shortest",
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "aac",
+        "-ar",
+        "44100",
+        "-ac",
+        "2",
+        "-movflags",
+        "+faststart",
+        str(output),
+    ]
+    _run(cmd)
     return output
 
 
@@ -128,8 +176,16 @@ def concat_clips(clips: list[Path], output: Path) -> Path:
             "0",
             "-i",
             str(listing),
-            "-c",
-            "copy",
+            "-c:v",
+            "libx264",
+            "-c:a",
+            "aac",
+            "-ar",
+            "44100",
+            "-ac",
+            "2",
+            "-movflags",
+            "+faststart",
             str(output),
         ]
     )

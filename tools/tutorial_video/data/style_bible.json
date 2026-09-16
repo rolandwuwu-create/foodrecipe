@@ -17,6 +17,7 @@
     "muted": "#8AA0B8"
   },
   "rules": [
+    "A finished episode is SCRIPT.md + zh-TW voiceover + captions.srt + tutorial.mp4. Stills alone are not a deliverable.",
     "Photoreal hero metaphor of THIS mechanism via GenerateImage or Imagine. No text in the image prompt.",
     "All Traditional Chinese, 金句, captions, badges are composited later. Never ask the video model to write Chinese.",
     "Teaching beats are dark-navy motion-graphics slides: cross-section, heatmap, 金句 card.",

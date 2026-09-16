@@ -11,7 +11,9 @@ When making a tutorial video:
 - Do not search `electricity`, `lightning`, `電力`, `電工`. That is why Cursor footage looks stupid next to Grok Bot.
 - Clone this grammar: 現場問題 → dark-navy mechanism slides → 金句 → 實務取捨.
 - Photoreal hero metaphor (copper skin current, welded contacts) is generated with Cursor GenerateImage or Grok Imagine. The image prompt must contain **no text**.
-- All 金句 / captions / badges are composited on slides via `tools/tutorial_video`. Never ask the image model to write Chinese into the pixels.
-- Command: `python3 -m tools.tutorial_video plan --lesson skin-effect` then `render`. Add `--imagine` only for motion, needs `XAI_API_KEY`.
+- All 金句 / captions / badges / 字幕 are composited on slides via `tools/tutorial_video`. Never ask the image model to write Chinese into the pixels.
+- A deliverable is a **finished episode**: `SCRIPT.md` + zh-TW voiceover + `tutorial.mp4`. `python3 -m tools.tutorial_video render --lesson proximity-effect` (needs network for TTS). `--no-voice` is tests only.
 - Cinematic copper stills live in `tools/tutorial_video/data/heroes/`. Do not search electricity stock.
+- Do not turn the foodrecipe homepage into this series.
+- Do not stop at stills. The user wants 成片.
 - Do not turn the foodrecipe homepage into this series.

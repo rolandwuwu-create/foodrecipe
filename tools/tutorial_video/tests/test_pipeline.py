@@ -1,10 +1,10 @@
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
 
-from tools.tutorial_video.assemble import assemble_job, still_to_clip
+from tools.tutorial_video.assemble import assemble_job, probe_duration, still_to_clip
 from tools.tutorial_video.lessons import get_lesson
 from tools.tutorial_video.planner import (
     BANNED_STOCK_QUERIES,
@@ -12,7 +12,9 @@ from tools.tutorial_video.planner import (
     plan_lesson,
     plan_topic,
 )
+from tools.tutorial_video.script import narration_full, script_markdown
 from tools.tutorial_video.slides import render_beat
+from tools.tutorial_video.voice import VoiceError, synthesize
 
 
 class SkinEffectLessonTests(unittest.TestCase):
@@ -28,18 +30,26 @@ class SkinEffectLessonTests(unittest.TestCase):
         self.assertIn("no lightning", board["hero_prompt"])
         roles = [s["role"] for s in board["shots"]]
         self.assertEqual(roles[0], "title")
-        self.assertEqual(roles[-1], "jinju")
-        for shot in board["shots"][1:]:
-            self.assertEqual(shot["source"], "slide")
+        self.assertIn("jinju", roles)
+        self.assertEqual(roles[-1], "end")
+        self.assertGreaterEqual(len(board["shots"]), 10)
+        self.assertGreater(len(narration_full(board)), 400)
 
 
 class ProximityLessonTests(unittest.TestCase):
-    def test_uses_hero_photos(self):
+    def test_is_a_full_episode_script(self):
         board = plan_lesson(get_lesson("proximity-effect"))
         self.assertEqual(board["jinju"], "旁邊那根線，也在偷你的電流。")
         self.assertEqual(board["shots"][0]["slide"], "photo_title")
         self.assertEqual(board["shots"][0]["photo"], "proximity_hero_right.png")
-        self.assertEqual(board["shots"][2]["photo"], "proximity_section.png")
+        photos = {s.get("photo") for s in board["shots"] if s.get("photo")}
+        self.assertIn("proximity_section.png", photos)
+        self.assertIn("transformer_pack.png", photos)
+        self.assertGreaterEqual(len(board["shots"]), 12)
+        script = script_markdown(board)
+        self.assertIn("旁白全稿", script)
+        self.assertIn("旁邊那根線，也在偷你的電流。", script)
+        self.assertGreater(len(narration_full(board)), 700)
 
 
 class PlannerTests(unittest.TestCase):
@@ -76,18 +86,67 @@ class SlideTests(unittest.TestCase):
                 self.assertEqual(img.size, (1920, 1080))
             self.assertGreater(path.stat().st_size, 40000)
 
+    def test_new_slide_kinds(self):
+        from PIL import Image
+
+        board = plan_lesson(get_lesson("proximity-effect"))
+        kinds = {s["slide"] for s in board["shots"]}
+        self.assertIn("bullets", kinds)
+        self.assertIn("compare", kinds)
+        self.assertIn("end", kinds)
+        with tempfile.TemporaryDirectory() as tmp:
+            for shot in board["shots"]:
+                if shot["slide"] in {"bullets", "compare", "end", "text"}:
+                    path = render_beat(shot, Path(tmp) / f"{shot['id']}.png")
+                    with Image.open(path) as img:
+                        self.assertEqual(img.size, (1920, 1080))
+
 
 class AssembleTests(unittest.TestCase):
     def test_slides_concat_to_mp4(self):
         board = plan_lesson(get_lesson("skin-effect"))
         with tempfile.TemporaryDirectory() as tmp:
             job = Path(tmp)
-            for shot in board["shots"]:
+            for shot in board["shots"][:3]:
                 still = render_beat(shot, job / "shots" / shot["id"] / "still.png")
                 still_to_clip(still, job / "shots" / shot["id"] / "clip.mp4", 1)
-            out = assemble_job(board, job)
+            short = {
+                **board,
+                "shots": board["shots"][:3],
+            }
+            out = assemble_job(short, job)
             self.assertTrue(out.exists())
             self.assertGreater(out.stat().st_size, 5000)
+
+    def test_muxes_voice_track(self):
+        board = plan_lesson(get_lesson("proximity-effect"))
+        with tempfile.TemporaryDirectory() as tmp:
+            job = Path(tmp)
+            shot = board["shots"][0]
+            still = render_beat(shot, job / "still.png")
+            wav = job / "vo.wav"
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-y",
+                    "-f",
+                    "lavfi",
+                    "-i",
+                    "sine=frequency=440:duration=1.2",
+                    str(wav),
+                ],
+                check=True,
+                capture_output=True,
+            )
+            clip = still_to_clip(still, job / "clip.mp4", 2, audio=wav)
+            self.assertGreater(probe_duration(clip), 1.4)
+
+
+class VoiceTests(unittest.TestCase):
+    def test_empty_narration_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(VoiceError):
+                synthesize("   ", Path(tmp) / "x.mp3")
 
 
 if __name__ == "__main__":

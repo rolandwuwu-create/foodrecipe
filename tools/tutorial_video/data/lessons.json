@@ -4,17 +4,104 @@
     "title": "集膚效應",
     "series": "小東老師電子學",
     "reference": "https://youtu.be/bN9DOArGQbE",
+    "youtube_title": "高頻世界裡，粗電線的心是空的｜集膚效應 5 分鐘搞懂",
     "jinju": "高頻世界裡，粗電線的心是空的。",
     "hook": "線已經換很粗了，算電阻也覺得夠低，結果一上高頻還是燙得像剛出爐。",
     "sub": "電流只走這層",
     "hero_prompt": "Photoreal cinematic 3D cutaway of a thick copper electrical conductor on a dark navy studio background, unused hollow-looking core, glowing orange current confined to a thin outer skin, brushed copper texture, product visualization, no people, no lightning, no power lines, no text, no watermark, no logo",
     "beats": [
-      {"role": "title", "slide": "photo_title", "photo": "copper_hero_right.png", "jinju": "心是空的", "sub": "電流只走這層", "duration_sec": 5, "narration": "線已經換很粗了，為什麼一上高頻還是燙？"},
-      {"role": "hook", "slide": "heatmap_low", "title": "電流密度", "caption": "低頻：整根都在跑", "duration_sec": 8, "narration": "低頻的時候，電流幾乎把整根銅都當路用。"},
-      {"role": "mechanism", "slide": "heatmap_high", "title": "電流密度", "caption": "高頻：被趕到表皮", "duration_sec": 8, "narration": "高頻電流被自己的磁場趕到表皮，中間那塊實心銅常常在旁邊看戲。"},
-      {"role": "picture", "slide": "photo_caption", "photo": "copper_macro_skin.png", "title": "實心粗線", "caption": "付錢買整根截面積，電只啃那層皮", "duration_sec": 8, "narration": "你付錢買的是整根截面積，高頻時真正在載流的只剩那層皮。"},
-      {"role": "practice", "slide": "ring", "title": "多股與銅箔", "caption": "利茲線、PCB 寬銅箔，是在把皮變多", "duration_sec": 8, "narration": "所以高頻愛多股絞線、利茲線，PCB 則常走寬銅箔——不是再粗一號就好。"},
-      {"role": "jinju", "slide": "jinju", "jinju": "高頻世界裡，粗電線的心是空的。", "caption": "管子有電流，裡子很空虛", "duration_sec": 6, "narration": "記住這句：高頻世界裡，粗電線的心是空的。"}
+      {
+        "role": "title",
+        "slide": "photo_title",
+        "photo": "copper_hero_right.png",
+        "jinju": "心是空的",
+        "sub": "電流只走這層",
+        "duration_sec": 8,
+        "narration": "線已經換很粗了，算電阻也覺得夠低，結果一上高頻還是燙得像剛出爐。高頻世界裡，粗電線的心是空的。"
+      },
+      {
+        "role": "hook",
+        "slide": "bullets",
+        "title": "這不是線買太便宜",
+        "bullets": ["電表量直流，數字漂亮得很", "一上高頻，線卻開始發燙", "開關電源、繞組、分音器都中"],
+        "duration_sec": 12,
+        "narration": "這不是線材買太便宜。你用三用電表量直流電阻，數字漂亮得很。可是開關電源一上、變壓器一繞，甚至音響分音器一過高頻，線就開始燙。"
+      },
+      {
+        "role": "hook",
+        "slide": "heatmap_low",
+        "title": "電流密度",
+        "caption": "低頻：整根都在跑",
+        "duration_sec": 8,
+        "narration": "低頻的時候，電流幾乎把整根銅都當路用。截面積你買多少，路就有多寬。"
+      },
+      {
+        "role": "mechanism",
+        "slide": "heatmap_high",
+        "title": "電流密度",
+        "caption": "高頻：被趕到表皮",
+        "duration_sec": 14,
+        "narration": "高頻一來，交變電流自己會生磁場，這個磁場在導體裡面感應出渦電流。結果電流被趕到表皮。頻率越高，那層皮越薄。這就是集膚效應。"
+      },
+      {
+        "role": "picture",
+        "slide": "photo_caption",
+        "photo": "copper_macro_skin.png",
+        "title": "實心粗線",
+        "caption": "付錢買整根截面積，電只啃那層皮",
+        "duration_sec": 12,
+        "narration": "你付錢買的是整根截面積。高頻時真正在載流的，只剩外面那圈。中間那塊實心銅，常常在旁邊看戲。"
+      },
+      {
+        "role": "picture",
+        "slide": "photo_caption",
+        "photo": "skin_copper_hero.png",
+        "title": "看起來像實心棒",
+        "caption": "高頻時比較像一根管子",
+        "duration_sec": 10,
+        "narration": "看起來像實心棒，高頻時比較像一根管子。管子有電流，裡子很空虛。"
+      },
+      {
+        "role": "practice",
+        "slide": "text",
+        "title": "熱從哪裡來",
+        "caption": "直流電阻沒變，交流電阻被抬上去",
+        "duration_sec": 12,
+        "narration": "所以交流電阻會比直流電阻高。熱是電流的平方乘上電阻，電阻變大，同樣的電流就更燙。再粗一號，低頻有用；高頻時你只是買了更厚的、不走路的心。"
+      },
+      {
+        "role": "practice",
+        "slide": "photo_caption",
+        "photo": "litz_wire.png",
+        "title": "把皮變多",
+        "caption": "利茲線、多股絞線，不是再粗一號",
+        "duration_sec": 12,
+        "narration": "現場怎麼辦？不是無腦換更粗。多股絞線、利茲線，是在把皮變多，讓每一股都有表皮可以走路。"
+      },
+      {
+        "role": "practice",
+        "slide": "bullets",
+        "title": "先問頻率再決定",
+        "bullets": ["PCB：走寬而薄的銅箔", "高頻繞組：利茲線、多股", "更高頻：空心銅管、鍍銀"],
+        "duration_sec": 12,
+        "narration": "PCB 則常走寬而薄的銅箔，讓電流有表皮可以躺。很高頻才輪到鍍銀、空心銅管。先問頻率，再決定要不要把心掏空。"
+      },
+      {
+        "role": "jinju",
+        "slide": "jinju",
+        "jinju": "高頻世界裡，粗電線的心是空的。",
+        "caption": "管子有電流，裡子很空虛",
+        "duration_sec": 10,
+        "narration": "記住這句：高頻世界裡，粗電線的心是空的。管子有電流，裡子很空虛。"
+      },
+      {
+        "role": "end",
+        "slide": "end",
+        "jinju": "高頻世界裡，粗電線的心是空的。",
+        "caption": "集膚效應",
+        "duration_sec": 8,
+        "narration": "我是小東老師。這集是集膚效應。下一題，我們講鄰居那根線，怎麼繼續偷你的電流。"
+      }
     ]
   },
   {
@@ -22,33 +109,162 @@
     "title": "繼電器黏死",
     "series": "小東老師電子學",
     "reference": "https://youtu.be/bPbx9UaoYI0",
+    "youtube_title": "接點不是壞掉，是被自己產生的電焊槍焊死了｜繼電器黏死",
     "jinju": "接點不是壞掉，是被自己產生的電焊槍焊死了。",
     "hook": "按了停止、斷了控制訊號，機器還是死命開著。",
     "sub": "被焊死了",
     "hero_prompt": "Photoreal cinematic close-up of industrial relay contacts welded together by a bright orange electric arc, sparks, dark navy studio, copper bus bars, no people, no lightning sky, no text",
     "beats": [
-      {"role": "title", "slide": "title", "jinju": "被焊死了", "sub": "接點熔黏", "duration_sec": 5, "narration": "斷了控制訊號，機器還是開著。打開繼電器，接點黏在一起。"},
-      {"role": "hook", "slide": "heatmap_low", "title": "電感電流", "caption": "說斷就斷？做不到", "duration_sec": 8, "narration": "電感電流不能瞬間為零，斷點會拉出電弧。"},
-      {"role": "mechanism", "slide": "heatmap_high", "title": "電弧", "caption": "局部熔化，冷卻後焊死", "duration_sec": 8, "narration": "電弧把接點局部熔化，冷卻後 ON 永遠 ON。"},
-      {"role": "practice", "slide": "ring", "title": "給電流退路", "caption": "飛輪二極體、RC、壓敏", "duration_sec": 8, "narration": "重點不是無腦換更大顆，是給電流一條退路。"},
-      {"role": "jinju", "slide": "jinju", "jinju": "接點不是壞掉，是被自己產生的電焊槍焊死了。", "caption": "給電流一條退路", "duration_sec": 6, "narration": "接點不是壞掉，是被自己產生的電焊槍焊死了。"}
+      {"role": "title", "slide": "title", "jinju": "被焊死了", "sub": "接點熔黏", "duration_sec": 8, "narration": "斷了控制訊號，機器還是開著。打開繼電器，接點黏在一起。接點不是壞掉，是被自己產生的電焊槍焊死了。"},
+      {"role": "hook", "slide": "heatmap_low", "title": "電感電流", "caption": "說斷就斷？做不到", "duration_sec": 10, "narration": "電感電流不能瞬間為零。你把接點拉開，電流還是要走，斷點就會拉出電弧。"},
+      {"role": "mechanism", "slide": "heatmap_high", "title": "電弧", "caption": "局部熔化，冷卻後焊死", "duration_sec": 10, "narration": "電弧把接點局部熔化，冷卻後就像電焊一樣黏死。ON 永遠 ON。"},
+      {"role": "practice", "slide": "bullets", "title": "給電流一條退路", "bullets": ["飛輪二極體", "RC 吸收", "壓敏電阻"], "duration_sec": 12, "narration": "重點不是無腦換更大顆繼電器。是給電流一條退路：飛輪二極體、RC 吸收、壓敏，先把電弧掐掉。"},
+      {"role": "jinju", "slide": "jinju", "jinju": "接點不是壞掉，是被自己產生的電焊槍焊死了。", "caption": "給電流一條退路", "duration_sec": 8, "narration": "接點不是壞掉，是被自己產生的電焊槍焊死了。記住，給電流一條退路。"},
+      {"role": "end", "slide": "end", "jinju": "接點不是壞掉，是被自己產生的電焊槍焊死了。", "caption": "繼電器黏死", "duration_sec": 6, "narration": "我是小東老師。這集是繼電器黏死。"}
     ]
   },
   {
     "id": "proximity-effect",
     "title": "鄰近效應",
     "series": "小東老師電子學",
+    "youtube_title": "旁邊那根線，也在偷你的電流｜鄰近效應 5 分鐘搞懂",
     "jinju": "旁邊那根線，也在偷你的電流。",
     "hook": "集膚你懂了，線也換粗了，兩根平行一走高頻，還是燙。",
     "sub": "旁邊那根也在偷",
     "hero_prompt": "Photoreal two parallel copper conductors, current crowded onto facing surfaces, dark navy, no text",
     "beats": [
-      {"role": "title", "slide": "photo_title", "photo": "proximity_hero_right.png", "jinju": "也被擠走", "sub": "旁邊那根也在偷", "duration_sec": 6, "narration": "集膚懂了，線也換粗了，兩根一平行還是燙。"},
-      {"role": "hook", "slide": "heatmap_low", "title": "以為只剩集膚", "caption": "一根線：電流被趕到自己的皮", "duration_sec": 7, "narration": "集膚是自己的磁場，把電流趕到自己的表皮。"},
-      {"role": "mechanism", "slide": "photo_caption", "photo": "proximity_section.png", "title": "兩根靠太近", "caption": "鄰居的磁場，把電流擠到另一側", "duration_sec": 8, "narration": "旁邊再放一根，它的磁場會把你的電流擠走。這叫鄰近效應。"},
-      {"role": "picture", "slide": "photo_caption", "photo": "proximity_hero.png", "title": "平行長走", "caption": "面對面那層在載流，外側幾乎在看戲", "duration_sec": 7, "narration": "兩根平行長走時，電流擠在面對面那一層，等於有效截面積又被偷走一次。"},
-      {"role": "practice", "slide": "ring", "title": "怎麼少被偷", "caption": "拉開間距、減少平行、該交錯就交錯", "duration_sec": 8, "narration": "不是再粗一號。先拉開間距、少平行長走；高頻繞組才輪到利茲線。"},
-      {"role": "jinju", "slide": "jinju", "jinju": "旁邊那根線，也在偷你的電流。", "caption": "鄰居比線徑還兇", "duration_sec": 6, "narration": "記住這句：旁邊那根線，也在偷你的電流。"}
+      {
+        "role": "title",
+        "slide": "photo_title",
+        "photo": "proximity_hero_right.png",
+        "jinju": "也被擠走",
+        "sub": "旁邊那根也在偷",
+        "duration_sec": 10,
+        "narration": "集膚懂了，線也換粗了。兩根一平行，一上高頻，還是燙。旁邊那根線，也在偷你的電流。"
+      },
+      {
+        "role": "hook",
+        "slide": "photo_caption",
+        "photo": "pcb_parallel.png",
+        "title": "現場很愛這樣走",
+        "caption": "開關電源、繞組、PCB 並排長走",
+        "duration_sec": 14,
+        "narration": "這題很常發生在開關電源、變壓器繞組，還有 PCB 上兩條並排走很長的銅箔。你用電表量直流電阻，數字漂亮得很，交流一上卻開始發燙。"
+      },
+      {
+        "role": "hook",
+        "slide": "heatmap_low",
+        "title": "以為只剩集膚",
+        "caption": "一根線：電流被趕到自己的皮",
+        "duration_sec": 10,
+        "narration": "先把集膚講清楚。低頻的時候，電流幾乎把整根銅都當路用。高頻一來，電流被自己的磁場趕到表皮。"
+      },
+      {
+        "role": "picture",
+        "slide": "photo_caption",
+        "photo": "copper_macro_skin.png",
+        "title": "集膚是自己偷自己",
+        "caption": "中間那塊實心銅在旁邊看戲",
+        "duration_sec": 10,
+        "narration": "所以你付錢買的是整根截面積，高頻時真正在載流的只剩那層皮。可是把線換粗，甚至換成管子，兩根還是平行長走，問題不會消失。"
+      },
+      {
+        "role": "mechanism",
+        "slide": "photo_caption",
+        "photo": "proximity_section.png",
+        "title": "兩根靠太近",
+        "caption": "鄰居的磁場，把電流擠到另一側",
+        "duration_sec": 14,
+        "narration": "因為鄰居也有磁場。一根線的磁場，會去推旁邊那根線裡的電流。這就叫鄰近效應。Proximity effect。"
+      },
+      {
+        "role": "mechanism",
+        "slide": "compare",
+        "title": "電流會被擠到哪",
+        "left_title": "同方向",
+        "left_body": "兩根電流同向，電流被擠到外側。",
+        "right_title": "反方向",
+        "right_body": "兩根電流反向，電流擠在面對面那一層。",
+        "duration_sec": 14,
+        "narration": "兩根電流同方向時，電流會被擠到外側；反方向時，電流會被擠到面對面那一層。差動對、緊密繞組，最常看到的就是面對面那層在載流。"
+      },
+      {
+        "role": "picture",
+        "slide": "photo_caption",
+        "photo": "proximity_hero.png",
+        "title": "平行長走",
+        "caption": "面對面那層在載流，外側幾乎在看戲",
+        "duration_sec": 12,
+        "narration": "兩根平行長走時，電流擠在面對面那一層，外側幾乎在看戲。等於有效截面積又被偷走一次。它不是把線變細，是把能走路的銅再偷走一回。"
+      },
+      {
+        "role": "picture",
+        "slide": "photo_caption",
+        "photo": "transformer_pack.png",
+        "title": "繞組貼太近",
+        "caption": "變壓器匝間，是鄰近效應的重災區",
+        "duration_sec": 12,
+        "narration": "變壓器、電感繞組把線匝一圈貼一圈，是鄰近效應的重災區。你以為用粗線就能扛電流，結果交流電阻被匝間磁場抬上去，核心先熱、線包也熱。"
+      },
+      {
+        "role": "practice",
+        "slide": "text",
+        "title": "熱從哪裡來",
+        "caption": "直流電阻沒變，交流電阻被偷走截面積",
+        "duration_sec": 12,
+        "narration": "直流電阻沒變。變的是交流電阻。集膚加鄰近，交流電阻往上跳。熱是電流的平方乘上電阻，電阻變大就更燙。線徑再粗，也救不了兩根貼太近。"
+      },
+      {
+        "role": "practice",
+        "slide": "bullets",
+        "title": "現場不是再粗一號",
+        "bullets": ["拉開間距", "少做平行長走", "高頻繞組才輪到利茲線"],
+        "duration_sec": 10,
+        "narration": "所以現場不是再粗一號。線徑解決不了鄰居。先做三件事。"
+      },
+      {
+        "role": "practice",
+        "slide": "photo_caption",
+        "photo": "proximity_gap.png",
+        "title": "第一：拉開間距",
+        "caption": "鄰居遠一點，磁場就沒那麼兇",
+        "duration_sec": 10,
+        "narration": "第一，拉開間距。鄰居遠一點，磁場就沒那麼兇。能分開就不要貼著走。"
+      },
+      {
+        "role": "practice",
+        "slide": "photo_caption",
+        "photo": "pcb_parallel.png",
+        "title": "第二：少平行長走",
+        "caption": "不得不平行，就縮短耦合長度",
+        "duration_sec": 12,
+        "narration": "第二，少做平行長走。不得不平行，就縮短耦合的長度。PCB 並排差動可以近，那是有意耦合；電源大電流的回流，就不要跟它平行貼著走二十公分。"
+      },
+      {
+        "role": "practice",
+        "slide": "photo_caption",
+        "photo": "litz_wire.png",
+        "title": "第三：把皮變多、把鄰居錯開",
+        "caption": "利茲線、交錯繞、三明治繞",
+        "duration_sec": 12,
+        "narration": "第三，高頻繞組才輪到利茲線、交錯繞、三明治繞。那是把皮變多，也把鄰居錯開。順序很重要：先問佈局，再換線材。"
+      },
+      {
+        "role": "jinju",
+        "slide": "jinju",
+        "jinju": "旁邊那根線，也在偷你的電流。",
+        "caption": "集膚是自己偷自己，鄰近是鄰居來偷你",
+        "duration_sec": 12,
+        "narration": "記住這句：旁邊那根線，也在偷你的電流。集膚是自己偷自己，鄰近是鄰居來偷你。線徑解決不了鄰居。"
+      },
+      {
+        "role": "end",
+        "slide": "end",
+        "jinju": "旁邊那根線，也在偷你的電流。",
+        "caption": "鄰近效應",
+        "duration_sec": 8,
+        "narration": "我是小東老師。這集是鄰近效應。下一題，我們繼續把高頻裡那些以為懂了還是燙的題目拆開。"
+      }
     ]
   }
 ]
