@@ -1,0 +1,132 @@
+"""CLI: plan a tutorial, then render it with Grok Imagine."""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+from .assemble import assemble_job, make_placeholder
+from .assets import generate_shot_assets, write_json
+from .imagine import ImagineClient
+from .planner import plan_recipe, plan_topic
+from .recipes import get_recipe, parse_recipes
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / "out" / "tutorial_video"
+
+
+def _job_dir(slug: str) -> Path:
+    return OUT / slug
+
+
+def _write_storyboard(storyboard: dict, job_dir: Path) -> Path:
+    job_dir.mkdir(parents=True, exist_ok=True)
+    return write_json(job_dir / "storyboard.json", storyboard)
+
+
+def cmd_list(_: argparse.Namespace) -> int:
+    for recipe in parse_recipes():
+        print(f"{recipe['id']:20} {recipe['minutes']:>3}m  {recipe['name']}")
+    return 0
+
+
+def cmd_plan(args: argparse.Namespace) -> int:
+    if args.recipe:
+        storyboard = plan_recipe(get_recipe(args.recipe))
+        slug = storyboard["recipe_id"]
+    else:
+        steps = [s.strip() for s in (args.steps or "").split("|") if s.strip()]
+        storyboard = plan_topic(args.topic, steps)
+        slug = "".join(ch if ch.isalnum() else "-" for ch in args.topic)[:40] or "topic"
+    job_dir = Path(args.out) if args.out else _job_dir(slug)
+    path = _write_storyboard(storyboard, job_dir)
+    print(path)
+    print(f"{len(storyboard['shots'])} shots  policy={storyboard['asset_policy']}")
+    for shot in storyboard["shots"]:
+        print(f"  {shot['id']}  {shot['role']:6}  {shot['narration']}")
+    return 0
+
+
+def _load_board(args: argparse.Namespace) -> tuple[dict, Path]:
+    if args.job:
+        job_dir = Path(args.job)
+        board = json.loads((job_dir / "storyboard.json").read_text(encoding="utf-8"))
+        return board, job_dir
+    if args.recipe:
+        board = plan_recipe(get_recipe(args.recipe))
+        job_dir = Path(args.out) if args.out else _job_dir(board["recipe_id"])
+        _write_storyboard(board, job_dir)
+        return board, job_dir
+    raise SystemExit("render needs --recipe or --job")
+
+
+def cmd_render(args: argparse.Namespace) -> int:
+    board, job_dir = _load_board(args)
+    if args.placeholders:
+        for shot in board["shots"]:
+            folder = job_dir / "shots" / shot["id"]
+            make_placeholder(
+                folder / "clip.mp4",
+                f"{shot['id']} {shot['narration'][:24]}",
+                int(shot["duration_sec"]),
+            )
+        out = assemble_job(board, job_dir)
+        print(out)
+        return 0
+
+    client = ImagineClient(
+        poll_interval=args.poll_interval,
+        poll_timeout=args.poll_timeout,
+    )
+    for shot in board["shots"]:
+        print(f"imagine {shot['id']} {shot['role']} …", flush=True)
+        record = generate_shot_assets(
+            client,
+            shot,
+            job_dir,
+            resolution=args.resolution,
+            generate_audio=not args.silent,
+        )
+        print(f"  {record['clip']}")
+    out = assemble_job(board, job_dir)
+    print(out)
+    return 0
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Plan and render cooking tutorial videos with Grok Imagine."
+    )
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    p_list = sub.add_parser("list", help="list recipes from index.html")
+    p_list.set_defaults(func=cmd_list)
+
+    p_plan = sub.add_parser("plan", help="write a locked shot list, do not search stock")
+    p_plan.add_argument("--recipe", help="recipe id or Chinese name")
+    p_plan.add_argument("--topic", help="free-form tutorial topic")
+    p_plan.add_argument("--steps", help="pipe-separated steps for --topic")
+    p_plan.add_argument("--out", help="job directory")
+    p_plan.set_defaults(func=cmd_plan)
+
+    p_render = sub.add_parser("render", help="generate each shot with Imagine and concat")
+    p_render.add_argument("--recipe", help="plan + render this recipe")
+    p_render.add_argument("--job", help="existing job directory with storyboard.json")
+    p_render.add_argument("--out", help="job directory when using --recipe")
+    p_render.add_argument("--resolution", default="720p")
+    p_render.add_argument("--silent", action="store_true")
+    p_render.add_argument("--placeholders", action="store_true", help="ffmpeg bars, no API")
+    p_render.add_argument("--poll-interval", type=float, default=5)
+    p_render.add_argument("--poll-timeout", type=float, default=600)
+    p_render.set_defaults(func=cmd_render)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    if args.cmd == "plan" and not args.recipe and not args.topic:
+        print("plan needs --recipe or --topic", file=sys.stderr)
+        return 2
+    return args.func(args)

@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+
+# Tutorial videos
+
+When the user asks for a 教學影片 / tutorial video / cooking demo:
+
+- Do **not** Google, Pexels, or YouTube-search generic terms (`cooking`, `kitchen`, `food`, `美食`, `料理`). That is why the footage looks wrong.
+- Use the Imagine pipeline in `tools/tutorial_video`.
+- First `python3 -m tools.tutorial_video plan --recipe <id>` (or `--topic` + `--steps`).
+- Each shot already has `must_include`, `must_not`, `image_prompt`, and `video_prompt`. Generate that shot. Do not replace it with unrelated b-roll.
+- Render with `XAI_API_KEY` set: `python3 -m tools.tutorial_video render --job out/tutorial_video/<id>`.
+- Default source is Grok Imagine (`grok-imagine-image-2.0` still, then `grok-imagine-video-1.5` image-to-video). Stock search is fail-closed: every hit must contain every `must_include` term and none of `must_not`. If nothing matches, generate.
+- The site recipe list is the source of truth. Run `python3 -m tools.tutorial_video list` for ids.
+- A finished tutorial is `out/tutorial_video/<id>/tutorial.mp4` plus per-shot stills. Do not ship a first-pass clip you have not opened.

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>教學影片工作室 · 冰箱裡有什麼</title>
+<meta name="theme-color" content="#191512">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🍳</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=Noto+Sans+TC:wght@400;500;700&family=Oswald:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#191512; --ink2:#221D19; --ink3:#2F2822; --ink4:#3D342C;
+  --paper:#F1E9DC; --dim:#A29585; --dimmer:#6E6357;
+  --yolk:#F0B429; --serif:'Noto Serif TC','PingFang TC',serif;
+  --sans:'Noto Sans TC','PingFang TC',sans-serif; --num:'Oswald','Noto Sans TC',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);font-size:15px;line-height:1.65;padding:0 0 72px}
+.wrap{max-width:940px;margin:0 auto;padding:0 18px}
+a{color:var(--yolk)}
+header{padding:30px 0 8px}
+.eyebrow{font-family:var(--num);font-size:12px;letter-spacing:.22em;color:var(--dimmer);text-transform:uppercase;margin-bottom:12px}
+h1{font-family:var(--serif);font-weight:900;font-size:29px;line-height:1.25}
+.lead{color:var(--dim);margin-top:12px;max-width:38em}
+.tog{background:none;border:1px solid var(--ink3);color:var(--dim);border-radius:3px;padding:5px 13px;
+  font-size:13px;cursor:pointer;font-family:var(--sans);text-decoration:none;display:inline-block}
+.tog:hover{border-color:var(--ink4);color:var(--paper)}
+.htitle{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+label{display:block;font-family:var(--num);font-size:11px;letter-spacing:.18em;color:var(--dimmer);margin:22px 0 8px}
+select,textarea{width:100%;background:var(--ink2);border:1px solid var(--ink3);color:var(--paper);
+  border-radius:3px;padding:10px 12px;font-family:var(--sans);font-size:14px}
+textarea{min-height:88px;resize:vertical}
+.cmd{margin-top:14px;background:var(--ink2);border:1px solid var(--ink3);border-radius:4px;padding:12px 14px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--yolk);white-space:pre-wrap}
+.note{font-size:13px;color:var(--dimmer);margin-top:10px}
+.shot{border-top:1px solid var(--ink3);padding:14px 0}
+.shot b{font-family:var(--serif)}
+.shot .meta{font-size:12.5px;color:var(--dimmer);margin-top:4px}
+.shot p{margin-top:6px;color:var(--dim)}
+.warn{margin-top:18px;padding:12px 14px;border:1px solid rgba(240,180,41,.35);border-radius:4px;color:#E8D7A4;font-size:13.5px}
+</style>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Imagine · tutorial</div>
+    <div class="htitle">
+      <h1>教學影片工作室</h1>
+      <a class="tog" href="index.html">回冰箱</a>
+    </div>
+    <p class="lead">Cursor 4.6 不會生片。這裡用 Grok Imagine：先鎖定每一鏡要出現的菜和步驟，再生成。不要搜 cooking、美食、廚房這種空詞，素材一定會錯。</p>
+  </header>
+
+  <div class="warn">要真的出片，本機設 <code>XAI_API_KEY</code> 後跑下面指令。沒金鑰也可以先看分鏡。</div>
+
+  <label for="recipe">食譜</label>
+  <select id="recipe"></select>
+
+  <label for="steps">若要拍網站操作教學，改寫步驟（一行一步）</label>
+  <textarea id="steps" placeholder="打開網站&#10;勾選現有食材&#10;看推薦&#10;點進步驟"></textarea>
+
+  <div class="cmd" id="cmd"></div>
+  <p class="note">輸出在 <code>out/tutorial_video/&lt;id&gt;/tutorial.mp4</code>。每一鏡的 still / clip 會留著，方便重抽單鏡。</p>
+
+  <div id="shots"></div>
+</div>
+<script>
+async function loadRecipes(){
+  const sel=document.getElementById("recipe");
+  try{
+    const res=await fetch("tools/tutorial_video/data/recipes.json");
+    if(!res.ok) throw new Error("no catalog");
+    return await res.json();
+  }catch(e){
+    sel.innerHTML='<option value="tomatoegg">番茄炒蛋（catalog 未載入，先用這道）</option>';
+    return [{id:"tomatoegg",name:"番茄炒蛋",minutes:8,equipment:"炒鍋",steps:[{text:"蛋打散，番茄切塊。"},{text:"炒蛋盛起。"},{text:"炒番茄再回鍋。"}],tip:"蛋要先盛起來。"}];
+  }
+}
+function render(recipes){
+  const sel=document.getElementById("recipe");
+  sel.innerHTML=recipes.map(r=>`<option value="${r.id}">${r.name} · ${r.minutes}分 · ${r.equipment}</option>`).join("");
+  const draw=()=>{
+    const recipe=recipes.find(r=>r.id===sel.value)||recipes[0];
+    const extra=document.getElementById("steps").value.trim();
+    const cmd=extra
+      ? `python3 -m tools.tutorial_video plan --topic "${recipe.name} 網站操作" --steps "${extra.split("\n").filter(Boolean).join("|")}"`
+      : `python3 -m tools.tutorial_video plan --recipe ${recipe.id}\npython3 -m tools.tutorial_video render --recipe ${recipe.id}`;
+    document.getElementById("cmd").textContent=cmd;
+    const shots=[
+      {id:"s00",role:"title",n:`今天做${recipe.name}，大概 ${recipe.minutes} 分鐘。`},
+      {id:"s01",role:"mise",n:"材料先備好，只拍這道菜的食材。"},
+      ...(recipe.steps||[]).map((s,i)=>({id:`s${String(i+2).padStart(2,"0")}`,role:"step",n:s.text})),
+      recipe.tip?{id:"tip",role:"tip",n:recipe.tip}:null,
+      {id:"end",role:"plate",n:`${recipe.name}完成，趁熱吃。`}
+    ].filter(Boolean);
+    document.getElementById("shots").innerHTML=shots.map(s=>`
+      <div class="shot">
+        <b>${s.id}</b> · ${s.role}
+        <div class="meta">must include：${recipe.name} · source：Imagine 生成，不搜圖庫</div>
+        <p>${s.n}</p>
+      </div>`).join("");
+  };
+  sel.onchange=draw;
+  document.getElementById("steps").oninput=draw;
+  draw();
+}
+loadRecipes().then(render);
+</script>
+</body>
+</html>
