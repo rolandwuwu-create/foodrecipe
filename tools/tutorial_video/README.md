@@ -1,35 +1,37 @@
-# 電學小知識 × Grok Imagine
+# 小東老師電子學 × Grok Imagine
 
-Cursor 4.6 不會生片。這條 pipeline 接 **Grok Imagine**，給電腦端「電學小知識」短片用：
+對照成品：https://youtu.be/bN9DOArGQbE  
+《高頻世界裡，粗電線的心是空的｜集膚效應 5 分鐘搞懂》
 
-- 靜幀：`grok-imagine-image-2.0`
-- 影片：`grok-imagine-video-1.5`（圖生影片）
+Grok Bot 強，不是因為 4.6 比較會搜「電」。那支出片是：
 
-預設**不搜圖庫**。每一鏡鎖定「這個概念、這張電路圖」。搜 `electricity` / `閃電` / `電力` 會拿到雷暴和電塔，那就是素材會錯的原因。
+1. **金句當標題**（心是空的／電流只走這層）
+2. **Imagine 只生英雄鏡頭**（粗銅線剖面、電流只走表皮）——prompt **不准帶字**
+3. **深藍解說圖**自己畫：電流密度熱圖、實心粗線剖面、金句卡
+4. 中文字、徽章、字幕是後製疊上去的
 
-## 設定
-
-```bash
-export XAI_API_KEY=xai-...
-```
+Cursor 之前爛在：沒 Imagine、亂搜閃電電塔、還把「不要寫字」寫進教學片（教學片最需要大字金句）。
 
 ## 用法
 
 ```bash
-# 內建課
 python3 -m tools.tutorial_video list
-python3 -m tools.tutorial_video plan --lesson ohms-law
-python3 -m tools.tutorial_video render --lesson ohms-law
-
-# 新的一則小知識
-python3 -m tools.tutorial_video plan \
-  --topic "短路為什麼會跳閘" \
-  --hook "電流抄近路的時候，保護裝置在做什麼。" \
-  --steps "什麼是短路|電流為什麼暴衝|斷路器怎麼斷開"
+python3 -m tools.tutorial_video plan --lesson skin-effect
+python3 -m tools.tutorial_video render --lesson skin-effect
 ```
 
-沒有金鑰時可先看分鏡，或 `--placeholders` 檢查接片。
+解說圖不需要 API，會直接出 `tutorial.mp4`。要補 Grok Bot 那種銅線英雄鏡頭：
 
-輸出：`out/tutorial_video/<id>/tutorial.mp4`，以及每一鏡的 still / clip。
+```bash
+export XAI_API_KEY=xai-...
+python3 -m tools.tutorial_video render --lesson skin-effect --imagine
+```
 
-內建課在 `data/lessons.json`，直接加一則即可。
+新題目沿用同一套文法（現場問題 → 機制圖 → 金句 → 取捨）：
+
+```bash
+python3 -m tools.tutorial_video plan \
+  --topic "集膚效應" \
+  --jinju "高頻世界裡，粗電線的心是空的。" \
+  --steps "低頻整根都在跑|高頻被趕到表皮|不是再粗一號就好"
+```

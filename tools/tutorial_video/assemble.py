@@ -59,6 +59,37 @@ def make_placeholder(path: Path, text: str, duration: int, size: str = "1280x720
     return path
 
 
+def still_to_clip(png: Path, output: Path, duration: int, size: str = "1920x1080") -> Path:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    _run(
+        [
+            "ffmpeg",
+            "-y",
+            "-loop",
+            "1",
+            "-i",
+            str(png),
+            "-f",
+            "lavfi",
+            "-i",
+            "anullsrc=channel_layout=stereo:sample_rate=44100",
+            "-vf",
+            f"scale={size}:force_original_aspect_ratio=decrease,pad={size.replace('x', ':')}:(ow-iw)/2:(oh-ih)/2",
+            "-t",
+            str(duration),
+            "-shortest",
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-c:a",
+            "aac",
+            str(output),
+        ]
+    )
+    return output
+
+
 def concat_clips(clips: list[Path], output: Path) -> Path:
     if not clips:
         raise AssembleError("no clips to assemble")

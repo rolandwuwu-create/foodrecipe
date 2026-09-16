@@ -2,15 +2,15 @@
 alwaysApply: true
 ---
 
-# 電學小知識 tutorial videos
+# 小東老師電子學 videos
 
-The user makes short electrical explainers on the computer. Grok 4.6 does not generate video. Use `tools/tutorial_video` and Grok Imagine.
+The user's channel is 小東老師電子學. Gold-standard Grok Bot episode: https://youtu.be/bN9DOArGQbE (集膚效應).
 
-- Do **not** search Google / Pexels / YouTube for `electricity`, `lightning`, `電力`, `電工`, `科普`, `電路`. That is why the footage is wrong (thunderstorms, power plants, electricians).
-- Plan first: `python3 -m tools.tutorial_video plan --lesson ohms-law` or `--topic "..." --steps "a|b|c"`.
-- Each shot is locked to that concept (`must_include` / `must_not`). Generate that shot. Do not replace it with generic electricity b-roll.
-- Render: `XAI_API_KEY=... python3 -m tools.tutorial_video render --job out/tutorial_video/<id>`.
-- Models: still `grok-imagine-image-2.0`, clip `grok-imagine-video-1.5` image-to-video.
-- Stock is fail-closed. If a hit is not the exact diagram / setup in the shot, generate instead.
-- Built-in lessons: `python3 -m tools.tutorial_video list`.
-- This repo's recipe homepage is unrelated. Do not turn foodrecipe into cooking videos unless the user asks.
+When making a tutorial video:
+
+- Do not search `electricity`, `lightning`, `電力`, `電工`. That is why Cursor footage looks stupid next to Grok Bot.
+- Clone this grammar: 現場問題 → dark-navy mechanism slides → 金句 → 實務取捨.
+- Imagine is ONLY the photoreal hero metaphor (copper skin current, welded contacts). The Imagine prompt must contain **no text**.
+- All 金句 / captions / badges are composited on slides via `tools/tutorial_video`. Never ask Grok 4.6 or Imagine to write Chinese into the pixels.
+- Command: `python3 -m tools.tutorial_video plan --lesson skin-effect` then `render`. Add `--imagine` only for the hero, needs `XAI_API_KEY`.
+- Do not turn the foodrecipe homepage into this series.

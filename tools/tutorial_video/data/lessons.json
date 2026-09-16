@@ -1,78 +1,37 @@
 [
   {
-    "id": "ohms-law",
-    "title": "歐姆定律",
-    "series": "電學小知識",
-    "hook": "電壓、電流、電阻，三個數字怎麼卡住彼此。",
-    "steps": [
-      {
-        "text": "電壓是推動電荷走的壓力，單位是伏特。",
-        "visual": "同一個簡單迴路裡的電池與電壓表，標出 12V，不是閃電或電塔"
-      },
-      {
-        "text": "電流是單位時間通過的電荷，單位是安培。",
-        "visual": "同一條導線裡的電子漂移，旁邊安培表讀數"
-      },
-      {
-        "text": "電阻是通路對電流的阻礙，單位是歐姆。",
-        "visual": "同一迴路中的碳膜電阻特寫，色環清楚"
-      },
-      {
-        "text": "歐姆定律：V = I × R，已知兩個就能算第三個。",
-        "visual": "同一張電路圖上出現 V=IR，三個量對到電池、電流、電阻"
-      },
-      {
-        "text": "算例：12 伏特、4 歐姆，電流是 3 安培。",
-        "visual": "把 12 和 4 代入 V=IR，得出 I=3A，迴路不變"
-      }
+    "id": "skin-effect",
+    "title": "集膚效應",
+    "series": "小東老師電子學",
+    "reference": "https://youtu.be/bN9DOArGQbE",
+    "jinju": "高頻世界裡，粗電線的心是空的。",
+    "hook": "線已經換很粗了，算電阻也覺得夠低，結果一上高頻還是燙得像剛出爐。",
+    "sub": "電流只走這層",
+    "hero_prompt": "Photoreal cinematic 3D cutaway of a thick copper electrical conductor on a dark navy studio background, unused hollow-looking core, glowing orange current confined to a thin outer skin, brushed copper texture, product visualization, no people, no lightning, no power lines, no text, no watermark, no logo",
+    "beats": [
+      {"role": "title", "slide": "title", "jinju": "心是空的", "sub": "電流只走這層", "duration_sec": 5, "narration": "線已經換很粗了，為什麼一上高頻還是燙？"},
+      {"role": "hook", "slide": "heatmap_low", "title": "電流密度", "caption": "低頻：整根都在跑", "duration_sec": 8, "narration": "低頻的時候，電流幾乎把整根銅都當路用。"},
+      {"role": "mechanism", "slide": "heatmap_high", "title": "電流密度", "caption": "高頻：被趕到表皮", "duration_sec": 8, "narration": "高頻電流被自己的磁場趕到表皮，中間那塊實心銅常常在旁邊看戲。"},
+      {"role": "picture", "slide": "ring", "title": "實心粗線", "caption": "付錢買整根截面積，電只啃那層皮", "duration_sec": 8, "narration": "你付錢買的是整根截面積，高頻時真正在載流的只剩那層皮。"},
+      {"role": "practice", "slide": "ring", "title": "多股與銅箔", "caption": "利茲線、PCB 寬銅箔，是在把皮變多", "duration_sec": 8, "narration": "所以高頻愛多股絞線、利茲線，PCB 則常走寬銅箔——不是再粗一號就好。"},
+      {"role": "jinju", "slide": "jinju", "jinju": "高頻世界裡，粗電線的心是空的。", "caption": "管子有電流，裡子很空虛", "duration_sec": 6, "narration": "記住這句：高頻世界裡，粗電線的心是空的。"}
     ]
   },
   {
-    "id": "series-parallel",
-    "title": "串聯與並聯",
-    "series": "電學小知識",
-    "hook": "燈泡要一起亮、還是各走各的，差在線路怎麼接。",
-    "steps": [
-      {
-        "text": "串聯是一條路走到底，電流只有一條。",
-        "visual": "兩顆燈泡串在同一條迴路上，電流箭頭只有一圈"
-      },
-      {
-        "text": "串聯時一顆燒掉，整條都滅。",
-        "visual": "同一串聯迴路，其中一顆燈泡熄滅，另一顆也滅"
-      },
-      {
-        "text": "並聯是分開的幾條路，電壓相同。",
-        "visual": "兩顆燈泡並接在同一電池兩端，兩條電流路徑"
-      },
-      {
-        "text": "並聯時一顆燒掉，另一顆還能亮。",
-        "visual": "並聯迴路一顆熄、一顆仍亮"
-      }
-    ]
-  },
-  {
-    "id": "capacitor-ac",
-    "title": "電容器為什麼能通交流",
-    "series": "電學小知識",
-    "hook": "兩片金屬中間隔空氣，直流過不去，交流卻像能過。",
-    "steps": [
-      {
-        "text": "電容器是兩片導體夾一層絕緣。",
-        "visual": "平行板電容器剖面，兩板與介電質，不是工業電容罐頭特寫"
-      },
-      {
-        "text": "直流充電一次就停，電路等於斷開。",
-        "visual": "電池接電容，電荷堆在板上後電流降到零"
-      },
-      {
-        "text": "交流正負一直換，極板反覆充電放電。",
-        "visual": "交流源接同一顆電容，板上電荷正負來回翻"
-      },
-      {
-        "text": "所以交流「看起來能通過」，其實是電荷在兩端來回搬。",
-        "visual": "同一電路，電流計指針隨交流來回擺，強調沒有電荷穿過介電質"
-      }
+    "id": "relay-weld",
+    "title": "繼電器黏死",
+    "series": "小東老師電子學",
+    "reference": "https://youtu.be/bPbx9UaoYI0",
+    "jinju": "接點不是壞掉，是被自己產生的電焊槍焊死了。",
+    "hook": "按了停止、斷了控制訊號，機器還是死命開著。",
+    "sub": "被焊死了",
+    "hero_prompt": "Photoreal cinematic close-up of industrial relay contacts welded together by a bright orange electric arc, sparks, dark navy studio, copper bus bars, no people, no lightning sky, no text",
+    "beats": [
+      {"role": "title", "slide": "title", "jinju": "被焊死了", "sub": "接點熔黏", "duration_sec": 5, "narration": "斷了控制訊號，機器還是開著。打開繼電器，接點黏在一起。"},
+      {"role": "hook", "slide": "heatmap_low", "title": "電感電流", "caption": "說斷就斷？做不到", "duration_sec": 8, "narration": "電感電流不能瞬間為零，斷點會拉出電弧。"},
+      {"role": "mechanism", "slide": "heatmap_high", "title": "電弧", "caption": "局部熔化，冷卻後焊死", "duration_sec": 8, "narration": "電弧把接點局部熔化，冷卻後 ON 永遠 ON。"},
+      {"role": "practice", "slide": "ring", "title": "給電流退路", "caption": "飛輪二極體、RC、壓敏", "duration_sec": 8, "narration": "重點不是無腦換更大顆，是給電流一條退路。"},
+      {"role": "jinju", "slide": "jinju", "jinju": "接點不是壞掉，是被自己產生的電焊槍焊死了。", "caption": "給電流一條退路", "duration_sec": 6, "narration": "接點不是壞掉，是被自己產生的電焊槍焊死了。"}
     ]
   }
 ]

@@ -7,11 +7,12 @@ import json
 import sys
 from pathlib import Path
 
-from .assemble import assemble_job, make_placeholder
-from .assets import generate_shot_assets, write_json
-from .imagine import ImagineClient
+from .assemble import assemble_job, still_to_clip
+from .assets import write_json
+from .imagine import ImagineClient, ImagineError
 from .lessons import get_lesson, load_lessons
 from .planner import plan_lesson, plan_topic
+from .slides import render_beat
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "out" / "tutorial_video"
@@ -42,7 +43,7 @@ def _plan_from_args(args: argparse.Namespace) -> tuple[dict, Path]:
         slug = board["lesson_id"]
     elif args.topic:
         steps = [s.strip() for s in (args.steps or "").split("|") if s.strip()]
-        board = plan_topic(args.topic, steps, hook=args.hook or "")
+        board = plan_topic(args.topic, steps, hook=args.hook or "", jinju=getattr(args, "jinju", "") or "")
         slug = _slug(args.topic)
     else:
         raise SystemExit("plan needs --lesson or --topic")
@@ -74,32 +75,24 @@ def _load_board(args: argparse.Namespace) -> tuple[dict, Path]:
 
 def cmd_render(args: argparse.Namespace) -> int:
     board, job_dir = _load_board(args)
-    if args.placeholders:
-        for shot in board["shots"]:
-            folder = job_dir / "shots" / shot["id"]
-            make_placeholder(
-                folder / "clip.mp4",
-                f"{shot['id']} {shot['narration'][:24]}",
-                int(shot["duration_sec"]),
-            )
-        out = assemble_job(board, job_dir)
-        print(out)
-        return 0
-
-    client = ImagineClient(
-        poll_interval=args.poll_interval,
-        poll_timeout=args.poll_timeout,
-    )
-    for shot in board["shots"]:
-        print(f"imagine {shot['id']} {shot['role']} …", flush=True)
-        record = generate_shot_assets(
-            client,
-            shot,
-            job_dir,
-            resolution=args.resolution,
-            generate_audio=not args.silent,
+    client = None
+    if args.imagine:
+        client = ImagineClient(
+            poll_interval=args.poll_interval,
+            poll_timeout=args.poll_timeout,
         )
-        print(f"  {record['clip']}")
+    for shot in board["shots"]:
+        folder = job_dir / "shots" / shot["id"]
+        still = render_beat(shot, folder / "still.png")
+        if args.imagine and shot.get("source") == "imagine+overlay" and shot.get("image_prompt"):
+            print(f"imagine hero {shot['id']} …", flush=True)
+            try:
+                hero = client.generate_image(shot["image_prompt"])
+                client.save_bytes(hero, folder / "hero.jpg")
+            except ImagineError as exc:
+                print(f"  skip hero: {exc}")
+        still_to_clip(still, folder / "clip.mp4", int(shot["duration_sec"]))
+        print(f"  {shot['id']} {shot['role']}")
     out = assemble_job(board, job_dir)
     print(out)
     return 0
@@ -115,9 +108,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_list.set_defaults(func=cmd_list)
 
     p_plan = sub.add_parser("plan", help="write a locked shot list, do not search stock")
-    p_plan.add_argument("--lesson", help="built-in lesson id, e.g. ohms-law")
-    p_plan.add_argument("--topic", help="new 電學小知識 topic")
+    p_plan.add_argument("--lesson", help="built-in lesson id, e.g. skin-effect")
+    p_plan.add_argument("--topic", help="new topic in 小東老師電子學 grammar")
     p_plan.add_argument("--hook", default="", help="opening line")
+    p_plan.add_argument("--jinju", default="", help="金句")
     p_plan.add_argument("--steps", help="pipe-separated beats")
     p_plan.add_argument("--out", help="job directory")
     p_plan.set_defaults(func=cmd_plan)
@@ -126,12 +120,13 @@ def build_parser() -> argparse.ArgumentParser:
     p_render.add_argument("--lesson", help="plan + render a built-in lesson")
     p_render.add_argument("--topic", help="plan + render a new topic")
     p_render.add_argument("--hook", default="")
+    p_render.add_argument("--jinju", default="")
     p_render.add_argument("--steps", help="pipe-separated beats when using --topic")
     p_render.add_argument("--job", help="existing job directory with storyboard.json")
     p_render.add_argument("--out", help="job directory")
     p_render.add_argument("--resolution", default="720p")
-    p_render.add_argument("--silent", action="store_true")
-    p_render.add_argument("--placeholders", action="store_true", help="ffmpeg bars, no API")
+    p_render.add_argument("--imagine", action="store_true", help="also generate Imagine hero (needs XAI_API_KEY)")
+    p_render.add_argument("--placeholders", action="store_true", help="deprecated; slides are the default")
     p_render.add_argument("--poll-interval", type=float, default=5)
     p_render.add_argument("--poll-timeout", type=float, default=600)
     p_render.set_defaults(func=cmd_render)
