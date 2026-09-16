@@ -101,12 +101,17 @@ def cmd_render(args: argparse.Namespace) -> int:
                 print(f"  skip hero: {exc}")
         audio = None
         if not args.no_voice and shot.get("narration"):
-            print(f"  vo {shot['id']} …", flush=True)
-            try:
-                audio = synthesize(shot["narration"], folder / "vo.mp3", voice=args.voice)
-            except VoiceError as exc:
-                print(f"  voice failed: {exc}", file=sys.stderr)
-                return 1
+            existing = folder / "vo.mp3"
+            if existing.exists() and existing.stat().st_size >= 800:
+                audio = existing
+                print(f"  vo {shot['id']} reuse")
+            else:
+                print(f"  vo {shot['id']} …", flush=True)
+                try:
+                    audio = synthesize(shot["narration"], existing, voice=args.voice)
+                except VoiceError as exc:
+                    print(f"  voice failed: {exc}", file=sys.stderr)
+                    return 1
         clip = folder / "clip.mp4"
         still_to_clip(
             still,
