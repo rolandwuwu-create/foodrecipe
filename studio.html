@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小東老師電子學 · 分鏡</title>
+<meta name="theme-color" content="#071526">
+<style>
+:root{--bg:#071526;--card:#0B2744;--paper:#F4F7FB;--cyan:#3DC6FF;--gold:#E8C46A;--muted:#8AA0B8;--sans:"Noto Sans TC","PingFang TC",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--paper);font-family:var(--sans);padding:32px 18px 72px;line-height:1.65}
+.wrap{max-width:860px;margin:0 auto}
+.eyebrow{letter-spacing:.2em;color:var(--muted);font-size:12px;text-transform:uppercase}
+h1{font-size:28px;margin:10px 0 12px}
+.lead{color:var(--muted);max-width:40em}
+a{color:var(--cyan)}
+select,textarea,input{width:100%;background:#0A1B33;border:1px solid #1C3A5A;color:var(--paper);border-radius:6px;padding:10px 12px;margin-top:8px;font:inherit}
+label{display:block;margin-top:20px;color:var(--gold);font-size:13px}
+.cmd{margin-top:16px;background:#0A1B33;border:1px solid #1C3A5A;border-radius:6px;padding:12px;color:var(--cyan);white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:13px}
+.shot{border-top:1px solid #1C3A5A;padding:14px 0}
+.meta{color:var(--muted);font-size:13px}
+</style>
+<body>
+<div class="wrap">
+  <div class="eyebrow">對照 Grok Bot 成品</div>
+  <h1>分鏡工作室</h1>
+  <p class="lead">對照片：<a href="https://youtu.be/bN9DOArGQbE">集膚效應｜粗電線的心是空的</a>。產出是成片：腳本、國語配音、深藍解說圖、金句。不要搜閃電。</p>
+  <label>內建集</label>
+  <select id="lesson"></select>
+  <label>自訂金句</label>
+  <input id="jinju" placeholder="高頻世界裡，粗電線的心是空的。">
+  <label>節拍（一行一個）</label>
+  <textarea id="steps" rows="5" placeholder="留空就用內建節拍"></textarea>
+  <div class="cmd" id="cmd"></div>
+  <div id="shots"></div>
+</div>
+<script>
+async function load(){
+  const lessons=await (await fetch("tools/tutorial_video/data/lessons.json")).json();
+  const sel=document.getElementById("lesson");
+  sel.innerHTML=lessons.map(l=>`<option value="${l.id}">${l.title} · ${l.jinju}</option>`).join("");
+  const draw=()=>{
+    const lesson=lessons.find(l=>l.id===sel.value)||lessons[0];
+    const custom=document.getElementById("steps").value.split("\n").map(s=>s.trim()).filter(Boolean);
+    const jinju=document.getElementById("jinju").value.trim()||lesson.jinju;
+    const cmd=custom.length
+      ? `python3 -m tools.tutorial_video plan --topic "${lesson.title}" --jinju "${jinju}" --steps "${custom.join("|")}"\npython3 -m tools.tutorial_video render --topic "${lesson.title}" --jinju "${jinju}" --steps "${custom.join("|")}"`
+      : `python3 -m tools.tutorial_video plan --lesson ${lesson.id}\npython3 -m tools.tutorial_video render --lesson ${lesson.id}`;
+    document.getElementById("cmd").textContent=cmd;
+    const beats=custom.length?custom.map(t=>({role:"step",narration:t,slide:"slide"})):lesson.beats;
+    document.getElementById("shots").innerHTML=`<p class="meta">金句：${jinju}</p>`+beats.map((b,i)=>`<div class="shot"><b>s${String(i).padStart(2,"0")}</b> ${b.role||""}<div class="meta">${b.slide||"slide"} · ${b.caption||b.sub||""}</div><p>${b.narration||b}</p></div>`).join("");
+  };
+  ["lesson","jinju","steps"].forEach(id=>document.getElementById(id).addEventListener("input",draw));
+  sel.addEventListener("change",draw);
+  draw();
+}
+load();
+</script>
+</body>
+</html>

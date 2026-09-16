@@ -1,0 +1,29 @@
+{
+  "channel": "小東老師電子學",
+  "reference_video": {
+    "id": "bN9DOArGQbE",
+    "title": "高頻世界裡，粗電線的心是空的｜集膚效應 5 分鐘搞懂",
+    "url": "https://youtu.be/bN9DOArGQbE"
+  },
+  "format": "16:9_explainer",
+  "length_sec": [180, 360],
+  "palette": {
+    "bg": "#071526",
+    "navy": "#0B2744",
+    "white": "#F4F7FB",
+    "cyan": "#3DC6FF",
+    "orange": "#FF7A2E",
+    "gold": "#E8C46A",
+    "muted": "#8AA0B8"
+  },
+  "rules": [
+    "A finished episode is SCRIPT.md + zh-TW voiceover + captions.srt + tutorial.mp4. Stills alone are not a deliverable.",
+    "Photoreal hero metaphor of THIS mechanism via GenerateImage or Imagine. No text in the image prompt.",
+    "All Traditional Chinese, 金句, captions, badges are composited later. Never ask the video model to write Chinese.",
+    "Teaching beats are dark-navy motion-graphics slides: cross-section, heatmap, 金句 card.",
+    "Never search electricity / lightning / 電力 / 電工 stock.",
+    "Episode grammar: 現場問題 → 機制圖 → 金句 → 實務取捨.",
+    "金句 is one punchy sentence that is also the title.",
+    "If a real photo/SEM exists (NIST, datasheet), use it labeled 關聯實拍. Do not replace it with AI."
+  ]
+}
