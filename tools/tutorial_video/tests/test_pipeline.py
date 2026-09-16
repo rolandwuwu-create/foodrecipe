@@ -72,8 +72,8 @@ class SlideTests(unittest.TestCase):
         board = plan_lesson(get_lesson("proximity-effect"))
         with tempfile.TemporaryDirectory() as tmp:
             path = render_beat(board["shots"][0], Path(tmp) / "title.png")
-            img = Image.open(path)
-            self.assertEqual(img.size, (1920, 1080))
+            with Image.open(path) as img:
+                self.assertEqual(img.size, (1920, 1080))
             self.assertGreater(path.stat().st_size, 40000)
 
 

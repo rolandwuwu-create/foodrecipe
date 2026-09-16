@@ -91,7 +91,12 @@ def cmd_render(args: argparse.Namespace) -> int:
                 client.save_bytes(hero, folder / "hero.jpg")
             except ImagineError as exc:
                 print(f"  skip hero: {exc}")
-        still_to_clip(still, folder / "clip.mp4", int(shot["duration_sec"]))
+        still_to_clip(
+            still,
+            folder / "clip.mp4",
+            int(shot["duration_sec"]),
+            zoom=shot.get("slide") in {"photo_title", "photo_caption"},
+        )
         print(f"  {shot['id']} {shot['role']}")
     out = assemble_job(board, job_dir)
     print(out)

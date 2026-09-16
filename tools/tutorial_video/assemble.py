@@ -59,8 +59,27 @@ def make_placeholder(path: Path, text: str, duration: int, size: str = "1280x720
     return path
 
 
-def still_to_clip(png: Path, output: Path, duration: int, size: str = "1920x1080") -> Path:
+def still_to_clip(
+    png: Path,
+    output: Path,
+    duration: int,
+    size: str = "1920x1080",
+    zoom: bool = False,
+) -> Path:
     output.parent.mkdir(parents=True, exist_ok=True)
+    w, h = size.split("x")
+    if zoom:
+        frames = max(int(duration) * 25, 25)
+        vf = (
+            f"scale={w}:{h},"
+            f"zoompan=z='min(1.0+0.0009*on,1.08)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+            f":d={frames}:s={w}x{h}:fps=25"
+        )
+    else:
+        vf = (
+            f"scale={size}:force_original_aspect_ratio=decrease,"
+            f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2"
+        )
     _run(
         [
             "ffmpeg",
@@ -74,7 +93,7 @@ def still_to_clip(png: Path, output: Path, duration: int, size: str = "1920x1080
             "-i",
             "anullsrc=channel_layout=stereo:sample_rate=44100",
             "-vf",
-            f"scale={size}:force_original_aspect_ratio=decrease,pad={size.replace('x', ':')}:(ow-iw)/2:(oh-ih)/2",
+            vf,
             "-t",
             str(duration),
             "-shortest",
